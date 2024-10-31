@@ -1,5 +1,8 @@
 Algunas notas para la documentación
 
+General:
+- Es posible que haya que añadir condiciones en los getters y setters
+
 Clase Nodo:
 - Se tienen las adyacencias en listas (en este caso LinkedHashSets, para evitar las repeticiones) porque para los algoritmos de todas formas se tendrán que explorar todos los
 nodos a los que adyacente ( por ejemplo no convendría hacer búsqueda binaria porque si un nodo objetivo no es
@@ -7,7 +10,12 @@ adyacente, aún se podría encontrar una ruta óptima desde este nodo, por lo qu
 se explorarán todas las adyacencias)
 - Los nodos solo tendrán el id de las paradas porque solo eso se necesita para ejecutar los algoritmos de grafos
 
-
+Clase GestorRutas:
+- Hay que determinar qué comprobaciones hacer para determinar si una parada se puede agregar o no (como si tiene el
+mismo nombre que otra, por ejemplo; y también hay que implementar esas comprobaciones)
+- Comprobar si de verdad el LinkedHashSet compara los atributos y no la dirección (así nos ahorraríamos comprobar que no son
+las mismas rutas o adyacencias [lo cuál sería la razón de por qué se eligieron los LinkedHashSet])
+- Para saber por qué no se pudo agregar una parada, se pueden utilizar excepciones
 
 Ideas
 
