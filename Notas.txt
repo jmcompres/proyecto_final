@@ -16,6 +16,7 @@ mismo nombre que otra, por ejemplo; y también hay que implementar esas comproba
 - Comprobar si de verdad el LinkedHashSet compara los atributos y no la dirección (así nos ahorraríamos comprobar que no son
 las mismas rutas o adyacencias [lo cuál sería la razón de por qué se eligieron los LinkedHashSet])
 - Para saber por qué no se pudo agregar una parada, se pueden utilizar excepciones
+- Antes de implementar los algoritmos para encontrar rutas, debemos implementar el algoritmo para los árboles de expansión mínima
 
 Ideas
 
