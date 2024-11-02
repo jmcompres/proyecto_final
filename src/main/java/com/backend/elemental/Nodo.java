@@ -47,6 +47,7 @@ public class Nodo {
     {
         paradas_apuntadas.add(neoAd);
         rutas.add(ruta);
+        neoAd.getParadasApuntadoras().add(this);
     }
     
 }
