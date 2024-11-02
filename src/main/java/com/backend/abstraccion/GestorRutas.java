@@ -1,7 +1,9 @@
 package com.backend.abstraccion;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.backend.elemental.Arista;
 import com.backend.elemental.Nodo;
@@ -9,11 +11,12 @@ import com.backend.elemental.Nodo;
 public class GestorRutas {
 
     private static GestorRutas instancia = null;
-    private static int capacidadInicial = 20; //capacidad inicial para los ArrayLists con los nodos, paradas y rutas
-    private static int idParadaActual = 1;    //Los ids se irán auto-asignando, así también se garantiza su orden (aún así, cuando se eliminen varias paradas y quede un hueco grande entre valores de id, se pueden actualizar sin alterar el orden)
+    private static int capacidadInicial = 20;     //capacidad inicial para los ArrayLists con los nodos, paradas y rutas
+    private static int idParadaActual = 1;        //Los ids se irán auto-asignando, así también se garantiza su orden (aún así, cuando se eliminen varias paradas y quede un hueco grande entre valores de id, se pueden actualizar sin alterar el orden)
 
-    private List<Parada> paradas;  //en orden con los nodos
-    private List<Nodo> nodos;      //en orden con las paradas
+    private List<Parada> paradas;                 //en orden con los nodos
+    private List<Nodo> nodos;                     //en orden con las paradas
+    private Set<String> nombresParadas;            //esto para comprobar en tiempo constante que no se repitan los nombres
 
 
 
@@ -23,6 +26,7 @@ public class GestorRutas {
     {
         paradas = new ArrayList<Parada>(capacidadInicial);
         nodos = new ArrayList<Nodo>(capacidadInicial);
+        nombresParadas = new HashSet<String>(capacidadInicial);
     }
 
     public GestorRutas getInstance()
@@ -69,11 +73,10 @@ public class GestorRutas {
 
     public boolean agregarParada(String nombre, String localizacion) //retorna un booleano que indica si el proceso se completó satisfactoriamente
     {
-        /*AGREGAR COMPROBACIONES DE NOMBRES Y LOCALIZACIONES*/
-        //if (false) return false;
-        //if (false) return false;
+        if (nombresParadas.contains(nombre)) return false;
 
         Parada neoParada = new Parada(idParadaActual, nombre, localizacion);
+        nombresParadas.add(nombre);
         idParadaActual += 1;
 
         paradas.add(neoParada);
@@ -96,8 +99,25 @@ public class GestorRutas {
         Nodo nDestino = pDestino.getNodo();
 
         Arista neoRuta = new Arista(tiempo, distancia, costo);
-        nFuente.getRutas().add(neoRuta);
-        nFuente.getParadasAdyacentes().add(nDestino);
+        nFuente.agregarAdyacencia(nDestino, neoRuta);
+    }
+
+    public void eliminarParada(int id)
+    {
+        int pos = ParadaBinarySearch(id);
+        if (pos == -1) return;
+
+        //Primero se eliminan todas las conexiones de todos los nodos que apuntaban a la parada a eliminar
+        Nodo nodoParada = nodos.get(pos);
+        Set<Nodo> paradasApuntadoras = nodoParada.getParadasApuntadoras();
+        for (Nodo n : paradasApuntadoras)
+        {
+            n.getParadasApuntadas().remove(nodoParada);
+        }
+
+        //Finalmente se elimina la parada
+        nodos.remove(pos);
+        paradas.remove(pos);
     }
 
 }
