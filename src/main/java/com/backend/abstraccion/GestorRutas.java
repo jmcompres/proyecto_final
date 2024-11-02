@@ -55,7 +55,7 @@ public class GestorRutas {
 
     /*OTROS MÉTODOS*/
 
-    private int ParadaBinarySearch(int id) //retorna el índice
+    public int ParadaBinarySearch(int id) //retorna el índice
     {
         int left = 0, right = paradas.size()-1, mid;
         while (left<=right)
@@ -64,8 +64,8 @@ public class GestorRutas {
             int pMidId = paradas.get(mid).getId();
             if (pMidId == id) return mid;
 
-            if (pMidId > id) left = mid+1;
-            else right = mid-1;
+            if (pMidId > id) right = mid-1;
+            else left = mid+1;
         }
 
         return -1;
