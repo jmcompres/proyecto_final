@@ -55,7 +55,7 @@ public class GestorRutas {
 
     /*OTROS MÉTODOS*/
 
-    public int ParadaBinarySearch(int id) //retorna el índice
+    public int paradaBinarySearch(int id) //retorna el índice
     {
         int left = 0, right = paradas.size()-1, mid;
         while (left<=right)
@@ -89,8 +89,8 @@ public class GestorRutas {
 
     public void agregarRuta(int idParadaFuente, int idParadaDestino, int tiempo, int distancia, int costo)
     {
-        int pFuenteInd = ParadaBinarySearch(idParadaFuente);
-        int pDestinoInd = ParadaBinarySearch(idParadaDestino);
+        int pFuenteInd = paradaBinarySearch(idParadaFuente);
+        int pDestinoInd = paradaBinarySearch(idParadaDestino);
         if (pFuenteInd == -1 || pDestinoInd == -1) return;
 
         Parada pFuente = paradas.get(pFuenteInd);
@@ -104,7 +104,7 @@ public class GestorRutas {
 
     public void eliminarParada(int id)
     {
-        int pos = ParadaBinarySearch(id);
+        int pos = paradaBinarySearch(id);
         if (pos == -1) return;
 
         //Primero se eliminan todas las conexiones de todos los nodos que apuntaban a la parada a eliminar
