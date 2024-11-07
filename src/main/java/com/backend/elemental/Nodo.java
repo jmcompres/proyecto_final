@@ -2,18 +2,21 @@ package com.backend.elemental;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Nodo {
 
     private int id;                         //id de la parada que representa el nodo
     private Set<Nodo> paradas_apuntadas;    //en orden con las rutas; estas son las paradas a las que se puede dirigir desde esta parada
-    private Set<Arista> rutas;              //en orden con los nodos
+    private List<Arista> rutas;             //en orden con los nodos
     private Set<Nodo> paradas_apuntadoras;  //estas son las paradas que apuntan a esta (esta lista facilitará luego eliminar los enlaces de esas paradas cuando se elimine esta parada)
 
     public Nodo(int id) {
         this.id = id;
         paradas_apuntadas = new LinkedHashSet<Nodo>();
-        rutas = new LinkedHashSet<Arista>();
+        paradas_apuntadoras = new LinkedHashSet<Nodo>();
+        rutas = new ArrayList<Arista>();
     }
 
     public int getId() {
@@ -28,11 +31,11 @@ public class Nodo {
         return paradas_apuntadas;
     }
 
-    public Set<Arista> getRutas() {
+    public List<Arista> getRutas() {
         return rutas;
     }
 
-    public void setRutas(Set<Arista> rutas) {
+    public void setRutas(List<Arista> rutas) {
         this.rutas = rutas;
     }
 
@@ -49,5 +52,5 @@ public class Nodo {
         rutas.add(ruta);
         neoAd.getParadasApuntadoras().add(this);
     }
-    
+
 }
