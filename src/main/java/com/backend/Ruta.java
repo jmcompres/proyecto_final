@@ -1,11 +1,11 @@
-package com.backend.elemental;
+package com.backend;
 
-public class Arista {
+public class Ruta {
     private float tiempo;
     private float distancia;
     private float costo;
 
-    public Arista(float tiempo, float distancia, float costo) {
+    public Ruta(float tiempo, float distancia, float costo) {
         this.tiempo = tiempo;
         this.distancia = distancia;
         this.costo = costo;

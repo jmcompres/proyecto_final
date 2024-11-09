@@ -1,11 +1,9 @@
-package com.backend.abstraccion;
+package com.backend;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.backend.elemental.Arista;
 
 public class Parada {
 
@@ -14,7 +12,7 @@ public class Parada {
     private String localizacion;
 
     private Set<Parada> paradasApuntadas;    //en orden con las rutas; estas son las paradas a las que se puede dirigir desde esta parada
-    private List<Arista> rutas;               //en orden con los nodos
+    private List<Ruta> rutas;               //en orden con los nodos
     private Set<Parada> paradasApuntadoras;  //estas son las paradas que apuntan a esta (esta lista facilitará luego eliminar los enlaces de esas paradas cuando se elimine esta parada)
 
     protected Parada(int id, String nombre, String localizacion) {
@@ -58,11 +56,11 @@ public class Parada {
         this.paradasApuntadas = paradasApuntadas;
     }
 
-    public List<Arista> getRutas() {
+    public List<Ruta> getRutas() {
         return rutas;
     }
 
-    public void setRutas(List<Arista> rutas) {
+    public void setRutas(List<Ruta> rutas) {
         this.rutas = rutas;
     }
 
@@ -74,7 +72,7 @@ public class Parada {
         this.paradasApuntadoras = paradas_apuntadoras;
     }
 
-    public void agregarAdyacencia(Parada neoAd, Arista ruta)
+    public void agregarAdyacencia(Parada neoAd, Ruta ruta)
     {
         paradasApuntadas.add(neoAd);
         rutas.add(ruta);

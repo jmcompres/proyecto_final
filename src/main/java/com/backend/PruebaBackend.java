@@ -1,9 +1,6 @@
 package com.backend;
 
 import java.util.List;
-import com.backend.abstraccion.Parada;
-
-import com.backend.abstraccion.GestorRutas;
 
 public class PruebaBackend {
     public static void main(String[] args) {

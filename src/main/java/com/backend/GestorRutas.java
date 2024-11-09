@@ -1,4 +1,4 @@
-package com.backend.abstraccion;
+package com.backend;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
-
-import com.backend.elemental.Arista;
 
 public class GestorRutas {
 
@@ -53,7 +51,7 @@ public class GestorRutas {
         Parada pFuente = paradas.get(idParadaFuente);
         Parada pDestino = paradas.get(idParadaDestino);
 
-        Arista neoRuta = new Arista(tiempo, distancia, costo);
+        Ruta neoRuta = new Ruta(tiempo, distancia, costo);
         pFuente.agregarAdyacencia(pDestino, neoRuta);
     }
 
@@ -117,7 +115,7 @@ public class GestorRutas {
             Parada nodoActual = colaPrio.poll().nodo;
             int idNodoActual = nodoActual.getId();
             visitados.replace(nodoActual.getId(), true);
-            List<Arista> rutasAdyacentes = nodoActual.getRutas();
+            List<Ruta> rutasAdyacentes = nodoActual.getRutas();
             int i = 0;                                                          // índice por el cual va la lista
 
             for (Parada nodoAdyacente : nodoActual.getParadasApuntadas())
