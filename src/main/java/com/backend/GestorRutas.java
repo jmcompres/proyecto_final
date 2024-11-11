@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 
 public class GestorRutas {
@@ -69,10 +70,20 @@ public class GestorRutas {
         Set<Parada> paradasApuntadoras = paradaElim.getParadasApuntadoras();
         for (Parada p : paradasApuntadoras)
         {
-            p.getParadasApuntadas().remove(paradaElim);
+            List<Parada> paradasApuntadasActuales = p.getParadasApuntadas();
+            for (int i = 0; i<paradasApuntadasActuales.size(); i++)
+            {
+                if (paradasApuntadasActuales.get(i) == paradaElim)
+                {
+                    paradasApuntadasActuales.remove(i);
+                    p.getRutas().remove(i);
+                    i--;
+                }
+            }
         }
 
         //Finalmente se elimina la parada
+        nombresParadas.remove(paradaElim.getNombre());
         paradas.remove(idParada);
     }
 
@@ -93,7 +104,34 @@ public class GestorRutas {
     }
 
 
+
     /*MÉTODOS PARA ENCONTRAR RUTAS */
+
+    //A este método se le pasa un registro de predecesores (calculado por cualquier método) y retorna la lista de paradas hasta la parada destino
+    private List<Parada> rutaOptima(Map<Integer,Parada> predecesores, int idDestino)
+    {
+        LinkedList<Parada> rOptima = new LinkedList<>();
+        Parada predecesorActual = predecesores.get(idDestino);
+        rOptima.push(paradas.get(idDestino));
+        while (predecesorActual != null)
+        {
+            rOptima.push(predecesorActual);
+            predecesorActual = predecesores.get(predecesorActual.getId());
+        }
+
+        return rOptima;
+    }
+
+    private void llenarInfoBasica(Map<Integer, Float> discriminantes, Map<Integer,Parada> predecesores, Map<Integer,Boolean> visitados, Map<Integer,Integer> distancias)  //Con distancias nos referimos en términos de transbordos
+    {
+        for (Map.Entry<Integer,Parada> p : paradas.entrySet()) 
+        {
+            discriminantes.put(p.getKey(), Float.MAX_VALUE);     // Integer.MAX_VALUE representa infinito
+            predecesores.put(p.getKey(), null);
+            visitados.put(p.getKey(), false);
+            if (distancias != null) distancias.put(p.getKey(), Integer.MAX_VALUE);
+        }
+    }
 
     class ParNodoDiscriminante implements Comparable<ParNodoDiscriminante>    //Par Nodo-Discriminante para la cola de prioridad en el algoritmo de Dijkstra, el nodo sería la parada
     {
@@ -120,12 +158,7 @@ public class GestorRutas {
         Map<Integer, Float> discriminantes = new HashMap<>(paradas.size());
         Map<Integer, Parada> predecesores = new HashMap<>(paradas.size());
         Map<Integer, Boolean> visitados = new HashMap<>(paradas.size());
-        for (Map.Entry<Integer,Parada> p : paradas.entrySet()) 
-        {
-            discriminantes.put(p.getKey(), Float.MAX_VALUE);     // Integer.MAX_VALUE representa infinito
-            predecesores.put(p.getKey(), null);
-            visitados.put(p.getKey(), false);
-        }
+        llenarInfoBasica(discriminantes, predecesores, visitados, null);
         discriminantes.replace(idOrigen, 0.0f);
 
         PriorityQueue<ParNodoDiscriminante> colaPrio = new PriorityQueue<>();
@@ -160,16 +193,66 @@ public class GestorRutas {
             }
         }
 
-        LinkedList<Parada> rutaOptima = new LinkedList<>();
-        Parada predecesorActual = predecesores.get(idDestino);
-        rutaOptima.push(paradas.get(idDestino));
-        while (predecesorActual != null)
+        return rutaOptima(predecesores,idDestino);
+    }
+
+    public List<Parada> rutaTransbordosMinimos(int idOrigen, int idDestino, PrefTransbordos pref) //Búsqueda de amplitud
+    {
+        if (!paradas.containsKey(idDestino) || !paradas.containsKey(idOrigen)) return null;
+
+        Map<Integer, Float> discriminantes = new HashMap<>(paradas.size());
+        Map<Integer, Parada> predecesores = new HashMap<>(paradas.size());
+        Map<Integer, Boolean> visitados = new HashMap<>(paradas.size());
+        Map<Integer, Integer> distancias = new HashMap<>(paradas.size());
+        llenarInfoBasica(discriminantes, predecesores, visitados, distancias);
+        discriminantes.replace(idOrigen, 0.0f);
+        distancias.replace(idOrigen, 0);
+
+        Parada pOrigen = paradas.get(idOrigen);
+        Queue<Parada> cola = new LinkedList<Parada>();
+        cola.offer(pOrigen);
+        int distanciaEncontrada = -1;    //Distancia (en términos de transbordos) a la cual se encontró la parada destino (-1 es un flag)
+
+        while(!cola.isEmpty())
         {
-            rutaOptima.push(predecesorActual);
-            predecesorActual = predecesores.get(predecesorActual.getId());
+            Parada paradaActual = cola.poll();
+            int idActual = paradaActual.getId();
+            int i = 0;                              //índice por el cual va la lista de adyacencia
+            if (distanciaEncontrada >= 0 && distancias.get(idActual) >= distanciaEncontrada) break;
+
+            for (Parada pAdyacente : paradaActual.getParadasApuntadas())
+            {
+                int idAdyacente = pAdyacente.getId();
+
+                //Si aún está en la lista, entonces su peso se puede barajar, por eso la condición && !cola.contains(pAdyacente)
+                if ((visitados.get(idAdyacente) && !cola.contains(pAdyacente) && distanciaEncontrada==-1) || (distanciaEncontrada!=-1 && idAdyacente!=idDestino))
+                {
+                    i++;
+                    continue;
+                }
+
+                distancias.replace(idAdyacente, distancias.get(idActual) + 1);
+                if (idAdyacente == idDestino) distanciaEncontrada = distancias.get(idAdyacente);  //Encontrada
+
+                float discriminanteAdyacente = 0;
+                if (pref == PrefTransbordos.COSTO) discriminanteAdyacente = paradaActual.getRutas().get(i).getCosto();
+                else if (pref == PrefTransbordos.TIEMPO) discriminanteAdyacente = paradaActual.getRutas().get(i).getTiempo();
+                else if (pref == PrefTransbordos.DISTANCIA) discriminanteAdyacente = paradaActual.getRutas().get(i).getDistancia();
+
+                if (discriminantes.get(idActual) + discriminanteAdyacente < discriminantes.get(idAdyacente))
+                {
+                    discriminantes.replace(idAdyacente, discriminantes.get(idActual) + discriminanteAdyacente);
+                    predecesores.replace(idAdyacente, paradaActual);
+                }
+                visitados.replace(idAdyacente, true);
+                if (!cola.contains(pAdyacente)) cola.offer(pAdyacente);
+
+                i++;
+            }
         }
 
-        return rutaOptima;
+        if (distanciaEncontrada == -1) return null; //Si no están conectadas
+        return rutaOptima(predecesores, idDestino);
     }
 
 }
