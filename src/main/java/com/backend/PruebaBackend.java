@@ -35,7 +35,7 @@ public class PruebaBackend {
 
         System.out.println("");
 
-        g.eliminarParada(id5);
+        g.eliminarRuta(9);
         l = g.dijkstra(id1, id6, false);
 
         for (Parada p : l)

@@ -13,13 +13,16 @@ public class GestorRutas {
     private static GestorRutas instancia = null;
     private static int capacidadInicial = 50;           //capacidad inicial para los ArrayLists con los nodos, paradas y rutas
     private static int idParadaActual = 1;              //Los ids se irán auto-asignando
+    private static int idRutaActual = 1;
 
     private Map<Integer, Parada> paradas;               //la clave Integer es el atributo id de la parada
+    private Map<Integer, Ruta> rutas;
     private Set<String> nombresParadas;                 //esto para comprobar en tiempo constante que no se repitan los nombres y ubicaciones
 
     private GestorRutas()
     {
         paradas = new HashMap<Integer, Parada>(capacidadInicial);
+        rutas = new HashMap<Integer, Ruta>(capacidadInicial);
         nombresParadas = new HashSet<String>(capacidadInicial);
     }
 
@@ -51,16 +54,18 @@ public class GestorRutas {
         Parada pFuente = paradas.get(idParadaFuente);
         Parada pDestino = paradas.get(idParadaDestino);
 
-        Ruta neoRuta = new Ruta(tiempo, distancia, costo);
+        Ruta neoRuta = new Ruta(pFuente, pDestino, idRutaActual, tiempo, distancia, costo);
         pFuente.agregarAdyacencia(pDestino, neoRuta);
+        rutas.put(idRutaActual, neoRuta);
+        idRutaActual++;
     }
 
-    public void eliminarParada(int id)
+    public void eliminarParada(int idParada)
     {
-        if (!paradas.containsKey(id)) return;
+        if (!paradas.containsKey(idParada)) return;
 
         //Primero se eliminan todas las conexiones de todos los nodos que apuntaban a la parada a eliminar
-        Parada paradaElim = paradas.get(id);
+        Parada paradaElim = paradas.get(idParada);
         Set<Parada> paradasApuntadoras = paradaElim.getParadasApuntadoras();
         for (Parada p : paradasApuntadoras)
         {
@@ -68,7 +73,23 @@ public class GestorRutas {
         }
 
         //Finalmente se elimina la parada
-        paradas.remove(id);
+        paradas.remove(idParada);
+    }
+
+    public void eliminarRuta(int idRuta)
+    {
+        if (!rutas.containsKey(idRuta)) return;
+
+        Ruta rutaElim = rutas.get(idRuta);
+        Parada pOrigen = rutaElim.getOrigen();
+        Parada pDestino = rutaElim.getDestino();
+
+        int idRutaElim = pOrigen.getRutas().indexOf(rutaElim);  //Se tiene que trabajar con índices, ya que se pueden repetir paradas (ya que están en orden con sus respectivas rutas, y pueden haber más de una ruta a la misma parada)
+        pOrigen.getRutas().remove(rutaElim);
+        pOrigen.getParadasApuntadas().remove(idRutaElim);       //Está en orden con la ruta a eliminar
+        if (!pOrigen.getParadasApuntadas().contains(pDestino))  //Si la ruta a la parada era la única, entonces se elimina de paradas apuntadoras en la ruta destino
+            pDestino.getParadasApuntadoras().remove(pOrigen);
+        rutas.remove(idRuta);
     }
 
 
@@ -120,10 +141,10 @@ public class GestorRutas {
 
             for (Parada nodoAdyacente : nodoActual.getParadasApuntadas())
             {
-                if (!visitados.get(nodoAdyacente.getId()))
+                int idNodoAdyacente = nodoAdyacente.getId();
+                if (!visitados.get(idNodoAdyacente))
                 {
                     float discriminante;
-                    int idNodoAdyacente = nodoAdyacente.getId();
                     if (trueDist_FalseTiempo) discriminante = rutasAdyacentes.get(i).getDistancia();
                     else discriminante = rutasAdyacentes.get(i).getTiempo();
 

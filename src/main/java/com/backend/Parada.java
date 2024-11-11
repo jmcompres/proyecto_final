@@ -11,15 +11,15 @@ public class Parada {
     private String nombre;
     private String localizacion;
 
-    private Set<Parada> paradasApuntadas;    //en orden con las rutas; estas son las paradas a las que se puede dirigir desde esta parada
-    private List<Ruta> rutas;               //en orden con los nodos
+    private List<Parada> paradasApuntadas;   //en orden con las rutas; estas son las paradas a las que se puede dirigir desde esta parada
+    private List<Ruta> rutas;                //en orden con las paradas a las que apunta
     private Set<Parada> paradasApuntadoras;  //estas son las paradas que apuntan a esta (esta lista facilitará luego eliminar los enlaces de esas paradas cuando se elimine esta parada)
 
     protected Parada(int id, String nombre, String localizacion) {
         this.id = id;
         this.nombre = nombre;
         this.localizacion = localizacion;
-        paradasApuntadas = new LinkedHashSet<>();
+        paradasApuntadas = new ArrayList<>();
         paradasApuntadoras = new LinkedHashSet<>();
         rutas = new ArrayList<>();
     }
@@ -48,11 +48,11 @@ public class Parada {
         this.localizacion = localizacion;
     }
 
-    public Set<Parada> getParadasApuntadas() {
+    public List<Parada> getParadasApuntadas() {
         return paradasApuntadas;
     }
 
-    public void setParadasApuntadas(Set<Parada> paradasApuntadas) {
+    public void setParadasApuntadas(List<Parada> paradasApuntadas) {
         this.paradasApuntadas = paradasApuntadas;
     }
 
