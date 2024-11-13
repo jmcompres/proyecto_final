@@ -58,9 +58,9 @@
             </MenuButton>
          </children>
       </VBox>
-      <Pane fx:id="panelAgregar" layoutX="5.0" layoutY="102.0" prefHeight="398.0" prefWidth="632.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="168.0">
+      <Pane fx:id="panelAgregar" layoutX="5.0" layoutY="102.0" prefHeight="398.0" prefWidth="632.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="168.0">
          <children>
-            <Button layoutX="547.0" layoutY="353.0" mnemonicParsing="false" onAction="#agregarP" text="Agregar" />
+            <Button layoutX="540.0" layoutY="353.0" mnemonicParsing="false" onAction="#agregarP" text="Agregar" />
             <Label layoutX="75.0" layoutY="56.0" text="Nombre:">
                <font>
                   <Font size="18.0" />
