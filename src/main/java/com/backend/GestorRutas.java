@@ -193,10 +193,11 @@ public class GestorRutas {
             }
         }
 
+        if (predecesores.get(idDestino) == null) return null; //Si no están en un componente conectado
         return rutaOptima(predecesores,idDestino);
     }
 
-    public List<Parada> rutaTransbordosMinimos(int idOrigen, int idDestino, PrefTransbordos pref) //Búsqueda de amplitud
+    public List<Parada> rutaTransbordosMinimos(int idOrigen, int idDestino, PrefTransbordos pref) //Búsqueda de amplitud modificada para trabajar con preferencias
     {
         if (!paradas.containsKey(idDestino) || !paradas.containsKey(idOrigen)) return null;
 
@@ -225,7 +226,7 @@ public class GestorRutas {
                 int idAdyacente = pAdyacente.getId();
 
                 //Si aún está en la lista, entonces su peso se puede barajar, por eso la condición && !cola.contains(pAdyacente)
-                if ((visitados.get(idAdyacente) && !cola.contains(pAdyacente) && distanciaEncontrada==-1) || (distanciaEncontrada!=-1 && idAdyacente!=idDestino))
+                if ((visitados.get(idAdyacente) && (!cola.contains(pAdyacente) || distancias.get(idAdyacente)>=distancias.get(idActual)) && distanciaEncontrada==-1) || (distanciaEncontrada!=-1 && idAdyacente!=idDestino))
                 {
                     i++;
                     continue;
