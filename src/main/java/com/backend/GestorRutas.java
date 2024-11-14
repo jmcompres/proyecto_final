@@ -83,6 +83,8 @@ public class GestorRutas {
                 if (paradasApuntadasActuales.get(i) == paradaElim)
                 {
                     paradasApuntadasActuales.remove(i);
+                    Ruta rElim = p.getRutas().get(i);
+                    rutas.remove(rElim.getId());
                     p.getRutas().remove(i);
                     i--;
                 }
