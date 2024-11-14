@@ -1,15 +1,25 @@
 package com.frontend.visual;
 
+import java.util.Map;
+
 import com.backend.GestorRutas;
 import com.backend.Parada;
 import com.backend.Ruta;
+import com.backend.Localizacion;
+
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.control.ListView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 
 
 public class Controlador {
@@ -43,7 +53,25 @@ public class Controlador {
     @FXML private ListView<Ruta> listaEliminarRuta;
     @FXML private Button btnEliminarRuta;
 
+    @FXML private ImageView mapaGrafos;
+    @FXML private BorderPane contenedorGrafo;
+    @FXML private Pane contenedor;
+    private static double latMax = 90.0d, lonMax = 180.0d;
+
+
+    public void initialize() {
+
+        Image image = new Image(getClass().getResourceAsStream("/images/mapa_mundi.jpg"));
+        mapaGrafos.setImage(image);
+
+        Platform.runLater(() -> {
+            graficarRutas();
+        });
+
+    }
+
     public void agregarParada(ActionEvent e){
+        contenedorGrafo.setVisible(false);
         panelModificar.setVisible(false);
         panelEliminar.setVisible(false);
         panelAgregarRuta.setVisible(false);
@@ -56,11 +84,15 @@ public class Controlador {
     }
 
     public void agregarP(ActionEvent e) {
-        GestorRutas.getInstance().agregarParada(txtNombre.getText(), txtLocalizacion.getText());
+        Localizacion neoLoca = new Localizacion(0, 0, 0, txtLocalizacion.getText());
+        GestorRutas.getInstance().agregarParada(txtNombre.getText(), neoLoca);
         panelAgregar.setVisible(false);
+        contenedorGrafo.setVisible(true);
+        graficarRutas();
     }
 
     public void modificarParada(ActionEvent e) {
+        contenedorGrafo.setVisible(false);
         panelAgregar.setVisible(false);
         panelEliminar.setVisible(false);
         panelAgregarRuta.setVisible(false);
@@ -87,7 +119,7 @@ public class Controlador {
         listaParadas.setOnMouseClicked(event -> {
             Parada parada = listaParadas.getSelectionModel().getSelectedItem();
             txtNombreM.setText(parada.getNombre());
-            txtLocalizacionM.setText(parada.getLocalizacion());
+            txtLocalizacionM.setText(parada.getLocalizacion().getDescripcionDireccion());
             btnModificar.setDisable(false);
         });
 
@@ -97,12 +129,15 @@ public class Controlador {
         btnModificar.setDisable(true);
         Parada parada = listaParadas.getSelectionModel().getSelectedItem();
         parada.setNombre(txtNombreM.getText());
-        parada.setLocalizacion(txtLocalizacionM.getText());
+        parada.setLocalizacion(new Localizacion(0,0,0,txtLocalizacionM.getText()));
         listaParadas.getSelectionModel().clearSelection();
         panelModificar.setVisible(false);
+        contenedorGrafo.setVisible(true);
+        graficarRutas();
     }
 
     public void eliminarParada(ActionEvent e) {
+        contenedorGrafo.setVisible(false);
         panelModificar.setVisible(false);
         panelAgregar.setVisible(false);
         panelAgregarRuta.setVisible(false);
@@ -138,9 +173,12 @@ public class Controlador {
         GestorRutas.getInstance().eliminarParada(parada.getId());
         listaParadasEliminar.getItems().remove(parada);
         panelEliminar.setVisible(false);
+        contenedorGrafo.setVisible(true);
+        graficarRutas();
     }
 
     public void agregarRuta(ActionEvent e) {
+        contenedorGrafo.setVisible(false);
         panelModificar.setVisible(false);
         panelAgregar.setVisible(false);
         panelEliminar.setVisible(false);
@@ -218,9 +256,12 @@ public class Controlador {
         spnCosto.setDisable(true);
         btnAgregarRuta.setDisable(true);
         panelAgregarRuta.setVisible(false);
+        contenedorGrafo.setVisible(true);
+        graficarRutas();
     }
 
     public void modificarRuta(ActionEvent e) {
+        contenedorGrafo.setVisible(false);
         panelModificar.setVisible(false);
         panelAgregar.setVisible(false);
         panelEliminar.setVisible(false);
@@ -274,9 +315,12 @@ public class Controlador {
         spnModificarCosto.setDisable(true);
         btnModificarRuta.setDisable(true);
         panelModificarRuta.setVisible(false);
+        contenedorGrafo.setVisible(true);
+        graficarRutas();
     }
 
     public void eliminarRuta(ActionEvent e) {
+        contenedorGrafo.setVisible(false);
         panelModificar.setVisible(false);
         panelAgregar.setVisible(false);
         panelEliminar.setVisible(false);
@@ -307,12 +351,70 @@ public class Controlador {
         });
     }
 
+
+
+
+    private double getX(double lon) {
+        return ((lon + lonMax) / (2 * lonMax)) * mapaGrafos.getFitWidth();
+    }
+
+    private double getY(double lat) {
+        return (-(lat - latMax) / (2 * latMax)) * mapaGrafos.getFitHeight();
+    }
+
     public void eliminarR(ActionEvent e) {
         btnEliminarRuta.setDisable(true);
         Ruta ruta = listaEliminarRuta.getSelectionModel().getSelectedItem();
         GestorRutas.getInstance().eliminarRuta(ruta.getId());
         listaEliminarRuta.getItems().remove(ruta);
         panelEliminarRuta.setVisible(false);
+    }
+
+    public void graficarParadas() {
+        Map<Integer, Parada> paradas = GestorRutas.getInstance().getParadas();
+
+        for (Parada p : paradas.values()) {
+            mostrarCirculo(p, Color.CYAN);
+        }
+    }
+
+    private void graficarRutas() {
+        limpiarMapa();
+        Map<Integer, Ruta> rutas = GestorRutas.getInstance().getRutas();
+
+        for (Ruta r : rutas.values()) {
+            double x1 = getX(r.getOrigen().getLocalizacion().getLongitud());
+            double x2 = getX(r.getDestino().getLocalizacion().getLongitud());
+            double y1 = getY(r.getOrigen().getLocalizacion().getLatitud());
+            double y2 = getY(r.getDestino().getLocalizacion().getLatitud());
+
+            Line lineaRuta = new Line(x1, y1, x2, y2);
+            lineaRuta.setStroke(Color.CYAN);
+            lineaRuta.setStrokeWidth(4);
+            contenedor.getChildren().add(lineaRuta); // Agregar la línea al mapa
+        }
+
+        graficarParadas();
+    }
+
+    private void mostrarCirculo(Parada p, Color color)
+    {
+        double x = getX(p.getLocalizacion().getLongitud());
+        double y = getY(p.getLocalizacion().getLatitud());
+
+        Circle puntoParada = new Circle(5); // Radio de 10 píxeles para el punto
+        puntoParada.setFill(Color.BLUE);     // Color del punto
+        puntoParada.setLayoutX(x);
+        puntoParada.setLayoutY(y);
+        contenedor.getChildren().add(puntoParada); // Agregar el círculo al mapa
+    }
+
+    private void limpiarMapa()
+    {
+        contenedor.getChildren().clear();
+        contenedor.getChildren().add(mapaGrafos);
+        mapaGrafos.setLayoutX(contenedor.getLayoutX() +  contenedor.getWidth()/2 - mapaGrafos.getFitWidth()/2);
+        mapaGrafos.setLayoutY(contenedor.getLayoutY() + contenedor.getHeight()/2 - mapaGrafos.getFitHeight()/2);
     }
 
 

@@ -43,7 +43,7 @@ public class GestorRutas {
 
     /*OTROS MÉTODOS*/
 
-    public int agregarParada(String nombre, String localizacion) //retorna el índice de la nueva parada
+    public int agregarParada(String nombre, Localizacion localizacion) //retorna el índice de la nueva parada
     {
         if (nombresParadas.contains(nombre)) return -1;
 
