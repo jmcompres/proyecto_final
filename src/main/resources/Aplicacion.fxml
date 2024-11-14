@@ -199,7 +199,7 @@
 
       <BorderPane fx:id="contenedorGrafo" layoutX="300.0" layoutY="300.0" prefWidth="400.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
          <center>
-            <Pane fx:id="contenedor" prefHeight="238.0" prefWidth="440.0" style="-fx-border-color: black; -fx-border-width: 6; -fx-padding: 10; -fx-border-style: solid; -fx-border-radius: 5px;">
+            <Pane fx:id="contenedor" prefHeight="238.0" prefWidth="450.0" style="-fx-border-color: black; -fx-border-width: 6; -fx-padding: 10; -fx-border-style: solid; -fx-border-radius: 5px;">
                <ImageView fx:id="mapaGrafos" fitHeight="228.0" fitWidth="400.0" preserveRatio="true" />
             </Pane>
          </center>
