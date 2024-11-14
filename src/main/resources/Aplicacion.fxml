@@ -2,15 +2,17 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.visual.Controlador">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.visual.Controlador">
    <children>
       <VBox layoutX="848.0" layoutY="102.0" prefHeight="324.0" prefWidth="162.0" AnchorPane.rightAnchor="0.0">
          <children>
@@ -23,7 +25,7 @@
                   </MenuItem>
                 <MenuItem mnemonicParsing="false">
                      <graphic>
-                        <Button mnemonicParsing="false" prefHeight="54.0" prefWidth="100.0" text="Ruta" />
+                        <Button mnemonicParsing="false" onAction="#agregarRuta" prefHeight="54.0" prefWidth="100.0" text="Ruta" />
                      </graphic>
                   </MenuItem>
               </items>
@@ -37,7 +39,7 @@
                   </MenuItem>
                 <MenuItem mnemonicParsing="false">
                      <graphic>
-                        <Button mnemonicParsing="false" prefHeight="54.0" prefWidth="100.0" text="Ruta" />
+                        <Button mnemonicParsing="false" onAction="#modificarRuta" prefHeight="54.0" prefWidth="100.0" text="Ruta" />
                      </graphic>
                   </MenuItem>
               </items>
@@ -51,14 +53,14 @@
                   </MenuItem>
                 <MenuItem mnemonicParsing="false">
                      <graphic>
-                        <Button mnemonicParsing="false" prefHeight="54.0" prefWidth="100.0" text="Ruta" />
+                        <Button mnemonicParsing="false" onAction="#eliminarRuta" prefHeight="54.0" prefWidth="100.0" text="Ruta" />
                      </graphic>
                   </MenuItem>
               </items>
             </MenuButton>
          </children>
       </VBox>
-      <Pane fx:id="panelAgregar" layoutX="5.0" layoutY="102.0" prefHeight="398.0" prefWidth="632.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="168.0">
+      <Pane fx:id="panelAgregar" layoutX="5.0" layoutY="102.0" prefHeight="398.0" prefWidth="632.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="168.0">
          <children>
             <Button layoutX="540.0" layoutY="353.0" mnemonicParsing="false" onAction="#agregarP" text="Agregar" />
             <Label layoutX="75.0" layoutY="56.0" text="Nombre:">
@@ -73,6 +75,99 @@
                   <Font size="18.0" />
                </font>
             </Label>
+         </children>
+      </Pane>
+      <Pane fx:id="panelModificar" layoutX="14.0" layoutY="102.0" prefHeight="390.0" prefWidth="620.0" visible="false">
+         <children>
+            <Button fx:id="btnModificar" disable="true" layoutX="519.0" layoutY="323.0" mnemonicParsing="false" onAction="#modificarP" text="Modificar" />
+            <ListView fx:id="listaParadas" layoutX="61.0" layoutY="95.0" prefHeight="200.0" prefWidth="200.0" />
+            <Label layoutX="324.0" layoutY="114.0" text="Nombre: ">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="317.0" layoutY="203.0" text="Localización">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtNombreM" layoutX="425.0" layoutY="115.0" />
+            <TextField fx:id="txtLocalizacionM" layoutX="425.0" layoutY="204.0" />
+         </children>
+      </Pane>
+      <Pane fx:id="panelEliminar" layoutX="-1.0" layoutY="100.0" prefHeight="398.0" prefWidth="632.0" visible="false">
+         <children>
+            <ListView fx:id="listaParadasEliminar" layoutX="216.0" layoutY="99.0" prefHeight="200.0" prefWidth="200.0" />
+            <Button fx:id="btnEliminar" disable="true" layoutX="534.0" layoutY="326.0" mnemonicParsing="false" onAction="#eliminarP" text="Eliminar" />
+         </children>
+      </Pane>
+      <Pane fx:id="panelAgregarRuta" layoutY="107.0" prefHeight="390.0" prefWidth="632.0" visible="false">
+         <children>
+            <ListView fx:id="listaOrigen" layoutX="48.0" layoutY="54.0" prefHeight="119.0" prefWidth="200.0" />
+            <Pane layoutX="316.0" layoutY="64.0" prefHeight="200.0" prefWidth="270.0">
+               <children>
+                  <Label layoutX="28.0" layoutY="14.0" text="Tiempo:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="28.0" layoutY="83.0" text="Distancia:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="28.0" layoutY="149.0" text="Costo:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Spinner fx:id="spnTiempo" disable="true" layoutX="104.0" layoutY="15.0" />
+                  <Spinner fx:id="spnDistancia" disable="true" layoutX="107.0" layoutY="84.0" />
+                  <Spinner fx:id="spnCosto" disable="true" layoutX="107.0" layoutY="150.0" />
+               </children>
+            </Pane>
+            <Button fx:id="btnAgregarRuta" disable="true" layoutX="548.0" layoutY="344.0" mnemonicParsing="false" onAction="#agregarR" text="Agregar" />
+            <Label layoutX="121.0" layoutY="21.0" text="Origen">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="118.0" layoutY="195.0" text="Destino">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <ListView fx:id="listaDestino" disable="true" layoutX="48.0" layoutY="238.0" prefHeight="119.0" prefWidth="200.0" />
+         </children>
+      </Pane>
+      <Pane fx:id="panelModificarRuta" layoutY="101.0" prefHeight="398.0" prefWidth="632.0" visible="false">
+         <children>
+            <ListView fx:id="listaRutas" layoutX="43.0" layoutY="68.0" prefHeight="200.0" prefWidth="200.0" />
+            <Label layoutX="308.0" layoutY="68.0" text="Tiempo:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="302.0" layoutY="135.0" text="Distancia:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="302.0" layoutY="199.0" text="Costo:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Spinner fx:id="spnModificarTiempo" disable="true" layoutX="426.0" layoutY="69.0" />
+            <Spinner fx:id="spnModificarDistancia" disable="true" layoutX="426.0" layoutY="136.0" />
+            <Spinner fx:id="spnModificarCosto" disable="true" layoutX="426.0" layoutY="200.0" />
+            <Button fx:id="btnModificarRuta" layoutX="549.0" layoutY="347.0" mnemonicParsing="false" onAction="#modificarR" text="Modificar" />
+         </children>
+      </Pane>
+      <Pane fx:id="panelEliminarRuta" layoutX="8.0" layoutY="107.0" prefHeight="390.0" prefWidth="620.0" visible="false">
+         <children>
+            <ListView fx:id="listaEliminarRuta" layoutX="210.0" layoutY="95.0" prefHeight="200.0" prefWidth="200.0" />
+            <Button fx:id="btnEliminarRuta" layoutX="518.0" layoutY="330.0" mnemonicParsing="false" onAction="#eliminarR" text="Eliminar" />
          </children>
       </Pane>
    </children>
