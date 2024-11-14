@@ -69,14 +69,26 @@
       <Pane fx:id="panelAgregar" layoutX="5.0" layoutY="102.0" prefHeight="398.0" prefWidth="632.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="168.0">
          <children>
             <Button layoutX="540.0" layoutY="353.0" mnemonicParsing="false" onAction="#agregarP" text="Agregar" />
-            <Label layoutX="75.0" layoutY="56.0" text="Nombre:">
+            <Label layoutX="75.0" layoutY="25.0" text="Nombre:">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <TextField fx:id="txtNombre" layoutX="177.0" layoutY="57.0" />
-            <TextField fx:id="txtLocalizacion" layoutX="177.0" layoutY="142.0" />
-            <Label layoutX="60.0" layoutY="141.0" text="Localización:">
+            <TextField fx:id="txtNombre" layoutX="177.0" layoutY="25.0" />
+            <TextField fx:id="txtLocalizacion" layoutX="177.0" layoutY="75.0" />
+            <Label layoutX="60.0" layoutY="75.0" text="Localización:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Spinner fx:id="spnLongitud" disable="false" layoutX="177.0" layoutY="125.0" />
+            <Spinner fx:id="spnLatitud" disable="false" layoutX="177.0" layoutY="175.0" />
+            <Label layoutX="60.0" layoutY="125.0" text="Longitud:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="60.0" layoutY="175.0" text="Latitud:">
                <font>
                   <Font size="18.0" />
                </font>
@@ -87,18 +99,30 @@
          <children>
             <Button fx:id="btnModificar" disable="true" layoutX="519.0" layoutY="323.0" mnemonicParsing="false" onAction="#modificarP" text="Modificar" />
             <ListView fx:id="listaParadas" layoutX="61.0" layoutY="95.0" prefHeight="200.0" prefWidth="200.0" />
-            <Label layoutX="324.0" layoutY="114.0" text="Nombre: ">
+            <Label layoutX="290.0" layoutY="25.0" text="Nombre:">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label layoutX="317.0" layoutY="203.0" text="Localización">
+            <TextField fx:id="txtNombreM" layoutX="425.0" layoutY="25.0" />
+            <TextField fx:id="txtLocalizacionM" layoutX="425.0" layoutY="75.0" />
+            <Label layoutX="290.0" layoutY="75.0" text="Localización:">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <TextField fx:id="txtNombreM" layoutX="425.0" layoutY="115.0" />
-            <TextField fx:id="txtLocalizacionM" layoutX="425.0" layoutY="204.0" />
+            <Spinner fx:id="spnLongitudM" disable="false" layoutX="425.0" layoutY="125.0" />
+            <Spinner fx:id="spnLatitudM" disable="false" layoutX="425.0" layoutY="175.0" />
+            <Label layoutX="290.0" layoutY="125.0" text="Longitud:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="290.0" layoutY="175.0" text="Latitud:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
       <Pane fx:id="panelEliminar" layoutX="-1.0" layoutY="100.0" prefHeight="398.0" prefWidth="632.0" visible="false">

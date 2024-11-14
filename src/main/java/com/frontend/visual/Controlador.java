@@ -20,6 +20,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.control.SpinnerValueFactory.DoubleSpinnerValueFactory;
 
 
 public class Controlador {
@@ -56,6 +57,10 @@ public class Controlador {
     @FXML private ImageView mapaGrafos;
     @FXML private BorderPane contenedorGrafo;
     @FXML private Pane contenedor;
+    @FXML private Spinner<Double> spnLongitud;
+    @FXML private Spinner<Double> spnLatitud;
+    @FXML private Spinner<Double> spnLongitudM;
+    @FXML private Spinner<Double> spnLatitudM;
     private static double latMax = 90.0d, lonMax = 180.0d;
 
 
@@ -63,6 +68,14 @@ public class Controlador {
 
         Image image = new Image(getClass().getResourceAsStream("/images/mapa_mundi.jpg"));
         mapaGrafos.setImage(image);
+
+        SpinnerValueFactory<Double> longitudValueFactory = new DoubleSpinnerValueFactory(-180.0, 180.0, 0.0, 1);
+        spnLongitud.setValueFactory(longitudValueFactory);
+        spnLongitudM.setValueFactory(longitudValueFactory);
+
+        SpinnerValueFactory<Double> latitudValueFactory = new DoubleSpinnerValueFactory(-90.0, 90.0, 0.0, 1);
+        spnLatitud.setValueFactory(latitudValueFactory);
+        spnLatitudM.setValueFactory(latitudValueFactory);
 
         Platform.runLater(() -> {
             graficarRutas();
@@ -84,10 +97,12 @@ public class Controlador {
     }
 
     public void agregarP(ActionEvent e) {
-        Localizacion neoLoca = new Localizacion(0, 0, 0, txtLocalizacion.getText());
+        Localizacion neoLoca = new Localizacion(spnLongitud.getValue(), spnLatitud.getValue(), 0, txtLocalizacion.getText());
         GestorRutas.getInstance().agregarParada(txtNombre.getText(), neoLoca);
         panelAgregar.setVisible(false);
         contenedorGrafo.setVisible(true);
+        spnLongitud.getValueFactory().setValue(0.0d);
+        spnLatitud.getValueFactory().setValue(0.0d);
         graficarRutas();
     }
 
@@ -120,6 +135,8 @@ public class Controlador {
             Parada parada = listaParadas.getSelectionModel().getSelectedItem();
             txtNombreM.setText(parada.getNombre());
             txtLocalizacionM.setText(parada.getLocalizacion().getDescripcionDireccion());
+            spnLongitudM.getValueFactory().setValue(parada.getLocalizacion().getLongitud());
+            spnLatitudM.getValueFactory().setValue(parada.getLocalizacion().getLatitud());
             btnModificar.setDisable(false);
         });
 
@@ -129,7 +146,9 @@ public class Controlador {
         btnModificar.setDisable(true);
         Parada parada = listaParadas.getSelectionModel().getSelectedItem();
         parada.setNombre(txtNombreM.getText());
-        parada.setLocalizacion(new Localizacion(0,0,0,txtLocalizacionM.getText()));
+        parada.getLocalizacion().setDescripcionDireccion(txtLocalizacionM.getText());
+        parada.getLocalizacion().setLongitud(spnLongitudM.getValue());
+        parada.getLocalizacion().setLatitud(spnLatitudM.getValue());
         listaParadas.getSelectionModel().clearSelection();
         panelModificar.setVisible(false);
         contenedorGrafo.setVisible(true);
