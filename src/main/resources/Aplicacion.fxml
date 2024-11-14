@@ -94,5 +94,11 @@
             <TextField fx:id="txtLocalizacionM" layoutX="425.0" layoutY="204.0" />
          </children>
       </Pane>
+      <Pane fx:id="panelEliminar" layoutX="-1.0" layoutY="100.0" prefHeight="398.0" prefWidth="632.0" visible="false">
+         <children>
+            <ListView fx:id="listaParadasEliminar" layoutX="216.0" layoutY="99.0" prefHeight="200.0" prefWidth="200.0" />
+            <Button fx:id="btnEliminar" disable="true" layoutX="534.0" layoutY="326.0" mnemonicParsing="false" onAction="#eliminarP" text="Eliminar" />
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

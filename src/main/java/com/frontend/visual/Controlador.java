@@ -28,9 +28,16 @@ public class Controlador {
     TextField txtNombreM;
     @FXML
     TextField txtLocalizacionM;
+    @FXML
+    Pane panelEliminar;
+    @FXML
+    ListView<Parada> listaParadasEliminar;
+    @FXML
+    Button btnEliminar;
 
     public void agregarParada(ActionEvent e){
         panelModificar.setVisible(false);
+        panelEliminar.setVisible(false);
         panelAgregar.setVisible(true);
     }
 
@@ -41,6 +48,7 @@ public class Controlador {
 
     public void modificarParada(ActionEvent e) {
         panelAgregar.setVisible(false);
+        panelEliminar.setVisible(false);
         panelModificar.setVisible(true);
 
         listaParadas.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -77,6 +85,38 @@ public class Controlador {
     }
 
     public void eliminarParada(ActionEvent e) {
-        System.out.println("¡EliminarParada!");
+        panelModificar.setVisible(false);
+        panelAgregar.setVisible(false);
+        panelEliminar.setVisible(true);
+
+        listaParadasEliminar.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+        ObservableList<Parada> paradas = FXCollections.observableArrayList(GestorRutas.getInstance().getParadas().values());
+        listaParadasEliminar.setCellFactory(param -> new ListCell<Parada>() {
+            @Override
+            protected void updateItem(Parada parada, boolean empty) {
+                super.updateItem(parada, empty);
+                if (empty || parada == null) {
+                    setText(null);
+                } else {
+                    setText(parada.getNombre());
+                }
+            }
+        });
+        listaParadasEliminar.setItems(paradas);
+
+        listaParadasEliminar.setOnMouseClicked(event -> {
+            Parada parada = listaParadasEliminar.getSelectionModel().getSelectedItem();
+            btnEliminar.setDisable(false);
+        });
+
+    }
+
+    public void eliminarP(ActionEvent e) {
+        btnEliminar.setDisable(true);
+        Parada parada = listaParadasEliminar.getSelectionModel().getSelectedItem();
+        GestorRutas.getInstance().eliminarParada(parada.getId());
+        listaParadasEliminar.getItems().remove(parada);
+        panelEliminar.setVisible(false);
     }
 }
