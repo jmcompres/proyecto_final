@@ -33,6 +33,10 @@ public class GestorRutas {
         return instancia;
     }
 
+    public Map<Integer, Parada> getParadas() {
+        return paradas;
+    }
+
 
     /*OTROS MÉTODOS*/
 

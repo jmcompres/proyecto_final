@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
@@ -10,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.visual.Controlador">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.visual.Controlador">
    <children>
       <VBox layoutX="848.0" layoutY="102.0" prefHeight="324.0" prefWidth="162.0" AnchorPane.rightAnchor="0.0">
          <children>
@@ -58,7 +59,7 @@
             </MenuButton>
          </children>
       </VBox>
-      <Pane fx:id="panelAgregar" layoutX="5.0" layoutY="102.0" prefHeight="398.0" prefWidth="632.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="168.0">
+      <Pane fx:id="panelAgregar" layoutX="5.0" layoutY="102.0" prefHeight="398.0" prefWidth="632.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="168.0">
          <children>
             <Button layoutX="540.0" layoutY="353.0" mnemonicParsing="false" onAction="#agregarP" text="Agregar" />
             <Label layoutX="75.0" layoutY="56.0" text="Nombre:">
@@ -73,6 +74,24 @@
                   <Font size="18.0" />
                </font>
             </Label>
+         </children>
+      </Pane>
+      <Pane fx:id="panelModificar" layoutX="14.0" layoutY="102.0" prefHeight="390.0" prefWidth="620.0" visible="false">
+         <children>
+            <Button fx:id="btnModificar" disable="true" layoutX="519.0" layoutY="323.0" mnemonicParsing="false" onAction="#modificarP" text="Modificar" />
+            <ListView fx:id="listaParadas" layoutX="61.0" layoutY="95.0" prefHeight="200.0" prefWidth="200.0" />
+            <Label layoutX="324.0" layoutY="114.0" text="Nombre: ">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="317.0" layoutY="203.0" text="Localización">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtNombreM" layoutX="425.0" layoutY="115.0" />
+            <TextField fx:id="txtLocalizacionM" layoutX="425.0" layoutY="204.0" />
          </children>
       </Pane>
    </children>
