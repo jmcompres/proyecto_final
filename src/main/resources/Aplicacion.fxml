@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
@@ -24,7 +25,7 @@
                   </MenuItem>
                 <MenuItem mnemonicParsing="false">
                      <graphic>
-                        <Button mnemonicParsing="false" prefHeight="54.0" prefWidth="100.0" text="Ruta" />
+                        <Button mnemonicParsing="false" onAction="#agregarRuta" prefHeight="54.0" prefWidth="100.0" text="Ruta" />
                      </graphic>
                   </MenuItem>
               </items>
@@ -38,7 +39,7 @@
                   </MenuItem>
                 <MenuItem mnemonicParsing="false">
                      <graphic>
-                        <Button mnemonicParsing="false" prefHeight="54.0" prefWidth="100.0" text="Ruta" />
+                        <Button mnemonicParsing="false" onAction="#modificarRuta" prefHeight="54.0" prefWidth="100.0" text="Ruta" />
                      </graphic>
                   </MenuItem>
               </items>
@@ -52,7 +53,7 @@
                   </MenuItem>
                 <MenuItem mnemonicParsing="false">
                      <graphic>
-                        <Button mnemonicParsing="false" prefHeight="54.0" prefWidth="100.0" text="Ruta" />
+                        <Button mnemonicParsing="false" onAction="#eliminarRuta" prefHeight="54.0" prefWidth="100.0" text="Ruta" />
                      </graphic>
                   </MenuItem>
               </items>
@@ -98,6 +99,75 @@
          <children>
             <ListView fx:id="listaParadasEliminar" layoutX="216.0" layoutY="99.0" prefHeight="200.0" prefWidth="200.0" />
             <Button fx:id="btnEliminar" disable="true" layoutX="534.0" layoutY="326.0" mnemonicParsing="false" onAction="#eliminarP" text="Eliminar" />
+         </children>
+      </Pane>
+      <Pane fx:id="panelAgregarRuta" layoutY="107.0" prefHeight="390.0" prefWidth="632.0" visible="false">
+         <children>
+            <ListView fx:id="listaOrigen" layoutX="48.0" layoutY="54.0" prefHeight="119.0" prefWidth="200.0" />
+            <Pane layoutX="316.0" layoutY="64.0" prefHeight="200.0" prefWidth="270.0">
+               <children>
+                  <Label layoutX="28.0" layoutY="14.0" text="Tiempo:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="28.0" layoutY="83.0" text="Distancia:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="28.0" layoutY="149.0" text="Costo:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Spinner fx:id="spnTiempo" disable="true" layoutX="104.0" layoutY="15.0" />
+                  <Spinner fx:id="spnDistancia" disable="true" layoutX="107.0" layoutY="84.0" />
+                  <Spinner fx:id="spnCosto" disable="true" layoutX="107.0" layoutY="150.0" />
+               </children>
+            </Pane>
+            <Button fx:id="btnAgregarRuta" disable="true" layoutX="548.0" layoutY="344.0" mnemonicParsing="false" onAction="#agregarR" text="Agregar" />
+            <Label layoutX="121.0" layoutY="21.0" text="Origen">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="118.0" layoutY="195.0" text="Destino">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <ListView fx:id="listaDestino" disable="true" layoutX="48.0" layoutY="238.0" prefHeight="119.0" prefWidth="200.0" />
+         </children>
+      </Pane>
+      <Pane fx:id="panelModificarRuta" layoutY="101.0" prefHeight="398.0" prefWidth="632.0" visible="false">
+         <children>
+            <ListView fx:id="listaRutas" layoutX="43.0" layoutY="68.0" prefHeight="200.0" prefWidth="200.0" />
+            <Label layoutX="308.0" layoutY="68.0" text="Tiempo:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="302.0" layoutY="135.0" text="Distancia:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="302.0" layoutY="199.0" text="Costo:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Spinner fx:id="spnModificarTiempo" disable="true" layoutX="426.0" layoutY="69.0" />
+            <Spinner fx:id="spnModificarDistancia" disable="true" layoutX="426.0" layoutY="136.0" />
+            <Spinner fx:id="spnModificarCosto" disable="true" layoutX="426.0" layoutY="200.0" />
+            <Button fx:id="btnModificarRuta" layoutX="549.0" layoutY="347.0" mnemonicParsing="false" onAction="#modificarR" text="Modificar" />
+         </children>
+      </Pane>
+      <Pane fx:id="panelEliminarRuta" layoutX="8.0" layoutY="107.0" prefHeight="390.0" prefWidth="620.0" visible="false">
+         <children>
+            <ListView fx:id="listaEliminarRuta" layoutX="210.0" layoutY="95.0" prefHeight="200.0" prefWidth="200.0" />
+            <Button fx:id="btnEliminarRuta" layoutX="518.0" layoutY="330.0" mnemonicParsing="false" onAction="#eliminarR" text="Eliminar" />
          </children>
       </Pane>
    </children>

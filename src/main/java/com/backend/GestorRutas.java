@@ -37,6 +37,9 @@ public class GestorRutas {
         return paradas;
     }
 
+    public Map<Integer, Ruta> getRutas() {
+        return rutas;
+    }
 
     /*OTROS MÉTODOS*/
 
@@ -52,7 +55,7 @@ public class GestorRutas {
         return idParadaActual-1;
     }
 
-    public void agregarRuta(int idParadaFuente, int idParadaDestino, int tiempo, int distancia, int costo)
+    public void agregarRuta(int idParadaFuente, int idParadaDestino, float tiempo, float distancia, float costo)
     {
         if (!paradas.containsKey(idParadaDestino) || !paradas.containsKey(idParadaFuente)) return;
 
