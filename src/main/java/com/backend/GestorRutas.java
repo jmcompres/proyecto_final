@@ -234,7 +234,7 @@ public class GestorRutas {
             {
                 int idAdyacente = pAdyacente.getId();
 
-                //Si aún está en la lista, entonces su peso se puede barajar, por eso la condición && !cola.contains(pAdyacente)
+                //Si aún está en la lista, entonces su peso se puede reconsiderar
                 if ((visitados.get(idAdyacente) && (!cola.contains(pAdyacente) || distancias.get(idAdyacente)>=distancias.get(idActual)) && distanciaEncontrada==-1) || (distanciaEncontrada!=-1 && idAdyacente!=idDestino))
                 {
                     i++;

@@ -27,7 +27,7 @@ public class PruebaBackend {
         g.agregarRuta(id4, id6, 8, 0, 0);
         g.agregarRuta(id5, id6, 2, 0, 0);
 
-        List<Parada> l = g.dijkstra(id1, id6, false);
+        List<Parada> l = g.dijkstra(id3, id6, false);
         for (Parada p : l)
         {
             System.out.println(p.getId());
@@ -52,6 +52,31 @@ public class PruebaBackend {
         System.out.println("");
         l = g.rutaTransbordosMinimos(id1, id6, PrefTransbordos.TIEMPO);
         for (Parada p : l)
+        {
+            System.out.println(p.getId());
+        }
+
+        int id10 = g.agregarParada("p10", null);
+        int id11 = g.agregarParada("p11", null);
+        int id12 = g.agregarParada("p12", null);
+        int id13 = g.agregarParada("p13", null);
+        int id14 = g.agregarParada("p14", null);
+        int id15 = g.agregarParada("p15", null);
+
+        g.agregarRuta(id10, id12, 9, 0, 0);
+        g.agregarRuta(id10, id11, 7, 0, 0);
+        g.agregarRuta(id10, id15, 14, 0, 0);
+        g.agregarRuta(id11, id12, 10, 0, 0);
+        g.agregarRuta(id11, id13, 15, 0, 0);
+        g.agregarRuta(id12, id13, 11, 0, 0);
+        g.agregarRuta(id12, id15, 2, 0, 0);
+        g.agregarRuta(id14, id13, 6, 0, 0);
+        g.agregarRuta(id15, id14, 9, 0, 0);
+
+        System.out.println("");
+
+        List<Parada> l2 = g.dijkstra(id10, id14, false);
+        for (Parada p : l2)
         {
             System.out.println(p.getId());
         }

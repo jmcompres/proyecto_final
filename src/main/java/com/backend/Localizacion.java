@@ -7,7 +7,7 @@ public class Localizacion {
     private double altitud;
     private String descripcionDireccion;
     
-    public Localizacion(double latitud, double longitud, double altitud, String descripcionDireccion) {
+    public Localizacion(double longitud, double latitud, double altitud, String descripcionDireccion) {
         this.latitud = latitud;
         this.longitud = longitud;
         this.altitud = altitud;
