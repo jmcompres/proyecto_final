@@ -1,5 +1,6 @@
 package com.backend;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -21,14 +22,17 @@ public class GestorRutas {
     private Set<String> nombresParadas;                 //esto para comprobar en tiempo constante que no se repitan los nombres y ubicaciones
 
     //Atributo especial para floyd-warshall
-    private Map<Integer,Map<Integer,List<Parada>>> rutasFloydWarshall;
+    //IMPORTANTE: NO ESTARÁN REGISTRADAS EN ESTE ARREGLO LAS RUTAS MÍNIMAS EN CUANTO A TRANSBORDOS
+    private List< Map<Integer,Map<Integer,List<Parada>>> > rutasFloydWarshall;  //un mapa para cada discriminante como prioridad principal (excluyendo transbordos mínimos)
 
     private GestorRutas()
     {
         paradas = new HashMap<Integer, Parada>(capacidadInicial);
         rutas = new HashMap<Integer, Ruta>(capacidadInicial);
         nombresParadas = new HashSet<String>(capacidadInicial);
-        rutasFloydWarshall = new HashMap<Integer, Map<Integer, List<Parada>>>(capacidadInicial);
+        rutasFloydWarshall = new ArrayList<Map<Integer, Map<Integer, List<Parada>>>>(capacidadInicial);
+        for (int i = 0; i<3; i++) //el 3 es la cantidad de discriminantes que hay;
+            rutasFloydWarshall.add(new HashMap<Integer, Map<Integer, List<Parada>>>(capacidadInicial));
     }
 
     public static GestorRutas getInstance()
@@ -45,8 +49,8 @@ public class GestorRutas {
         return rutas;
     }
 
-    public Map<Integer, Map<Integer, List<Parada>>> getRutasFloydWarshall() {
-        return rutasFloydWarshall;
+    public Map<Integer, Map<Integer, List<Parada>>> getRutasFloydWarshall(Preferencias preferencia) {
+        return rutasFloydWarshall.get(preferencia.getValor());
     }
 
     
@@ -216,7 +220,7 @@ public class GestorRutas {
         return rutaOptima(predecesores,idDestino);
     }
 
-    public List<Parada> rutaTransbordosMinimos(int idOrigen, int idDestino, PrefTransbordos pref) //Búsqueda de amplitud modificada para trabajar con preferencias
+    public List<Parada> rutaTransbordosMinimos(int idOrigen, int idDestino, Preferencias prefSecundaria) //Búsqueda de amplitud modificada para trabajar con preferencias
     {
         if (!paradas.containsKey(idDestino) || !paradas.containsKey(idOrigen)) return null;
 
@@ -255,9 +259,9 @@ public class GestorRutas {
                 if (idAdyacente == idDestino) distanciaEncontrada = distancias.get(idAdyacente);  //Encontrada
 
                 float discriminanteAdyacente = 0;
-                if (pref == PrefTransbordos.COSTO) discriminanteAdyacente = paradaActual.getRutas().get(i).getCosto();
-                else if (pref == PrefTransbordos.TIEMPO) discriminanteAdyacente = paradaActual.getRutas().get(i).getTiempo();
-                else if (pref == PrefTransbordos.DISTANCIA) discriminanteAdyacente = paradaActual.getRutas().get(i).getDistancia();
+                if (prefSecundaria == Preferencias.COSTO) discriminanteAdyacente = paradaActual.getRutas().get(i).getCosto();
+                else if (prefSecundaria == Preferencias.TIEMPO) discriminanteAdyacente = paradaActual.getRutas().get(i).getTiempo();
+                else if (prefSecundaria == Preferencias.DISTANCIA) discriminanteAdyacente = paradaActual.getRutas().get(i).getDistancia();
 
                 if (discriminantes.get(idActual) + discriminanteAdyacente < discriminantes.get(idAdyacente))
                 {
@@ -329,38 +333,43 @@ public class GestorRutas {
         return rutaOptima(predecesores, idDestino);
     }
 
-    public void floydWarshall() {    
+    public void floydWarshall(Preferencias prefPrincipal) {    
         // Información básica para el algoritmo
+        Map<Integer,Map<Integer,List<Parada>>> mapaPreferencia = rutasFloydWarshall.get(prefPrincipal.getValor());
         Map<Integer, Map<Integer, Float>> discriminantes = new HashMap<>(paradas.size());
     
         // Inicialización de información básica para el algoritmo
         for (Parada p : paradas.values()) {
             int idP = p.getId();
-            rutasFloydWarshall.put(idP, new HashMap<>());
+            mapaPreferencia.put(idP, new HashMap<>());
             discriminantes.put(idP, new HashMap<>());
     
             // Distancia a sí mismo es 0
             discriminantes.get(idP).put(idP, 0.0f);
-            rutasFloydWarshall.get(idP).put(idP, new LinkedList<>());
-            rutasFloydWarshall.get(idP).get(idP).add(p);
+            mapaPreferencia.get(idP).put(idP, new LinkedList<>());
+            mapaPreferencia.get(idP).get(idP).add(p);
             int i = 0;
 
             for (Parada p2 : paradas.values()) //incializar con todas las paradas
             {
                 int idp2 = p2.getId();
                 discriminantes.get(idP).put(idp2, Float.MAX_VALUE); //infinito
-                rutasFloydWarshall.get(idP).put(idp2, new LinkedList<>());
+                mapaPreferencia.get(idP).put(idp2, new LinkedList<>());
             }
     
             for (Parada pAdyacente : p.getParadasApuntadas()) {
                 int idpa = pAdyacente.getId();
                 // Inicializar rutas de paradas adyacentes
-                rutasFloydWarshall.get(idP).get(idpa).add(p); // Incluye el origen
-                rutasFloydWarshall.get(idP).get(idpa).add(pAdyacente); // Incluye el destino
+                mapaPreferencia.get(idP).get(idpa).add(p); // Incluye el origen
+                mapaPreferencia.get(idP).get(idpa).add(pAdyacente); // Incluye el destino
     
                 // Inicializar discriminantes
                 Ruta r = p.getRutas().get(i);
-                discriminantes.get(idP).put(idpa, r.getTiempo());  //ESTO ES PROVISIONAL, LUEGO HAY QUE CONSIDERAR LOS DEMÁS DISCRIMINANTES
+                float discr;
+                if (prefPrincipal == Preferencias.COSTO) discr = r.getCosto();
+                else if (prefPrincipal == Preferencias.DISTANCIA) discr = r.getDistancia();
+                else discr = r.getTiempo();
+                discriminantes.get(idP).put(idpa, discr);
                 i++;
             }
         }
@@ -375,10 +384,10 @@ public class GestorRutas {
                     float newDist = discriminantes.get(i).get(k) + discriminantes.get(k).get(j);
                     if (newDist < discriminantes.get(i).get(j)) {
                         discriminantes.get(i).replace(j, newDist);
-                        List<Parada> nuevaRuta = new LinkedList<>(rutasFloydWarshall.get(i).get(k));
+                        List<Parada> nuevaRuta = new LinkedList<>(mapaPreferencia.get(i).get(k));
                         nuevaRuta.remove(nuevaRuta.size()-1); // Para que no se repita, por ser la última de la primera ruta, y la primera de la segunda ruta (hablando de las rutas a fusionar)
-                        nuevaRuta.addAll(rutasFloydWarshall.get(k).get(j));
-                        rutasFloydWarshall.get(i).replace(j, nuevaRuta);
+                        nuevaRuta.addAll(mapaPreferencia.get(k).get(j));
+                        mapaPreferencia.get(i).replace(j, nuevaRuta);
                     }
                 }
             }
