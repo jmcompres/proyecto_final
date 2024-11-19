@@ -265,4 +265,58 @@ public class GestorRutas {
         return rutaOptima(predecesores, idDestino);
     }
 
+    public List<Parada> bellmanFord(int idOrigen, int idDestino){
+        Map<Integer, Float> discriminantes = new HashMap<>(paradas.size());
+        Map<Integer, Parada> predecesores = new HashMap<>(paradas.size());
+        Map<Integer, Boolean> enCola = new HashMap<>(paradas.size());
+        llenarInfoBasica(discriminantes, predecesores, enCola, null);
+
+        discriminantes.replace(idOrigen, 0.0f);
+        Queue<Parada> cola = new LinkedList<>();
+        cola.add(paradas.get(idOrigen));
+        enCola.replace(idOrigen, true);
+
+        while(!cola.isEmpty())
+        {
+            Parada nodoActual = cola.poll();
+            int idNodoActual = nodoActual.getId();
+            enCola.replace(idNodoActual, false);
+
+            for(Ruta ruta: nodoActual.getRutas())
+            {
+                Parada destino = ruta.getDestino();
+                float peso = ruta.getCosto();
+
+                if(discriminantes.get(idNodoActual) != Float.MAX_VALUE && discriminantes.get(idNodoActual) + peso < discriminantes.get(destino.getId()))
+                {
+                    discriminantes.replace(destino.getId(), discriminantes.get(idNodoActual) + peso);
+                    predecesores.replace(destino.getId(), nodoActual);
+                    if(!enCola.get(destino.getId()))
+                    {
+                        cola.add(destino);
+                        enCola.replace(destino.getId(), true);
+                    }
+                }
+            }
+
+
+        }
+        //Verifica si hay ciclos negativos
+        for(Parada nodo: paradas.values())
+        {
+            for(Ruta ruta: nodo.getRutas())
+            {
+                Parada destino = ruta.getDestino();
+                float peso = ruta.getCosto();
+                if(discriminantes.get(nodo.getId()) != Float.MAX_VALUE && discriminantes.get(nodo.getId()) + peso < discriminantes.get(destino.getId()))
+                {
+                    System.out.println("El grafo contiene un ciclo de peso negativo");
+                    return null;
+                }
+            }
+        }
+
+        return rutaOptima(predecesores, idDestino);
+    }
+
 }
