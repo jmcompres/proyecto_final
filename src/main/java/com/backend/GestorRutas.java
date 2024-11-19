@@ -20,11 +20,15 @@ public class GestorRutas {
     private Map<Integer, Ruta> rutas;
     private Set<String> nombresParadas;                 //esto para comprobar en tiempo constante que no se repitan los nombres y ubicaciones
 
+    //Atributo especial para floyd-warshall
+    private Map<Integer,Map<Integer,List<Parada>>> rutasFloydWarshall;
+
     private GestorRutas()
     {
         paradas = new HashMap<Integer, Parada>(capacidadInicial);
         rutas = new HashMap<Integer, Ruta>(capacidadInicial);
         nombresParadas = new HashSet<String>(capacidadInicial);
+        rutasFloydWarshall = new HashMap<Integer, Map<Integer, List<Parada>>>(capacidadInicial);
     }
 
     public static GestorRutas getInstance()
@@ -40,6 +44,12 @@ public class GestorRutas {
     public Map<Integer, Ruta> getRutas() {
         return rutas;
     }
+
+    public Map<Integer, Map<Integer, List<Parada>>> getRutasFloydWarshall() {
+        return rutasFloydWarshall;
+    }
+
+    
 
     /*OTROS MÉTODOS*/
 
@@ -319,4 +329,63 @@ public class GestorRutas {
         return rutaOptima(predecesores, idDestino);
     }
 
+    public void floydWarshall() {    
+        // Información básica para el algoritmo
+        Map<Integer, Map<Integer, Float>> discriminantes = new HashMap<>(paradas.size());
+    
+        // Inicialización de información básica para el algoritmo
+        for (Parada p : paradas.values()) {
+            int idP = p.getId();
+            rutasFloydWarshall.put(idP, new HashMap<>());
+            discriminantes.put(idP, new HashMap<>());
+    
+            // Distancia a sí mismo es 0
+            discriminantes.get(idP).put(idP, 0.0f);
+            rutasFloydWarshall.get(idP).put(idP, new LinkedList<>());
+            rutasFloydWarshall.get(idP).get(idP).add(p);
+            int i = 0;
+    
+            for (Parada p2 : p.getParadasApuntadas()) {
+                int idp2 = p2.getId();
+                // Inicializar rutas de paradas adyacentes
+                if (!rutasFloydWarshall.get(idP).containsKey(idp2)) {
+                    rutasFloydWarshall.get(idP).put(idp2, new LinkedList<>());
+                }
+                rutasFloydWarshall.get(idP).get(idp2).add(p); // Incluye el origen
+                rutasFloydWarshall.get(idP).get(idp2).add(p2); // Incluye el destino
+    
+                // Inicializar discriminantes
+                Ruta r = p.getRutas().get(i);
+                discriminantes.get(idP).put(idp2, r.getTiempo());  //ESTO ES PROVISIONAL, LUEGO HAY QUE CONSIDERAR LOS DEMÁS DISCRIMINANTES
+                i++;
+            }
+            for (Parada p2again : paradas.values()) //incializar otras paradas
+            {
+                int idp2again = p2again.getId();
+                if (rutasFloydWarshall.get(idP).containsKey(idp2again)) continue;
+                discriminantes.get(idP).put(idp2again, Float.MAX_VALUE); //infinito
+                rutasFloydWarshall.get(idP).put(idp2again, new LinkedList<>());
+            }
+        }
+    
+        // Algoritmo
+        for (Parada pk : paradas.values()) {
+            int k = pk.getId();
+            for (Parada pi : paradas.values()) {
+                int i = pi.getId();
+                for (Parada pj : paradas.values()) {
+                    int j = pj.getId();
+                    float newDist = discriminantes.get(i).get(k) + discriminantes.get(k).get(j);
+                    if (newDist < discriminantes.get(i).get(j)) {
+                        discriminantes.get(i).replace(j, newDist);
+                        List<Parada> nuevaRuta = new LinkedList<>(rutasFloydWarshall.get(i).get(k));
+                        nuevaRuta.addAll(rutasFloydWarshall.get(k).get(j));
+                        nuevaRuta.remove(nuevaRuta.size()-1); // Para que no se repita, por ser la última de la primera ruta, y la primera de la segunda ruta (hablando de las rutas a fusionar)
+                        rutasFloydWarshall.get(i).replace(j, nuevaRuta);
+                    }
+                }
+            }
+        }
+    }
+    
 }

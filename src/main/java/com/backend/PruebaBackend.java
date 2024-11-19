@@ -1,6 +1,7 @@
 package com.backend;
 
 import java.util.List;
+import java.util.Map;
 
 public class PruebaBackend {
     public static void main(String[] args) {
@@ -27,7 +28,11 @@ public class PruebaBackend {
         g.agregarRuta(id4, id6, 8, 0, 0);
         g.agregarRuta(id5, id6, 2, 0, 0);
 
-        List<Parada> l = g.dijkstra(id3, id6, false);
+        g.floydWarshall();
+        Map<Integer,Map<Integer,List<Parada>>> omniMapa = g.getRutasFloydWarshall();
+        List<Parada> l = omniMapa.get(id1).get(id6);
+
+        //List<Parada> l = g.dijkstra(id3, id6, false);
         for (Parada p : l)
         {
             System.out.println(p.getId());
