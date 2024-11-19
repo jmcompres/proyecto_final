@@ -80,7 +80,9 @@ public class PruebaBackend {
 
         System.out.println("");
 
-        List<Parada> l2 = g.dijkstra(id10, id14, false);
+        //List<Parada> l2 = g.dijkstra(id10, id14, false);
+        g.floydWarshall();
+        List<Parada> l2 = g.getRutasFloydWarshall().get(id10).get(id14);
         for (Parada p : l2)
         {
             System.out.println(p.getId());

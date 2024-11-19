@@ -344,27 +344,24 @@ public class GestorRutas {
             rutasFloydWarshall.get(idP).put(idP, new LinkedList<>());
             rutasFloydWarshall.get(idP).get(idP).add(p);
             int i = 0;
-    
-            for (Parada p2 : p.getParadasApuntadas()) {
+
+            for (Parada p2 : paradas.values()) //incializar con todas las paradas
+            {
                 int idp2 = p2.getId();
+                discriminantes.get(idP).put(idp2, Float.MAX_VALUE); //infinito
+                rutasFloydWarshall.get(idP).put(idp2, new LinkedList<>());
+            }
+    
+            for (Parada pAdyacente : p.getParadasApuntadas()) {
+                int idpa = pAdyacente.getId();
                 // Inicializar rutas de paradas adyacentes
-                if (!rutasFloydWarshall.get(idP).containsKey(idp2)) {
-                    rutasFloydWarshall.get(idP).put(idp2, new LinkedList<>());
-                }
-                rutasFloydWarshall.get(idP).get(idp2).add(p); // Incluye el origen
-                rutasFloydWarshall.get(idP).get(idp2).add(p2); // Incluye el destino
+                rutasFloydWarshall.get(idP).get(idpa).add(p); // Incluye el origen
+                rutasFloydWarshall.get(idP).get(idpa).add(pAdyacente); // Incluye el destino
     
                 // Inicializar discriminantes
                 Ruta r = p.getRutas().get(i);
-                discriminantes.get(idP).put(idp2, r.getTiempo());  //ESTO ES PROVISIONAL, LUEGO HAY QUE CONSIDERAR LOS DEMÁS DISCRIMINANTES
+                discriminantes.get(idP).put(idpa, r.getTiempo());  //ESTO ES PROVISIONAL, LUEGO HAY QUE CONSIDERAR LOS DEMÁS DISCRIMINANTES
                 i++;
-            }
-            for (Parada p2again : paradas.values()) //incializar otras paradas
-            {
-                int idp2again = p2again.getId();
-                if (rutasFloydWarshall.get(idP).containsKey(idp2again)) continue;
-                discriminantes.get(idP).put(idp2again, Float.MAX_VALUE); //infinito
-                rutasFloydWarshall.get(idP).put(idp2again, new LinkedList<>());
             }
         }
     
@@ -379,8 +376,8 @@ public class GestorRutas {
                     if (newDist < discriminantes.get(i).get(j)) {
                         discriminantes.get(i).replace(j, newDist);
                         List<Parada> nuevaRuta = new LinkedList<>(rutasFloydWarshall.get(i).get(k));
-                        nuevaRuta.addAll(rutasFloydWarshall.get(k).get(j));
                         nuevaRuta.remove(nuevaRuta.size()-1); // Para que no se repita, por ser la última de la primera ruta, y la primera de la segunda ruta (hablando de las rutas a fusionar)
+                        nuevaRuta.addAll(rutasFloydWarshall.get(k).get(j));
                         rutasFloydWarshall.get(i).replace(j, nuevaRuta);
                     }
                 }
