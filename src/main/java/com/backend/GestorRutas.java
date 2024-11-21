@@ -22,7 +22,6 @@ public class GestorRutas {
     private Set<String> nombresParadas;                 //esto para comprobar en tiempo constante que no se repitan los nombres y ubicaciones
 
     //Atributo especial para floyd-warshall
-    //IMPORTANTE: NO ESTARÁN REGISTRADAS EN ESTE ARREGLO LAS RUTAS MÍNIMAS EN CUANTO A TRANSBORDOS
     private List< Map<Integer,Map<Integer,List<Parada>>> > rutasFloydWarshall;  //un mapa para cada discriminante como prioridad principal (excluyendo transbordos mínimos)
 
     private GestorRutas()
@@ -31,7 +30,7 @@ public class GestorRutas {
         rutas = new HashMap<Integer, Ruta>(capacidadInicial);
         nombresParadas = new HashSet<String>(capacidadInicial);
         rutasFloydWarshall = new ArrayList<Map<Integer, Map<Integer, List<Parada>>>>(capacidadInicial);
-        for (int i = 0; i<3; i++) //el 3 es la cantidad de discriminantes que hay;
+        for (int i = 0; i<4; i++) //el 4 es la cantidad de discriminantes que hay;
             rutasFloydWarshall.add(new HashMap<Integer, Map<Integer, List<Parada>>>(capacidadInicial));
     }
 
@@ -133,6 +132,8 @@ public class GestorRutas {
     //A este método se le pasa un registro de predecesores (calculado por cualquier método) y retorna la lista de paradas hasta la parada destino
     private List<Parada> rutaOptima(Map<Integer,Parada> predecesores, int idDestino)
     {
+        if (predecesores.get(idDestino) == null) return null; //Si no están en un componente conectado
+
         LinkedList<Parada> rOptima = new LinkedList<>();
         Parada predecesorActual = predecesores.get(idDestino);
         rOptima.push(paradas.get(idDestino));
@@ -145,50 +146,65 @@ public class GestorRutas {
         return rOptima;
     }
 
-    private void llenarInfoBasica(Map<Integer, Float> discriminantes, Map<Integer,Parada> predecesores, Map<Integer,Boolean> visitados, Map<Integer,Integer> distancias)  //Con distancias nos referimos en términos de transbordos
+    private void llenarInfoBasica(Map<Integer, RegistroDiscriminates> discriminantes, Map<Integer,Parada> predecesores, Map<Integer,Boolean> visitados, Map<Integer,Integer> distancias)  //Con distancias nos referimos en términos de transbordos
     {
         for (Map.Entry<Integer,Parada> p : paradas.entrySet()) 
         {
-            discriminantes.put(p.getKey(), Float.MAX_VALUE);     // Integer.MAX_VALUE representa infinito
+            discriminantes.put(p.getKey(), new RegistroDiscriminates(new Ruta(null,null,-1,Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE), null, true, false));     // Integer.MAX_VALUE representa infinito
             predecesores.put(p.getKey(), null);
             visitados.put(p.getKey(), false);
             if (distancias != null) distancias.put(p.getKey(), Integer.MAX_VALUE);
         }
     }
 
-    class ParNodoDiscriminante implements Comparable<ParNodoDiscriminante>    //Par Nodo-Discriminante para la cola de prioridad en el algoritmo de Dijkstra, el nodo sería la parada
+    private class ParNodoDiscriminante implements Comparable<ParNodoDiscriminante>    //Par Nodo-Discriminante para la cola de prioridad en el algoritmo de Dijkstra, el nodo sería la parada
     {
         Parada nodo;          //nodo
-        float discriminante;  //distancia conocida desde el origen hasta el nodo
+        RegistroDiscriminates discriminante;  //distancia conocida desde el origen hasta el nodo
+        int valorPrefPrincipal;
 
-        public ParNodoDiscriminante(Parada nodo, float discriminante)
+        public ParNodoDiscriminante(Parada nodo, RegistroDiscriminates discriminante, int valorPrefPrincipal)
         {
             this.nodo = nodo;
             this.discriminante = discriminante;
+            this.valorPrefPrincipal = valorPrefPrincipal;
         }
 
         @Override
         public int compareTo(ParNodoDiscriminante otroPar)
         {
-            return Float.compare(this.discriminante, otroPar.discriminante);
+            return Float.compare(this.discriminante.discrs[valorPrefPrincipal], otroPar.discriminante.discrs[valorPrefPrincipal]);
         }
     }
 
-    public List<Parada> dijkstra(int idOrigen, int idDestino, boolean trueDist_FalseTiempo)  //retorna una lista con los nodos en la ruta más óptima (Solo funciona con distancias y tiempo, ya que estos solo pueden ser positivos)
+    private record RegistroDiscriminates(float[] discrs) {
+        public RegistroDiscriminates(Ruta r, RegistroDiscriminates regPrevio, boolean relleno, boolean origen) {
+            this(new float[] {
+                (r == null? 0 : r.getCosto()) + (regPrevio == null ? 0 : regPrevio.discrs[0]),
+                (r == null? 0 : r.getDistancia()) + (regPrevio == null ? 0 : regPrevio.discrs[1]),
+                (r == null? 0 : r.getTiempo()) + (regPrevio == null ? 0 : regPrevio.discrs[2]),
+                (regPrevio == null ? 0 : regPrevio.discrs[3]) + (relleno? Float.MAX_VALUE : (origen? 0 : 1))
+            });
+        }
+    }
+
+    //SOLO PARA TIEMPO Y DISTANCIA, COMPROBAR QUE NO SE USA CON PRIORIDAD PRINCIPAL TRANSBORDOS O COSTO
+    public List<Parada> dijkstra(int idOrigen, int idDestino, Preferencias preferencias[])  //retorna una lista con los nodos en la ruta más óptima (Solo funciona con distancias y tiempo, ya que estos solo pueden ser positivos)
     {
         if (!paradas.containsKey(idOrigen) || !paradas.containsKey(idDestino)) return null;
 
-        Map<Integer, Float> discriminantes = new HashMap<>(paradas.size());
+        Map<Integer, RegistroDiscriminates> discriminantes = new HashMap<>(paradas.size());
         Map<Integer, Parada> predecesores = new HashMap<>(paradas.size());
         Map<Integer, Boolean> visitados = new HashMap<>(paradas.size());
         llenarInfoBasica(discriminantes, predecesores, visitados, null);
-        discriminantes.replace(idOrigen, 0.0f);
+        discriminantes.replace(idOrigen, new RegistroDiscriminates(null,null,false,true));
 
         PriorityQueue<ParNodoDiscriminante> colaPrio = new PriorityQueue<>();
-        colaPrio.add(new ParNodoDiscriminante(paradas.get(idOrigen),0.0f));
+        colaPrio.add(new ParNodoDiscriminante(paradas.get(idOrigen),discriminantes.get(idOrigen), preferencias[0].getValor()));
 
         while(!colaPrio.isEmpty())
         {
+            System.out.println(colaPrio.peek().nodo.getId());
             Parada nodoActual = colaPrio.poll().nodo;
             int idNodoActual = nodoActual.getId();
             visitados.replace(nodoActual.getId(), true);
@@ -200,36 +216,33 @@ public class GestorRutas {
                 int idNodoAdyacente = nodoAdyacente.getId();
                 if (!visitados.get(idNodoAdyacente))
                 {
-                    float discriminante;
-                    if (trueDist_FalseTiempo) discriminante = rutasAdyacentes.get(i).getDistancia();
-                    else discriminante = rutasAdyacentes.get(i).getTiempo();
-
-                    float pesoActual = discriminante + discriminantes.get(idNodoActual);
-                    if (pesoActual < discriminantes.get(idNodoAdyacente))
+                    RegistroDiscriminates discriminanteActual = new RegistroDiscriminates(rutasAdyacentes.get(i), discriminantes.get(idNodoActual), false, false);
+                    float pesoActual = discriminanteActual.discrs[preferencias[0].getValor()];
+                    if (pesoActual < discriminantes.get(idNodoAdyacente).discrs[preferencias[0].getValor()]) //GESTIONAR SI SON IGUALES PARA CUMPLIR CON LAS PREFERENCIAS, en el caso de dijkstra puede ser solo modificar el compare to de la cola de prioridad
                     {
-                        discriminantes.replace(idNodoAdyacente, pesoActual);
+                        discriminantes.replace(idNodoAdyacente, discriminanteActual);
                         predecesores.replace(idNodoAdyacente, nodoActual);
-                        colaPrio.add(new ParNodoDiscriminante(nodoAdyacente, discriminantes.get(idNodoAdyacente)));
+                        colaPrio.add(new ParNodoDiscriminante(nodoAdyacente, discriminantes.get(idNodoAdyacente), preferencias[0].getValor()));
                     }
                 }
                 i++;
             }
         }
+        System.out.println("");
 
-        if (predecesores.get(idDestino) == null) return null; //Si no están en un componente conectado
         return rutaOptima(predecesores,idDestino);
     }
 
-    public List<Parada> rutaTransbordosMinimos(int idOrigen, int idDestino, Preferencias prefSecundaria) //Búsqueda de amplitud modificada para trabajar con preferencias
+    public List<Parada> rutaTransbordosMinimos(int idOrigen, int idDestino, Preferencias[] preferencias) //Búsqueda de amplitud modificada para trabajar con preferencias
     {
         if (!paradas.containsKey(idDestino) || !paradas.containsKey(idOrigen)) return null;
 
-        Map<Integer, Float> discriminantes = new HashMap<>(paradas.size());
+        Map<Integer, RegistroDiscriminates> discriminantes = new HashMap<>(paradas.size());
         Map<Integer, Parada> predecesores = new HashMap<>(paradas.size());
         Map<Integer, Boolean> visitados = new HashMap<>(paradas.size());
         Map<Integer, Integer> distancias = new HashMap<>(paradas.size());
         llenarInfoBasica(discriminantes, predecesores, visitados, distancias);
-        discriminantes.replace(idOrigen, 0.0f);
+        discriminantes.replace(idOrigen, new RegistroDiscriminates(null, null, false, true));
         distancias.replace(idOrigen, 0);
 
         Parada pOrigen = paradas.get(idOrigen);
@@ -258,14 +271,11 @@ public class GestorRutas {
                 distancias.replace(idAdyacente, distancias.get(idActual) + 1);
                 if (idAdyacente == idDestino) distanciaEncontrada = distancias.get(idAdyacente);  //Encontrada
 
-                float discriminanteAdyacente = 0;
-                if (prefSecundaria == Preferencias.COSTO) discriminanteAdyacente = paradaActual.getRutas().get(i).getCosto();
-                else if (prefSecundaria == Preferencias.TIEMPO) discriminanteAdyacente = paradaActual.getRutas().get(i).getTiempo();
-                else if (prefSecundaria == Preferencias.DISTANCIA) discriminanteAdyacente = paradaActual.getRutas().get(i).getDistancia();
-
-                if (discriminantes.get(idActual) + discriminanteAdyacente < discriminantes.get(idAdyacente))
+                RegistroDiscriminates discriminanteActual = new RegistroDiscriminates(paradaActual.getRutas().get(i), discriminantes.get(idActual), false, false);
+                //AQUÍ TAMBIÉN GESTIONAR SI EL DISCRIMINANTE SECUNDARIO ES IGUAL
+                if (discriminanteActual.discrs[preferencias[1].getValor()] < discriminantes.get(idAdyacente).discrs[preferencias[1].getValor()])
                 {
-                    discriminantes.replace(idAdyacente, discriminantes.get(idActual) + discriminanteAdyacente);
+                    discriminantes.replace(idAdyacente, discriminanteActual);
                     predecesores.replace(idAdyacente, paradaActual);
                 }
                 visitados.replace(idAdyacente, true);
@@ -275,17 +285,16 @@ public class GestorRutas {
             }
         }
 
-        if (distanciaEncontrada == -1) return null; //Si no están conectadas
         return rutaOptima(predecesores, idDestino);
     }
 
     public List<Parada> bellmanFord(int idOrigen, int idDestino){
-        Map<Integer, Float> discriminantes = new HashMap<>(paradas.size());
+        Map<Integer, RegistroDiscriminates> discriminantes = new HashMap<>(paradas.size());
         Map<Integer, Parada> predecesores = new HashMap<>(paradas.size());
         Map<Integer, Boolean> enCola = new HashMap<>(paradas.size());
         llenarInfoBasica(discriminantes, predecesores, enCola, null);
 
-        discriminantes.replace(idOrigen, 0.0f);
+        discriminantes.replace(idOrigen, new RegistroDiscriminates(null, null, false, true));
         Queue<Parada> cola = new LinkedList<>();
         cola.add(paradas.get(idOrigen));
         enCola.replace(idOrigen, true);
@@ -301,9 +310,10 @@ public class GestorRutas {
                 Parada destino = ruta.getDestino();
                 float peso = ruta.getCosto();
 
-                if(discriminantes.get(idNodoActual) != Float.MAX_VALUE && discriminantes.get(idNodoActual) + peso < discriminantes.get(destino.getId()))
+                if(discriminantes.get(idNodoActual).discrs[Preferencias.COSTO.getValor()] != Float.MAX_VALUE && discriminantes.get(idNodoActual).discrs[Preferencias.COSTO.getValor()] + peso < discriminantes.get(destino.getId()).discrs[Preferencias.COSTO.getValor()])
                 {
-                    discriminantes.replace(destino.getId(), discriminantes.get(idNodoActual) + peso);
+                    RegistroDiscriminates neoReg = new RegistroDiscriminates(ruta, discriminantes.get(idNodoActual), false, false);
+                    discriminantes.replace(destino.getId(), neoReg);
                     predecesores.replace(destino.getId(), nodoActual);
                     if(!enCola.get(destino.getId()))
                     {
@@ -322,7 +332,7 @@ public class GestorRutas {
             {
                 Parada destino = ruta.getDestino();
                 float peso = ruta.getCosto();
-                if(discriminantes.get(nodo.getId()) != Float.MAX_VALUE && discriminantes.get(nodo.getId()) + peso < discriminantes.get(destino.getId()))
+                if(discriminantes.get(nodo.getId()).discrs[Preferencias.COSTO.getValor()] != Float.MAX_VALUE && discriminantes.get(nodo.getId()).discrs[Preferencias.COSTO.getValor()] + peso < discriminantes.get(destino.getId()).discrs[Preferencias.COSTO.getValor()])
                 {
                     System.out.println("El grafo contiene un ciclo de peso negativo");
                     return null;
@@ -368,7 +378,8 @@ public class GestorRutas {
                 float discr;
                 if (prefPrincipal == Preferencias.COSTO) discr = r.getCosto();
                 else if (prefPrincipal == Preferencias.DISTANCIA) discr = r.getDistancia();
-                else discr = r.getTiempo();
+                else if (prefPrincipal == Preferencias.TIEMPO) discr = r.getTiempo();
+                else discr = 1;                                                                 //Distancia en términos de transbordos
                 discriminantes.get(idP).put(idpa, discr);
                 i++;
             }

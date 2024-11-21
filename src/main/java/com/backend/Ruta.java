@@ -9,7 +9,7 @@ public class Ruta {
     private float distancia;
     private float costo;
 
-    public Ruta(Parada origen, Parada destino, int id, float tiempo, float distancia, float costo) {
+    protected Ruta(Parada origen, Parada destino, int id, float tiempo, float distancia, float costo) {
         this.origen = origen;
         this.destino = destino;
         this.id = id;
