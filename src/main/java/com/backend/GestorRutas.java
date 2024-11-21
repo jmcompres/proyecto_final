@@ -393,5 +393,52 @@ public class GestorRutas {
             }
         }
     }
+
+    public void prim(){
+        Map<Integer, Float> discriminantes = new HashMap<>(paradas.size());
+        Map<Integer, Parada> predecesores = new HashMap<>(paradas.size());
+        Map<Integer, Boolean> enMST = new HashMap<>(paradas.size());
+        //Map<Integer,Ruta> rutasMST = new HashMap<>(paradas.size());
+        llenarInfoBasica(discriminantes, predecesores, enMST, null);
+
+        Parada paradaInicial = paradas.get(3); // Comenzar desde el nodo 1
+        discriminantes.replace(paradaInicial.getId(), 0.0f);
+
+        PriorityQueue<ParNodoDiscriminante> cola = new PriorityQueue<>();
+        cola.add(new ParNodoDiscriminante(paradaInicial, 0.0f));
+
+        while(!cola.isEmpty())
+        {
+            Parada nodoActual = cola.poll().nodo;
+            int idNodoActual = nodoActual.getId();
+
+            if(!enMST.get(idNodoActual)){
+                enMST.replace(idNodoActual, true);
+
+                for(Ruta ruta: nodoActual.getRutas())
+                {
+                    Parada destino = ruta.getDestino();
+                    float peso = ruta.getDistancia();
+
+                    if(!enMST.get(destino.getId()) && peso < discriminantes.get(destino.getId()))
+                    {
+                        discriminantes.replace(destino.getId(), peso);
+                        //rutasMST.put(ruta.getId(), ruta);
+                        predecesores.replace(destino.getId(), nodoActual);
+                        cola.add(new ParNodoDiscriminante(destino, peso));
+                    }
+                }
+            }
+        }
+        /*
+        for (Map.Entry<Integer, Parada> entry : predecesores.entrySet()) {
+            if (entry.getValue() != null) {
+                System.out.println("Origen: " + entry.getValue().getNombre() + " Destino: " + paradas.get(entry.getKey()).getNombre());
+            } else {
+                System.out.println("Origen: null Destino: " + entry.getKey());
+            }
+        }
+        */
+    }
     
 }
