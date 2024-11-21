@@ -401,7 +401,7 @@ public class GestorRutas {
         //Map<Integer,Ruta> rutasMST = new HashMap<>(paradas.size());
         llenarInfoBasica(discriminantes, predecesores, enMST, null);
 
-        Parada paradaInicial = paradas.get(3); // Comenzar desde el nodo 1
+        Parada paradaInicial = paradas.get(1); // Comenzar desde el nodo 1
         discriminantes.replace(paradaInicial.getId(), 0.0f);
 
         PriorityQueue<ParNodoDiscriminante> cola = new PriorityQueue<>();
@@ -439,6 +439,61 @@ public class GestorRutas {
             }
         }
         */
+    }
+
+    class UnionFind {
+        private int[] parent;
+        private int[] rank;
+
+        public UnionFind(int n) {
+            parent = new int[n];
+            rank = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                rank[i] = 0;
+            }
+        }
+
+        public int find(int x) {
+            if (parent[x] != x) {
+                parent[x] = find(parent[x]);
+            }
+            return parent[x];
+        }
+
+        public boolean union(int x, int y) {
+            int xRoot = find(x);
+            int yRoot = find(y);
+            if (xRoot == yRoot) {
+                return false;
+            }
+            if (rank[xRoot] < rank[yRoot]) {
+                parent[xRoot] = yRoot;
+            } else if (rank[xRoot] > rank[yRoot]) {
+                parent[yRoot] = xRoot;
+            } else {
+                parent[yRoot] = xRoot;
+                rank[xRoot]++;
+            }
+            return true;
+        }
+    }
+
+    public Map<Integer,Ruta> kruskal(){
+        Map<Integer, Ruta> mst = new HashMap<>();
+        PriorityQueue<Ruta> pq = new PriorityQueue<>(rutas.values());
+        UnionFind uf = new UnionFind(paradas.size());
+
+        while(mst.size() < paradas.size() - 1 && !pq.isEmpty()){
+            Ruta ruta = pq.poll();
+            int origen = ruta.getOrigen().getId()-1;
+            int destino = ruta.getDestino().getId()-1;
+            if(uf.union(origen, destino)){
+                mst.put(ruta.getId(), ruta);
+                uf.union(origen, destino);
+            }
+        }
+        return mst;
     }
     
 }

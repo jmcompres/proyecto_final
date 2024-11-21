@@ -1,6 +1,6 @@
 package com.backend;
 
-public class Ruta {
+public class Ruta implements Comparable<Ruta>{
 
     int id;
     private Parada destino;
@@ -17,6 +17,12 @@ public class Ruta {
         this.distancia = distancia;
         this.costo = costo;
     }
+
+    @Override
+    public int compareTo(Ruta o) {
+        return Float.compare(this.distancia, o.distancia);
+    }
+
 
     public float getTiempo() {
         return tiempo;
