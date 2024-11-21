@@ -41,7 +41,7 @@ public class PruebaBackend {
         System.out.println("");
 
         //g.eliminarParada(id5);
-        Preferencias[] prefs = {Preferencias.TIEMPO, Preferencias.DISTANCIA, null, null};
+        Preferencias[] prefs = {Preferencias.TRANSBORDOS, Preferencias.DISTANCIA, null, null};
         l = g.dijkstra(id1, id6, prefs);
 
         for (Parada p : l)
@@ -49,12 +49,12 @@ public class PruebaBackend {
             System.out.println(p.getId());
         }
 
-        id5 = g.agregarParada("p5", null);
-        g.agregarRuta(id4, id5, 4, 0, 0);
-        g.agregarRuta(id5, id4, 4, 0, 0);
-        g.agregarRuta(id5, id6, 2, 0, 0);
-        g.agregarRuta(id2, id5, 3, 0, 0);
-        g.agregarRuta(id3, id5, 6, 0, 0);
+        //id5 = g.agregarParada("p5", null);
+        // g.agregarRuta(id4, id5, 4, 0, 0);
+        // g.agregarRuta(id5, id4, 4, 0, 0);
+        // g.agregarRuta(id5, id6, 2, 0, 0);
+        // g.agregarRuta(id2, id5, 3, 0, 0);
+        // g.agregarRuta(id3, id5, 6, 0, 0);
         System.out.println("");
         l = g.rutaTransbordosMinimos(id1, id6, prefs);
         for (Parada p : l)

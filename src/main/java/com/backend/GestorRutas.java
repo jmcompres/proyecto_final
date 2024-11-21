@@ -157,6 +157,7 @@ public class GestorRutas {
         }
     }
 
+    //Esto se puede colocar en un for
     private int compararMultiPrefs(RegistroDiscriminates discr1, RegistroDiscriminates discr2, Preferencias[] prefs)
     {
         int res = Float.compare(discr1.discrs[prefs[0].getValor()], discr2.discrs[prefs[0].getValor()]);
@@ -266,14 +267,14 @@ public class GestorRutas {
             Parada paradaActual = cola.poll();
             int idActual = paradaActual.getId();
             int i = 0;                              //índice por el cual va la lista de adyacencia
-            if (distanciaEncontrada >= 0 && distancias.get(idActual) >= distanciaEncontrada) break;
+            if (distanciaEncontrada >= 0 && distancias.get(idActual) > distanciaEncontrada) break;
 
             for (Parada pAdyacente : paradaActual.getParadasApuntadas())
             {
                 int idAdyacente = pAdyacente.getId();
 
                 //Si aún está en la lista, entonces su peso se puede reconsiderar
-                if ((visitados.get(idAdyacente) && (!cola.contains(pAdyacente) || distancias.get(idAdyacente)>=distancias.get(idActual)) && distanciaEncontrada==-1) || (distanciaEncontrada!=-1 && idAdyacente!=idDestino))
+                if ((visitados.get(idAdyacente) && (!cola.contains(pAdyacente) || distancias.get(idAdyacente)<=distancias.get(idActual)) && distanciaEncontrada==-1) || (distanciaEncontrada!=-1 && idAdyacente!=idDestino))
                 {
                     i++;
                     continue;
@@ -283,8 +284,8 @@ public class GestorRutas {
                 if (idAdyacente == idDestino) distanciaEncontrada = distancias.get(idAdyacente);  //Encontrada
 
                 RegistroDiscriminates discriminanteActual = new RegistroDiscriminates(paradaActual.getRutas().get(i), discriminantes.get(idActual), false, false);
-                //AQUÍ TAMBIÉN GESTIONAR SI EL DISCRIMINANTE SECUNDARIO ES IGUAL
-                if (discriminanteActual.discrs[preferencias[1].getValor()] < discriminantes.get(idAdyacente).discrs[preferencias[1].getValor()])
+                //AQUÍ TAMBIÉN GESTIONAR SI EL DISCRIMINANTE SECUNDARIO ES IGUAL (no debería de haber problema con cómo está ahora, porrque la prioridad principal siempre será la misma [transbordos], pero el algoritmo en general se podría optimizar)
+                if (compararMultiPrefs(discriminanteActual, discriminantes.get(idAdyacente), preferencias) < 0)
                 {
                     discriminantes.replace(idAdyacente, discriminanteActual);
                     predecesores.replace(idAdyacente, paradaActual);
