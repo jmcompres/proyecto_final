@@ -40,7 +40,7 @@ public class PruebaBackend {
 
         System.out.println("");
 
-        g.eliminarParada(id5);
+        //g.eliminarParada(id5);
         Preferencias[] prefs = {Preferencias.TIEMPO, Preferencias.TIEMPO, null, null};
         l = g.dijkstra(id1, id6, prefs);
 

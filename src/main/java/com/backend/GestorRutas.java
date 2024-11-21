@@ -204,7 +204,6 @@ public class GestorRutas {
 
         while(!colaPrio.isEmpty())
         {
-            System.out.println(colaPrio.peek().nodo.getId());
             Parada nodoActual = colaPrio.poll().nodo;
             int idNodoActual = nodoActual.getId();
             visitados.replace(nodoActual.getId(), true);
@@ -228,7 +227,6 @@ public class GestorRutas {
                 i++;
             }
         }
-        System.out.println("");
 
         return rutaOptima(predecesores,idDestino);
     }
