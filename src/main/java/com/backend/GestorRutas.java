@@ -157,23 +157,36 @@ public class GestorRutas {
         }
     }
 
+    private int compararMultiPrefs(RegistroDiscriminates discr1, RegistroDiscriminates discr2, Preferencias[] prefs)
+    {
+        int res = Float.compare(discr1.discrs[prefs[0].getValor()], discr2.discrs[prefs[0].getValor()]);
+        if (res != 0 || prefs[1] == Preferencias.NINGUNA || prefs[1] == null) return res;
+        res = Float.compare(discr1.discrs[prefs[1].getValor()], discr2.discrs[prefs[1].getValor()]);
+        if (res != 0 || prefs[2] == Preferencias.NINGUNA || prefs[2] == null) return res;
+        res = Float.compare(discr1.discrs[prefs[2].getValor()], discr2.discrs[prefs[2].getValor()]);
+        if (res != 0 || prefs[3] == Preferencias.NINGUNA || prefs[3] == null) return res;
+        res = Float.compare(discr1.discrs[prefs[3].getValor()], discr2.discrs[prefs[3].getValor()]);
+        return res; //son máximo cuatro preferencias
+    }
+
+
     private class ParNodoDiscriminante implements Comparable<ParNodoDiscriminante>    //Par Nodo-Discriminante para la cola de prioridad en el algoritmo de Dijkstra, el nodo sería la parada
     {
         Parada nodo;          //nodo
         RegistroDiscriminates discriminante;  //distancia conocida desde el origen hasta el nodo
-        int valorPrefPrincipal;
+        Preferencias[] preferencias;
 
-        public ParNodoDiscriminante(Parada nodo, RegistroDiscriminates discriminante, int valorPrefPrincipal)
+        public ParNodoDiscriminante(Parada nodo, RegistroDiscriminates discriminante, Preferencias[] preferencias)
         {
             this.nodo = nodo;
             this.discriminante = discriminante;
-            this.valorPrefPrincipal = valorPrefPrincipal;
+            this.preferencias = preferencias;
         }
 
         @Override
         public int compareTo(ParNodoDiscriminante otroPar)
         {
-            return Float.compare(this.discriminante.discrs[valorPrefPrincipal], otroPar.discriminante.discrs[valorPrefPrincipal]);
+            return compararMultiPrefs(this.discriminante, otroPar.discriminante, preferencias);
         }
     }
 
@@ -183,7 +196,8 @@ public class GestorRutas {
                 (r == null? 0 : r.getCosto()) + (regPrevio == null ? 0 : regPrevio.discrs[0]),
                 (r == null? 0 : r.getDistancia()) + (regPrevio == null ? 0 : regPrevio.discrs[1]),
                 (r == null? 0 : r.getTiempo()) + (regPrevio == null ? 0 : regPrevio.discrs[2]),
-                (regPrevio == null ? 0 : regPrevio.discrs[3]) + (relleno? Float.MAX_VALUE : (origen? 0 : 1))
+                (regPrevio == null ? 0 : regPrevio.discrs[3]) + (relleno? Float.MAX_VALUE : (origen? 0 : 1)),
+                (r == null? 0 : r.getTiempo()) + (regPrevio == null ? 0 : regPrevio.discrs[4])                 //Si se elige NINGUNA como prioridad, entonces se toma por defecto el tiempo
             });
         }
     }
@@ -200,7 +214,7 @@ public class GestorRutas {
         discriminantes.replace(idOrigen, new RegistroDiscriminates(null,null,false,true));
 
         PriorityQueue<ParNodoDiscriminante> colaPrio = new PriorityQueue<>();
-        colaPrio.add(new ParNodoDiscriminante(paradas.get(idOrigen),discriminantes.get(idOrigen), preferencias[0].getValor()));
+        colaPrio.add(new ParNodoDiscriminante(paradas.get(idOrigen),discriminantes.get(idOrigen), preferencias));
 
         while(!colaPrio.isEmpty())
         {
@@ -216,12 +230,11 @@ public class GestorRutas {
                 if (!visitados.get(idNodoAdyacente))
                 {
                     RegistroDiscriminates discriminanteActual = new RegistroDiscriminates(rutasAdyacentes.get(i), discriminantes.get(idNodoActual), false, false);
-                    float pesoActual = discriminanteActual.discrs[preferencias[0].getValor()];
-                    if (pesoActual < discriminantes.get(idNodoAdyacente).discrs[preferencias[0].getValor()]) //GESTIONAR SI SON IGUALES PARA CUMPLIR CON LAS PREFERENCIAS, en el caso de dijkstra puede ser solo modificar el compare to de la cola de prioridad
+                    if (compararMultiPrefs(discriminanteActual, discriminantes.get(idNodoAdyacente), preferencias)<0)
                     {
                         discriminantes.replace(idNodoAdyacente, discriminanteActual);
                         predecesores.replace(idNodoAdyacente, nodoActual);
-                        colaPrio.add(new ParNodoDiscriminante(nodoAdyacente, discriminantes.get(idNodoAdyacente), preferencias[0].getValor()));
+                        colaPrio.add(new ParNodoDiscriminante(nodoAdyacente, discriminantes.get(idNodoAdyacente), preferencias));
                     }
                 }
                 i++;

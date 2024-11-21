@@ -16,12 +16,12 @@ public class PruebaBackend {
         int id6 = g.agregarParada("p6", null);
 
         g.agregarRuta(id1, id2, 9, 0, 0);
-        g.agregarRuta(id1, id3, 4, 0, 0);
+        g.agregarRuta(id1, id3, 4, 1, 0);
         g.agregarRuta(id2, id3, 2, 0, 0);
         g.agregarRuta(id3, id2, 2, 0, 0);
         g.agregarRuta(id2, id5, 3, 0, 0);
         g.agregarRuta(id2, id4, 7, 0, 0);
-        g.agregarRuta(id3, id4, 1, 0, 0);
+        g.agregarRuta(id3, id4, 1, 1, 0);
         g.agregarRuta(id3, id5, 6, 0, 0);
         g.agregarRuta(id4, id5, 4, 0, 0);
         g.agregarRuta(id5, id4, 4, 0, 0);
@@ -41,7 +41,7 @@ public class PruebaBackend {
         System.out.println("");
 
         //g.eliminarParada(id5);
-        Preferencias[] prefs = {Preferencias.TIEMPO, Preferencias.TIEMPO, null, null};
+        Preferencias[] prefs = {Preferencias.TIEMPO, Preferencias.DISTANCIA, null, null};
         l = g.dijkstra(id1, id6, prefs);
 
         for (Parada p : l)
