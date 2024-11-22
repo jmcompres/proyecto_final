@@ -192,6 +192,8 @@ public class GestorRutas {
     }
 
     private record RegistroDiscriminates(float[] discrs) {
+
+        //Constructor para inicializar en base a una ruta
         public RegistroDiscriminates(Ruta r, RegistroDiscriminates regPrevio, boolean relleno, boolean origen) {
             this(new float[] {
                 (r == null? 0 : r.getCosto()) + (regPrevio == null ? 0 : regPrevio.discrs[0]),
@@ -199,6 +201,17 @@ public class GestorRutas {
                 (r == null? 0 : r.getTiempo()) + (regPrevio == null ? 0 : regPrevio.discrs[2]),
                 (regPrevio == null ? 0 : regPrevio.discrs[3]) + (relleno? Float.MAX_VALUE : (origen? 0 : 1)),
                 (r == null? 0 : r.getTiempo()) + (regPrevio == null ? 0 : regPrevio.discrs[4])                 //Si se elige NINGUNA como prioridad, entonces se toma por defecto el tiempo
+            });
+        }
+
+        //Constructor para inicializar en base a dos registros
+        public RegistroDiscriminates(RegistroDiscriminates reg1, RegistroDiscriminates reg2) {
+            this(new float[] {
+                (reg1 == null? 0 : reg1.discrs[0]) + (reg2 == null? 0 : reg2.discrs[0]),
+                (reg1 == null? 0 : reg1.discrs[1]) + (reg2 == null? 0 : reg2.discrs[1]),
+                (reg1 == null? 0 : reg1.discrs[2]) + (reg2 == null? 0 : reg2.discrs[2]),
+                (reg1 == null? 0 : reg1.discrs[3]) + (reg2 == null? 0 : reg2.discrs[3]),
+                (reg1 == null? 0 : reg1.discrs[4]) + (reg2 == null? 0 : reg2.discrs[4]),                 //Si se elige NINGUNA como prioridad, entonces se toma por defecto el tiempo
             });
         }
     }
@@ -355,10 +368,10 @@ public class GestorRutas {
         return rutaOptima(predecesores, idDestino);
     }
 
-    public void floydWarshall(Preferencias prefPrincipal) {    
+    public void floydWarshall(Preferencias[] preferencias) {    
         // Información básica para el algoritmo
-        Map<Integer,Map<Integer,List<Parada>>> mapaPreferencia = rutasFloydWarshall.get(prefPrincipal.getValor());
-        Map<Integer, Map<Integer, Float>> discriminantes = new HashMap<>(paradas.size());
+        Map<Integer,Map<Integer,List<Parada>>> mapaPreferencia = rutasFloydWarshall.get(preferencias[0].getValor());
+        Map<Integer, Map<Integer, RegistroDiscriminates>> discriminantes = new HashMap<>(paradas.size());
     
         // Inicialización de información básica para el algoritmo
         for (Parada p : paradas.values()) {
@@ -367,7 +380,7 @@ public class GestorRutas {
             discriminantes.put(idP, new HashMap<>());
     
             // Distancia a sí mismo es 0
-            discriminantes.get(idP).put(idP, 0.0f);
+            discriminantes.get(idP).put(idP, new RegistroDiscriminates(null,null,false,true));
             mapaPreferencia.get(idP).put(idP, new LinkedList<>());
             mapaPreferencia.get(idP).get(idP).add(p);
             int i = 0;
@@ -375,7 +388,7 @@ public class GestorRutas {
             for (Parada p2 : paradas.values()) //incializar con todas las paradas
             {
                 int idp2 = p2.getId();
-                discriminantes.get(idP).put(idp2, Float.MAX_VALUE); //infinito
+                discriminantes.get(idP).put(idp2, new RegistroDiscriminates(new Ruta(null,null,-1,Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE), null, true, false)); //infinito
                 mapaPreferencia.get(idP).put(idp2, new LinkedList<>());
             }
     
@@ -387,11 +400,7 @@ public class GestorRutas {
     
                 // Inicializar discriminantes
                 Ruta r = p.getRutas().get(i);
-                float discr;
-                if (prefPrincipal == Preferencias.COSTO) discr = r.getCosto();
-                else if (prefPrincipal == Preferencias.DISTANCIA) discr = r.getDistancia();
-                else if (prefPrincipal == Preferencias.TIEMPO) discr = r.getTiempo();
-                else discr = 1;                                                                 //Distancia en términos de transbordos
+                RegistroDiscriminates discr = new RegistroDiscriminates(r, null, false, false);
                 discriminantes.get(idP).put(idpa, discr);
                 i++;
             }
@@ -404,9 +413,9 @@ public class GestorRutas {
                 int i = pi.getId();
                 for (Parada pj : paradas.values()) {
                     int j = pj.getId();
-                    float newDist = discriminantes.get(i).get(k) + discriminantes.get(k).get(j);
-                    if (newDist < discriminantes.get(i).get(j)) {
-                        discriminantes.get(i).replace(j, newDist);
+                    RegistroDiscriminates discrActual = new RegistroDiscriminates(discriminantes.get(i).get(k), discriminantes.get(k).get(j));
+                    if (compararMultiPrefs(discrActual, discriminantes.get(i).get(j), preferencias)<0) {
+                        discriminantes.get(i).replace(j, discrActual);
                         List<Parada> nuevaRuta = new LinkedList<>(mapaPreferencia.get(i).get(k));
                         nuevaRuta.remove(nuevaRuta.size()-1); // Para que no se repita, por ser la última de la primera ruta, y la primera de la segunda ruta (hablando de las rutas a fusionar)
                         nuevaRuta.addAll(mapaPreferencia.get(k).get(j));

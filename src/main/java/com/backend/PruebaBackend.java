@@ -28,8 +28,10 @@ public class PruebaBackend {
         g.agregarRuta(id4, id6, 8, 0, 0);
         g.agregarRuta(id5, id6, 2, 0, 0);
 
-        g.floydWarshall(Preferencias.TRANSBORDOS);
-        Map<Integer,Map<Integer,List<Parada>>> omniMapa = g.getRutasFloydWarshall(Preferencias.TRANSBORDOS);
+        Preferencias[] prefs = {Preferencias.TIEMPO, Preferencias.TRANSBORDOS, null, null};
+
+        g.floydWarshall(prefs);
+        Map<Integer,Map<Integer,List<Parada>>> omniMapa = g.getRutasFloydWarshall(Preferencias.TIEMPO);
         List<Parada> l = omniMapa.get(id1).get(id6);
 
         //List<Parada> l = g.dijkstra(id3, id6, false);
@@ -41,7 +43,6 @@ public class PruebaBackend {
         System.out.println("");
 
         //g.eliminarParada(id5);
-        Preferencias[] prefs = {Preferencias.TRANSBORDOS, Preferencias.DISTANCIA, null, null};
         l = g.dijkstra(id1, id6, prefs);
 
         for (Parada p : l)
@@ -82,7 +83,7 @@ public class PruebaBackend {
         System.out.println("");
 
         //List<Parada> l2 = g.dijkstra(id10, id14, false);
-        g.floydWarshall(Preferencias.TIEMPO);
+        g.floydWarshall(prefs);
         List<Parada> l2 = g.getRutasFloydWarshall(Preferencias.TIEMPO).get(id10).get(id14);
         for (Parada p : l2)
         {
