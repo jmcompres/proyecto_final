@@ -313,7 +313,7 @@ public class GestorRutas {
         return rutaOptima(predecesores, idDestino);
     }
 
-    public List<Parada> bellmanFord(int idOrigen, int idDestino){
+    public List<Parada> bellmanFord(int idOrigen, int idDestino, Preferencias[] preferencias){
         Map<Integer, RegistroDiscriminates> discriminantes = new HashMap<>(paradas.size());
         Map<Integer, Parada> predecesores = new HashMap<>(paradas.size());
         Map<Integer, Boolean> enCola = new HashMap<>(paradas.size());
@@ -333,9 +333,9 @@ public class GestorRutas {
             for(Ruta ruta: nodoActual.getRutas())
             {
                 Parada destino = ruta.getDestino();
-                float peso = ruta.getCosto();
+                RegistroDiscriminates discrActual = new RegistroDiscriminates(ruta, discriminantes.get(idNodoActual), false, false);
 
-                if(discriminantes.get(idNodoActual).discrs[Preferencias.COSTO.getValor()] != Float.MAX_VALUE && discriminantes.get(idNodoActual).discrs[Preferencias.COSTO.getValor()] + peso < discriminantes.get(destino.getId()).discrs[Preferencias.COSTO.getValor()])
+                if(discriminantes.get(idNodoActual).discrs[Preferencias.COSTO.getValor()] != Float.MAX_VALUE && (compararMultiPrefs(discrActual, discriminantes.get(destino.getId()), preferencias) < 0))
                 {
                     RegistroDiscriminates neoReg = new RegistroDiscriminates(ruta, discriminantes.get(idNodoActual), false, false);
                     discriminantes.replace(destino.getId(), neoReg);
