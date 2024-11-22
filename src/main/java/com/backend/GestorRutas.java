@@ -394,11 +394,11 @@ public class GestorRutas {
         }
     }
 
-    public void prim(){
+    public Map<Integer,Ruta> prim(){
         Map<Integer, Float> discriminantes = new HashMap<>(paradas.size());
         Map<Integer, Parada> predecesores = new HashMap<>(paradas.size());
         Map<Integer, Boolean> enMST = new HashMap<>(paradas.size());
-        //Map<Integer,Ruta> rutasMST = new HashMap<>(paradas.size());
+        Map<Integer,Ruta> rutasMST = new HashMap<>(paradas.size());
         llenarInfoBasica(discriminantes, predecesores, enMST, null);
 
         Parada paradaInicial = paradas.get(1); // Comenzar desde el nodo 1
@@ -415,6 +415,16 @@ public class GestorRutas {
             if(!enMST.get(idNodoActual)){
                 enMST.replace(idNodoActual, true);
 
+                Parada predecesor = predecesores.get(idNodoActual);
+                if (predecesor != null) {
+                    for (Ruta ruta : predecesor.getRutas()) {
+                        if (ruta.getDestino().equals(nodoActual)) {
+                            rutasMST.put(nodoActual.getId(), ruta);
+                            break;
+                        }
+                    }
+                }
+
                 for(Ruta ruta: nodoActual.getRutas())
                 {
                     Parada destino = ruta.getDestino();
@@ -423,22 +433,13 @@ public class GestorRutas {
                     if(!enMST.get(destino.getId()) && peso < discriminantes.get(destino.getId()))
                     {
                         discriminantes.replace(destino.getId(), peso);
-                        //rutasMST.put(ruta.getId(), ruta);
                         predecesores.replace(destino.getId(), nodoActual);
                         cola.add(new ParNodoDiscriminante(destino, peso));
                     }
                 }
             }
         }
-        /*
-        for (Map.Entry<Integer, Parada> entry : predecesores.entrySet()) {
-            if (entry.getValue() != null) {
-                System.out.println("Origen: " + entry.getValue().getNombre() + " Destino: " + paradas.get(entry.getKey()).getNombre());
-            } else {
-                System.out.println("Origen: null Destino: " + entry.getKey());
-            }
-        }
-        */
+        return rutasMST;
     }
 
     class UnionFind {
