@@ -426,18 +426,21 @@ public class GestorRutas {
         }
     }
 
-    public Map<Integer,Ruta> prim(){
-        Map<Integer, Float> discriminantes = new HashMap<>(paradas.size());
+
+    //controlar las preferencias que se le pasan a los algoritmos de expansión mínima, solo distancia, costo y tiempo
+
+    public Map<Integer,Ruta> prim(Preferencias[] preferencias){
+        Map<Integer, RegistroDiscriminates> discriminantes = new HashMap<>(paradas.size());
         Map<Integer, Parada> predecesores = new HashMap<>(paradas.size());
         Map<Integer, Boolean> enMST = new HashMap<>(paradas.size());
         Map<Integer,Ruta> rutasMST = new HashMap<>(paradas.size());
         llenarInfoBasica(discriminantes, predecesores, enMST, null);
 
-        Parada paradaInicial = paradas.get(1); // Comenzar desde el nodo 1
-        discriminantes.replace(paradaInicial.getId(), 0.0f);
+        Parada paradaInicial = paradas.values().iterator().next(); // Comenzar desde el nodo 1
+        discriminantes.replace(paradaInicial.getId(), new RegistroDiscriminates(null, null, false, true));
 
         PriorityQueue<ParNodoDiscriminante> cola = new PriorityQueue<>();
-        cola.add(new ParNodoDiscriminante(paradaInicial, 0.0f));
+        cola.add(new ParNodoDiscriminante(paradaInicial,discriminantes.get(paradaInicial.getId()), preferencias));
 
         while(!cola.isEmpty())
         {
@@ -460,13 +463,13 @@ public class GestorRutas {
                 for(Ruta ruta: nodoActual.getRutas())
                 {
                     Parada destino = ruta.getDestino();
-                    float peso = ruta.getDistancia();
+                    RegistroDiscriminates peso = new RegistroDiscriminates(ruta, null, false, false);
 
-                    if(!enMST.get(destino.getId()) && peso < discriminantes.get(destino.getId()))
+                    if(!enMST.get(destino.getId()) && (compararMultiPrefs(peso, discriminantes.get(destino.getId()), preferencias)<0) )
                     {
                         discriminantes.replace(destino.getId(), peso);
                         predecesores.replace(destino.getId(), nodoActual);
-                        cola.add(new ParNodoDiscriminante(destino, peso));
+                        cola.add(new ParNodoDiscriminante(destino, peso, preferencias));
                     }
                 }
             }
@@ -512,13 +515,34 @@ public class GestorRutas {
         }
     }
 
-    public Map<Integer,Ruta> kruskal(){
+    private class ParRutaDiscriminante implements Comparable<ParRutaDiscriminante>    //Par Nodo-Discriminante para la cola de prioridad en el algoritmo de Dijkstra, el nodo sería la parada
+    {
+        Ruta ruta;
+        RegistroDiscriminates discriminante;
+        Preferencias[] preferencias;
+
+        public ParRutaDiscriminante(Ruta ruta, RegistroDiscriminates discriminante, Preferencias[] preferencias)
+        {
+            this.ruta = ruta;
+            this.discriminante = discriminante;
+            this.preferencias = preferencias;
+        }
+
+        @Override
+        public int compareTo(ParRutaDiscriminante otroPar)
+        {
+            return compararMultiPrefs(this.discriminante, otroPar.discriminante, preferencias);
+        }
+    }
+
+    public Map<Integer,Ruta> kruskal(Preferencias[] preferencias){
         Map<Integer, Ruta> mst = new HashMap<>();
-        PriorityQueue<Ruta> pq = new PriorityQueue<>(rutas.values());
+        PriorityQueue<ParRutaDiscriminante> pq = new PriorityQueue<>();
+        for (Ruta r : rutas.values()) pq.offer(new ParRutaDiscriminante(r, new RegistroDiscriminates(r, null, false, false), preferencias));
         UnionFind uf = new UnionFind(paradas.size());
 
         while(mst.size() < paradas.size() - 1 && !pq.isEmpty()){
-            Ruta ruta = pq.poll();
+            Ruta ruta = pq.poll().ruta;
             int origen = ruta.getOrigen().getId()-1;
             int destino = ruta.getDestino().getId()-1;
             if(uf.union(origen, destino)){
