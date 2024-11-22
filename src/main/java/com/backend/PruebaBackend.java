@@ -16,19 +16,21 @@ public class PruebaBackend {
         int id6 = g.agregarParada("p6", null);
 
         g.agregarRuta(id1, id2, 9, 0, 0);
-        g.agregarRuta(id1, id3, 4, 0, 0);
+        g.agregarRuta(id1, id3, 4, 1, 0);
         g.agregarRuta(id2, id3, 2, 0, 0);
         g.agregarRuta(id3, id2, 2, 0, 0);
         g.agregarRuta(id2, id5, 3, 0, 0);
         g.agregarRuta(id2, id4, 7, 0, 0);
-        g.agregarRuta(id3, id4, 1, 0, 0);
+        g.agregarRuta(id3, id4, 1, 1, 0);
         g.agregarRuta(id3, id5, 6, 0, 0);
         g.agregarRuta(id4, id5, 4, 0, 0);
         g.agregarRuta(id5, id4, 4, 0, 0);
         g.agregarRuta(id4, id6, 8, 0, 0);
         g.agregarRuta(id5, id6, 2, 0, 0);
 
-        g.floydWarshall(Preferencias.TIEMPO);
+        Preferencias[] prefs = {Preferencias.TIEMPO, Preferencias.TRANSBORDOS, null, null};
+
+        g.floydWarshall(prefs);
         Map<Integer,Map<Integer,List<Parada>>> omniMapa = g.getRutasFloydWarshall(Preferencias.TIEMPO);
         List<Parada> l = omniMapa.get(id1).get(id6);
 
@@ -40,22 +42,22 @@ public class PruebaBackend {
 
         System.out.println("");
 
-        g.eliminarParada(id5);
-        l = g.dijkstra(id1, id6, false);
+        //g.eliminarParada(id5);
+        l = g.dijkstra(id1, id6, prefs);
 
         for (Parada p : l)
         {
             System.out.println(p.getId());
         }
 
-        id5 = g.agregarParada("p5", null);
-        g.agregarRuta(id4, id5, 4, 0, 0);
-        g.agregarRuta(id5, id4, 4, 0, 0);
-        g.agregarRuta(id5, id6, 2, 0, 0);
-        g.agregarRuta(id2, id5, 3, 0, 0);
-        g.agregarRuta(id3, id5, 6, 0, 0);
+        //id5 = g.agregarParada("p5", null);
+        // g.agregarRuta(id4, id5, 4, 0, 0);
+        // g.agregarRuta(id5, id4, 4, 0, 0);
+        // g.agregarRuta(id5, id6, 2, 0, 0);
+        // g.agregarRuta(id2, id5, 3, 0, 0);
+        // g.agregarRuta(id3, id5, 6, 0, 0);
         System.out.println("");
-        l = g.rutaTransbordosMinimos(id1, id6, Preferencias.TIEMPO);
+        l = g.rutaTransbordosMinimos(id1, id6, prefs);
         for (Parada p : l)
         {
             System.out.println(p.getId());
@@ -81,7 +83,7 @@ public class PruebaBackend {
         System.out.println("");
 
         //List<Parada> l2 = g.dijkstra(id10, id14, false);
-        g.floydWarshall(Preferencias.TIEMPO);
+        g.floydWarshall(prefs);
         List<Parada> l2 = g.getRutasFloydWarshall(Preferencias.TIEMPO).get(id10).get(id14);
         for (Parada p : l2)
         {
