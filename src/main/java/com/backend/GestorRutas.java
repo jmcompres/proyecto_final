@@ -419,7 +419,7 @@ public class GestorRutas {
                 if (predecesor != null) {
                     for (Ruta ruta : predecesor.getRutas()) {
                         if (ruta.getDestino().equals(nodoActual)) {
-                            rutasMST.put(nodoActual.getId(), ruta);
+                            rutasMST.put(ruta.getId(), ruta);
                             break;
                         }
                     }
