@@ -1,11 +1,14 @@
 package com.backend;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Parada {
+public class Parada implements Serializable{
+
+    private static final long serialVersionUID = 1L;
 
     private int id;
     private String nombre;

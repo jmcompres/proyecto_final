@@ -1,5 +1,6 @@
 package com.backend;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,7 +11,9 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
-public class GestorRutas {
+public class GestorRutas implements Serializable{
+
+    private static final long serialVersionUID = 1L;
 
     private static GestorRutas instancia = null;
     private static int capacidadInicial = 50;           //capacidad inicial para los ArrayLists con los nodos, paradas y rutas
@@ -36,6 +39,7 @@ public class GestorRutas {
 
     public static GestorRutas getInstance()
     {
+        if (instancia == null) instancia = GestorArchivos.cargarData();
         if (instancia == null) instancia = new GestorRutas();
         return instancia;
     }
@@ -370,7 +374,7 @@ public class GestorRutas {
 
     public void floydWarshall(Preferencias[] preferencias) {    
         // Información básica para el algoritmo
-        Map<Integer,Map<Integer,List<Parada>>> mapaPreferencia = rutasFloydWarshall.get(preferencias[0].getValor());
+        Map<Integer,Map<Integer,List<Parada>>> mapaPreferencia = new HashMap<Integer,Map<Integer,List<Parada>>>();
         Map<Integer, Map<Integer, RegistroDiscriminates>> discriminantes = new HashMap<>(paradas.size());
     
         // Inicialización de información básica para el algoritmo
@@ -424,6 +428,8 @@ public class GestorRutas {
                 }
             }
         }
+
+        rutasFloydWarshall.set(preferencias[0].getValor(), mapaPreferencia);
     }
 
 

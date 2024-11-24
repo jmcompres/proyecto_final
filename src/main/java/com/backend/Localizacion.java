@@ -1,6 +1,10 @@
 package com.backend;
 
-public class Localizacion {
+import java.io.Serializable;
+
+public class Localizacion implements Serializable{
+
+    private static final long serialVersionUID = 1L;
     
     private double latitud;
     private double longitud;

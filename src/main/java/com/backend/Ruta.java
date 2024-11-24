@@ -1,6 +1,10 @@
 package com.backend;
 
-public class Ruta {
+import java.io.Serializable;
+
+public class Ruta implements Serializable{
+
+    private static final long serialVersionUID = 1L;
 
     int id;
     private Parada destino;
