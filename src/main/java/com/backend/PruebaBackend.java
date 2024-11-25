@@ -27,17 +27,21 @@ public class PruebaBackend {
         g.agregarRuta(id5, id4, 4, 0, 0);
         g.agregarRuta(id4, id6, 8, 0, 0);
         g.agregarRuta(id5, id6, 2, 0, 0);
+        g.agregarRuta(id5, id6, 1, 0, 0);
+        g.agregarRuta(id5, id6, 3, 0, 0);
 
         Preferencias[] prefs = {Preferencias.TIEMPO, Preferencias.TRANSBORDOS, null, null};
 
-        //g.floydWarshall(prefs);
-        Map<Integer,Map<Integer,List<Parada>>> omniMapa = g.getRutasFloydWarshall(Preferencias.TIEMPO);
-        List<Parada> l = omniMapa.get(1).get(6);
+        g.floydWarshall(prefs);
+        Map<Integer,Map<Integer,List<ParParadaRuta>>> omniMapa = g.getRutasFloydWarshall();
+        List<ParParadaRuta> l = omniMapa.get(1).get(6);
 
         //List<Parada> l = g.dijkstra(id3, id6, false);
-        for (Parada p : l)
+        for (ParParadaRuta p : l)
         {
-            System.out.println(p.getId());
+            System.out.print(p.parada().getId());
+            if (p.ruta() != null) System.out.println(" :"+p.ruta().getId()+": ");
+            else System.out.println(" end");
         }
 
         System.out.println("");
@@ -45,9 +49,11 @@ public class PruebaBackend {
         //g.eliminarParada(id5);
         l = g.dijkstra(id1, id6, prefs);
 
-        for (Parada p : l)
+        for (ParParadaRuta p : l)
         {
-            System.out.println(p.getId());
+            System.out.print(p.parada().getId());
+            if (p.ruta() != null) System.out.println(" :"+p.ruta().getId()+": ");
+            else System.out.println(" end");
         }
 
         //id5 = g.agregarParada("p5", null);
@@ -58,9 +64,11 @@ public class PruebaBackend {
         // g.agregarRuta(id3, id5, 6, 0, 0);
         System.out.println("");
         l = g.rutaTransbordosMinimos(id1, id6, prefs);
-        for (Parada p : l)
+        for (ParParadaRuta p : l)
         {
-            System.out.println(p.getId());
+            System.out.print(p.parada().getId());
+            if (p.ruta() != null) System.out.println(" :"+p.ruta().getId()+": ");
+            else System.out.println(" end");
         }
 
         int id10 = g.agregarParada("p10", null);
@@ -84,13 +92,15 @@ public class PruebaBackend {
 
         //List<Parada> l2 = g.dijkstra(id10, id14, false);
         g.floydWarshall(prefs);
-        List<Parada> l2 = g.getRutasFloydWarshall(Preferencias.TIEMPO).get(id10).get(id14);
-        for (Parada p : l2)
+        List<ParParadaRuta> l2 = g.getRutasFloydWarshall().get(id10).get(id14);
+        for (ParParadaRuta p : l2)
         {
-            System.out.println(p.getId());
+            System.out.print(p.parada().getId());
+            if (p.ruta() != null) System.out.println(" :"+p.ruta().getId()+": ");
+            else System.out.println(" end");
         }
 
-        GestorArchivos.guardarData();
+        //GestorArchivos.guardarData();
 
     }
 }

@@ -1,5 +1,6 @@
 package com.backend;
 
+import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,7 +26,14 @@ public class GestorArchivos {
         GestorRutas neoData = null;
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(dirFichero))) {
             neoData = (GestorRutas) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
+        } catch(EOFException e) {
+            System.out.println("Creando nuevo gestor de rutas y paradas");
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch(IOException e)
+        {
             e.printStackTrace();
         }
         return neoData;
