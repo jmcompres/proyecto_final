@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GestorRutas implements Serializable{
 
@@ -24,7 +25,10 @@ public class GestorRutas implements Serializable{
     private Set<String> nombresParadas;                 //esto para comprobar en tiempo constante que no se repitan los nombres y ubicaciones
 
     //Atributo especial para floyd-warshall
-    Map<Integer,Map<Integer,List<ParParadaRuta>>> rutasFloydWarshall;  //un mapa para cada discriminante como prioridad principal (excluyendo transbordos mínimos)
+    private static Preferencias[] prefFWListo;
+    private static AtomicBoolean fwlisto;
+    private static AtomicBoolean fwEnProgreso;
+    private static Map<Integer,Map<Integer,List<ParParadaRuta>>> rutasFloydWarshall;  //un mapa para cada discriminante como prioridad principal (excluyendo transbordos mínimos)
 
     private GestorRutas()
     {
@@ -32,6 +36,9 @@ public class GestorRutas implements Serializable{
         rutas = new HashMap<Integer, Ruta>(capacidadInicial);
         nombresParadas = new HashSet<String>(capacidadInicial);
         rutasFloydWarshall = new HashMap<Integer, Map<Integer, List<ParParadaRuta>>>(capacidadInicial);
+        prefFWListo = null;
+        fwlisto = new AtomicBoolean(false);
+        fwEnProgreso = new AtomicBoolean(false);
     }
 
     public static GestorRutas getInstance()
@@ -369,7 +376,8 @@ public class GestorRutas implements Serializable{
         return rutaOptima(predecesores, idDestino);
     }
 
-    public void floydWarshall(Preferencias[] preferencias) {    
+    public synchronized void floydWarshall(Preferencias[] preferencias) {
+        fwEnProgreso.set(true);
         // Información básica para el algoritmo
         Map<Integer,Map<Integer,List<ParParadaRuta>>> mapaPreferencia = new HashMap<Integer,Map<Integer,List<ParParadaRuta>>>();
         Map<Integer, Map<Integer, RegistroDiscriminates>> discriminantes = new HashMap<>(paradas.size());
@@ -433,6 +441,9 @@ public class GestorRutas implements Serializable{
         }
 
         rutasFloydWarshall = mapaPreferencia;
+        prefFWListo = preferencias.clone();
+        fwlisto.set(true);
+        fwEnProgreso.set(false);
     }
 
 
@@ -560,6 +571,49 @@ public class GestorRutas implements Serializable{
             }
         }
         return mst;
+    }
+
+    private boolean prefsIguales(Preferencias prefs[])
+    {
+        if (prefFWListo == null) return false;
+        boolean respuesta = true;
+
+        for (int i = 0; i<5; i++) //5 es el número de preferencias posibles
+        {
+            if (prefs[i] != prefFWListo[i])
+            {
+                respuesta = false;
+                break;
+            }
+        }
+
+        return respuesta;
+    }
+
+    public List<ParParadaRuta> encontrarRuta(int idOrigen, int idDestino, Preferencias preferencias[])   //método definitivo
+    {
+        if(!prefsIguales(preferencias)) fwlisto.set(false);
+        if (prefFWListo!=null && fwlisto.get()) return rutasFloydWarshall.get(idOrigen).get(idDestino);
+        else if (!fwEnProgreso.get()) //evitar que hayan dos hilos haciendo la misma tarea y modificando la misma info
+        {
+            Thread alistarFW = new Thread(()-> floydWarshall(preferencias));
+            alistarFW.start();
+        }
+
+        List<ParParadaRuta> ruta;
+        switch (preferencias[0]) {
+            case COSTO:
+                ruta = bellmanFord(idOrigen, idDestino, preferencias);
+                break;
+            case TRANSBORDOS:
+                ruta = rutaTransbordosMinimos(idOrigen, idDestino, preferencias);
+                break;
+            default:
+                ruta = dijkstra(idOrigen, idDestino, preferencias);
+                break;
+        }
+
+        return ruta;
     }
     
 }
