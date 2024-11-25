@@ -30,11 +30,22 @@ public class PruebaBackend {
         g.agregarRuta(id5, id6, 1, 0, 0);
         g.agregarRuta(id5, id6, 3, 0, 0);
 
-        Preferencias[] prefs = {Preferencias.TIEMPO, Preferencias.TRANSBORDOS, null, null};
+        Preferencias[] prefs = {Preferencias.TIEMPO, Preferencias.TRANSBORDOS, null, null, null};
+
+        // List<ParParadaRuta> l = g.encontrarRuta(id1, id6, prefs);
+        // for (int i = 0; i<1000000000; i++)
+        // {
+        //     i++;
+        //     i--;
+        // }
+        // prefs[2] = Preferencias.COSTO;
+        // l = g.encontrarRuta(id1, id6, prefs);
+        // l = g.encontrarRuta(id1, id6, prefs);
 
         g.floydWarshall(prefs);
         Map<Integer,Map<Integer,List<ParParadaRuta>>> omniMapa = g.getRutasFloydWarshall();
         List<ParParadaRuta> l = omniMapa.get(1).get(6);
+        l = g.encontrarRuta(id1, id6, prefs);
 
         //List<Parada> l = g.dijkstra(id3, id6, false);
         for (ParParadaRuta p : l)
