@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.visual.Controlador">
+<AnchorPane fx:id="panelPrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.visual.Controlador">
    <children>
       <VBox layoutX="848.0" layoutY="102.0" prefHeight="324.0" prefWidth="162.0" AnchorPane.rightAnchor="0.0">
          <children>
@@ -64,7 +64,7 @@
       </VBox>
       <Pane fx:id="panelAgregar" layoutX="5.0" layoutY="102.0" prefHeight="398.0" prefWidth="632.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="168.0">
          <children>
-            <Button layoutX="540.0" layoutY="353.0" mnemonicParsing="false" onAction="#agregarP" text="Agregar" />
+            <Button fx:id="btnAgregar" layoutX="540.0" layoutY="353.0" mnemonicParsing="false" text="Agregar" />
             <Label layoutX="75.0" layoutY="25.0" text="Nombre:">
                <font>
                   <Font size="18.0" />
@@ -200,7 +200,7 @@
       <BorderPane fx:id="contenedorGrafo" layoutX="300.0" layoutY="300.0" prefWidth="400.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
          <center>
             <Pane fx:id="contenedor" prefHeight="238.0" prefWidth="450.0" style="-fx-border-color: black; -fx-border-width: 6; -fx-padding: 10; -fx-border-style: solid; -fx-border-radius: 5px;">
-               <ImageView fx:id="mapaGrafos" fitHeight="228.0" fitWidth="400.0" preserveRatio="true" />
+               <ImageView fx:id="mapaGrafos" fitHeight="228.0" fitWidth="400.0" preserveRatio="true" visible="false" />
             </Pane>
          </center>
       </BorderPane>

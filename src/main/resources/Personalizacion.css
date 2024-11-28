@@ -1,0 +1,17 @@
+#panelPrincipal{
+    -fx-background-color: "Black";
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.button{
+    -fx-background-color: #4CAF50; /* Color del botón */
+    -fx-text-fill: white; /* Color del texto */
+    -fx-background-radius: 30px; /* Radio para esquinas redondeadas */
+    -fx-padding: 10px 20px; /* Relleno interno del botón */
+    -fx-border-radius: 30px; /* Redondear el borde también (si lo usas) */
+    -fx-border-color: #388E3C; /* Color del borde */
+    -fx-border-width: 2px;
+}
