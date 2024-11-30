@@ -53,7 +53,6 @@ public class Controlador {
     @FXML private Pane panelEliminarRuta;
     @FXML private ListView<Ruta> listaEliminarRuta;
     @FXML private Button btnEliminarRuta;
-
     @FXML private ImageView mapaGrafos;
     @FXML private BorderPane contenedorGrafo;
     @FXML private Pane contenedor;

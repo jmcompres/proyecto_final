@@ -16,7 +16,7 @@ public class Main extends Application {
         scene.getStylesheets().add(css);
 
         primaryStage.setResizable(false);
-        //primaryStage.setMaximized(true);
+        primaryStage.setMaximized(true);
 
         primaryStage.setTitle("Gestor de Rutas");
         primaryStage.setScene(scene);
