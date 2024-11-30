@@ -24,7 +24,7 @@ public class GestorRutas implements Serializable{
     private Map<Integer, Ruta> rutas;
     private Set<String> nombresParadas;                 //esto para comprobar en tiempo constante que no se repitan los nombres y ubicaciones
 
-    //Atributo especial para floyd-warshall
+    //Atributos especiales para floyd-warshall
     private static Preferencias[] prefFWListo;
     private static AtomicBoolean fwlisto;
     private static AtomicBoolean fwEnProgreso;
@@ -76,9 +76,9 @@ public class GestorRutas implements Serializable{
         return idParadaActual-1;
     }
 
-    public void agregarRuta(int idParadaFuente, int idParadaDestino, float tiempo, float distancia, float costo)
+    public int agregarRuta(int idParadaFuente, int idParadaDestino, float tiempo, float distancia, float costo)
     {
-        if (!paradas.containsKey(idParadaDestino) || !paradas.containsKey(idParadaFuente)) return;
+        if (!paradas.containsKey(idParadaDestino) || !paradas.containsKey(idParadaFuente)) return -1;
 
         Parada pFuente = paradas.get(idParadaFuente);
         Parada pDestino = paradas.get(idParadaDestino);
@@ -87,6 +87,7 @@ public class GestorRutas implements Serializable{
         pFuente.agregarAdyacencia(pDestino, neoRuta);
         rutas.put(idRutaActual, neoRuta);
         idRutaActual++;
+        return neoRuta.getId();
     }
 
     public void eliminarParada(int idParada)
@@ -133,8 +134,31 @@ public class GestorRutas implements Serializable{
         rutas.remove(idRuta);
     }
 
+    public boolean modificarDescuentoRuta(float neoDescuento, int idRuta)
+    {
+        if (!rutas.containsKey(idRuta)) return false;
+
+        Ruta ruta = rutas.get(idRuta);
+        Parada pOrigen = ruta.getOrigen();
+        Parada pDestino = ruta.getDestino();
+        float descOrg = ruta.getDescuento();
+
+        ruta.setDescuento(neoDescuento);
+        Preferencias[] prefsAux = {Preferencias.COSTO, Preferencias.TIEMPO, Preferencias.NINGUNA, Preferencias.NINGUNA, Preferencias.NINGUNA};
+        if (bellmanFord(pOrigen.getId(), pDestino.getId(), prefsAux) == null)
+        {
+            System.out.println("No se puede agregar tal descuento, pues habría un ciclo negativo");
+            ruta.setDescuento(descOrg);
+            return false;
+        }
+        return true;
+    }
 
 
+
+
+
+    
     /*MÉTODOS PARA ENCONTRAR RUTAS */
 
     //A este método se le pasa un registro de predecesores (calculado por cualquier método) y retorna la lista de paradas hasta la parada destino
@@ -204,7 +228,7 @@ public class GestorRutas implements Serializable{
         //Constructor para inicializar en base a una ruta
         public RegistroDiscriminates(Ruta r, RegistroDiscriminates regPrevio, boolean relleno, boolean origen) {
             this(new float[] {
-                (r == null? 0 : r.getCosto()) + (regPrevio == null ? 0 : regPrevio.discrs[0]),
+                (r == null? 0 : r.getCostoNeto()) + (regPrevio == null ? 0 : regPrevio.discrs[0]),
                 (r == null? 0 : r.getDistancia()) + (regPrevio == null ? 0 : regPrevio.discrs[1]),
                 (r == null? 0 : r.getTiempo()) + (regPrevio == null ? 0 : regPrevio.discrs[2]),
                 (regPrevio == null ? 0 : regPrevio.discrs[3]) + (relleno? Float.MAX_VALUE : (origen? 0 : 1)),
@@ -328,48 +352,30 @@ public class GestorRutas implements Serializable{
         llenarInfoBasica(discriminantes, predecesores, enCola, null);
 
         discriminantes.replace(idOrigen, new RegistroDiscriminates(null, null, false, true));
-        Queue<Parada> cola = new LinkedList<>();
-        cola.add(paradas.get(idOrigen));
-        enCola.replace(idOrigen, true);
 
-        while(!cola.isEmpty())
+        for (int i = 0; i<paradas.size()-1; i++)
         {
-            Parada nodoActual = cola.poll();
-            int idNodoActual = nodoActual.getId();
-            enCola.replace(idNodoActual, false);
-
-            for(Ruta ruta: nodoActual.getRutas())
+            for (Ruta r : rutas.values())
             {
-                Parada destino = ruta.getDestino();
-                RegistroDiscriminates discrActual = new RegistroDiscriminates(ruta, discriminantes.get(idNodoActual), false, false);
-
-                if(discriminantes.get(idNodoActual).discrs[Preferencias.COSTO.getValor()] != Float.MAX_VALUE && (compararMultiPrefs(discrActual, discriminantes.get(destino.getId()), preferencias) < 0))
+                int idOrigenActual = r.getOrigen().getId();
+                int idDestinoActual = r.getDestino().getId();
+                RegistroDiscriminates discrActual = new RegistroDiscriminates(r, discriminantes.get(idOrigenActual), false, false);
+                if (compararMultiPrefs(discrActual, discriminantes.get(idDestinoActual), preferencias)<0)
                 {
-                    RegistroDiscriminates neoReg = new RegistroDiscriminates(ruta, discriminantes.get(idNodoActual), false, false);
-                    discriminantes.replace(destino.getId(), neoReg);
-                    predecesores.replace(destino.getId(), new ParParadaRuta(nodoActual, ruta));
-                    if(!enCola.get(destino.getId()))
-                    {
-                        cola.add(destino);
-                        enCola.replace(destino.getId(), true);
-                    }
+                    discriminantes.replace(idDestinoActual, discrActual);
+                    predecesores.replace(idDestinoActual, new ParParadaRuta(paradas.get(idOrigenActual), r));
                 }
             }
-
-
         }
-        //Verifica si hay ciclos negativos
-        for(Parada nodo: paradas.values())
+
+        //comprobar si existen ciclos negativos
+        for (Ruta r : rutas.values())
         {
-            for(Ruta ruta: nodo.getRutas())
+            RegistroDiscriminates discrActual = new RegistroDiscriminates(r, discriminantes.get(r.getOrigen().getId()), false, false);
+            if (compararMultiPrefs(discrActual, discriminantes.get(r.getDestino().getId()), preferencias) < 0)
             {
-                Parada destino = ruta.getDestino();
-                float peso = ruta.getCosto();
-                if(discriminantes.get(nodo.getId()).discrs[Preferencias.COSTO.getValor()] != Float.MAX_VALUE && discriminantes.get(nodo.getId()).discrs[Preferencias.COSTO.getValor()] + peso < discriminantes.get(destino.getId()).discrs[Preferencias.COSTO.getValor()])
-                {
-                    System.out.println("El grafo contiene un ciclo de peso negativo");
-                    return null;
-                }
+                System.out.println("Existe un ciclo negativo");
+                return null;
             }
         }
 

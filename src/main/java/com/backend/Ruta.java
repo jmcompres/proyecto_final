@@ -11,15 +11,17 @@ public class Ruta implements Serializable{
     private Parada origen;
     private float tiempo;
     private float distancia;
-    private float costo;
+    private float costoBruto;
+    private float descuento;
 
-    protected Ruta(Parada origen, Parada destino, int id, float tiempo, float distancia, float costo) {
+    protected Ruta(Parada origen, Parada destino, int id, float tiempo, float distancia, float costoBruto) {
         this.origen = origen;
         this.destino = destino;
         this.id = id;
         this.tiempo = tiempo;
         this.distancia = distancia;
-        this.costo = costo;
+        this.costoBruto = costoBruto;
+        this.descuento = 0;
     }
 
     public float getTiempo() {
@@ -38,12 +40,16 @@ public class Ruta implements Serializable{
         this.distancia = distancia;
     }
 
-    public float getCosto() {
-        return costo;
+    public float getCostoNeto() {
+        return costoBruto*(1-descuento);
     }
 
-    public void setCosto(float costo) {
-        this.costo = costo;
+    public float getCostoBruto() {
+        return costoBruto;
+    }
+
+    public void setCostoBruto(float costo) {
+        this.costoBruto = costo;
     }
 
     public int getId() {
@@ -69,5 +75,14 @@ public class Ruta implements Serializable{
     public void setOrigen(Parada origen) {
         this.origen = origen;
     }
+
+    public float getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(float descuento) {
+        this.descuento = descuento;
+    }
+
 
 }
