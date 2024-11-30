@@ -315,7 +315,7 @@ public class Controlador {
             btnModificarRuta.setDisable(false);
             SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, ruta.getTiempo(), 0.5f);
             SpinnerValueFactory<Double> valueFactory2 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, ruta.getDistancia(), 0.5f);
-            SpinnerValueFactory<Double> valueFactory3 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, ruta.getCosto(), 0.5f);
+            SpinnerValueFactory<Double> valueFactory3 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, ruta.getCostoBruto(), 0.5f);
             spnModificarTiempo.setValueFactory(valueFactory);
             spnModificarDistancia.setValueFactory(valueFactory2);
             spnModificarCosto.setValueFactory(valueFactory3);
@@ -327,7 +327,7 @@ public class Controlador {
         Ruta ruta = listaRutas.getSelectionModel().getSelectedItem();
         ruta.setTiempo(spnModificarTiempo.getValue().floatValue());
         ruta.setDistancia(spnModificarDistancia.getValue().floatValue());
-        ruta.setCosto(spnModificarCosto.getValue().floatValue());
+        ruta.setCostoBruto(spnModificarCosto.getValue().floatValue());
         listaRutas.getSelectionModel().clearSelection();
         spnModificarTiempo.setDisable(true);
         spnModificarDistancia.setDisable(true);

@@ -30,7 +30,7 @@ public class PruebaBackend {
         g.agregarRuta(id5, id6, 1, 0, 0);
         g.agregarRuta(id5, id6, 3, 0, 0);
 
-        Preferencias[] prefs = {Preferencias.TIEMPO, Preferencias.TRANSBORDOS, null, null, null};
+        Preferencias[] prefs = {Preferencias.COSTO, Preferencias.NINGUNA, Preferencias.NINGUNA, Preferencias.NINGUNA, Preferencias.NINGUNA};
 
         // List<ParParadaRuta> l = g.encontrarRuta(id1, id6, prefs);
         // for (int i = 0; i<1000000000; i++)
@@ -110,6 +110,30 @@ public class PruebaBackend {
             if (p.ruta() != null) System.out.println(" :"+p.ruta().getId()+": ");
             else System.out.println(" end");
         }
+
+        int idbf1 = g.agregarParada("p1bf", null);
+        int idbf2 = g.agregarParada("p2bf", null);
+        int idbf3 = g.agregarParada("p3bf", null);
+        int idbf4 = g.agregarParada("asd", null);
+
+        g.agregarRuta(idbf1, idbf2, 0, 0, 500);
+        g.agregarRuta(idbf2, idbf3, 0, 0, 5);
+        g.agregarRuta(idbf3,idbf4, 0, 0, 0);
+        g.agregarRuta(idbf4, idbf2, 0, 0, 0);
+        int rutaId = g.agregarRuta(idbf3, idbf2, 0, 0, 10);
+
+        System.out.println("");
+
+        l = g.bellmanFord(1, 6, prefs);
+        for (ParParadaRuta p : l)
+        {
+            System.out.print(p.parada().getId());
+            if (p.ruta() != null) System.out.println(" :"+p.ruta().getId()+": ");
+            else System.out.println(" end");
+        }
+
+        g.modificarDescuentoRuta(1.51f, rutaId);
+
 
         //GestorArchivos.guardarData();
 
