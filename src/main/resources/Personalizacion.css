@@ -43,6 +43,34 @@
     /*-fx-font-style: ;*/
 }
 
-.button{
+#labelParadas{
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+}
 
+#labelRutas{
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+}
+
+#labelRutaOptima{
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+}
+
+.button {
+    -fx-background-color:  #415A77; /* Color base del botón */
+    -fx-text-fill: white;         /* Color del texto */
+    -fx-font-size: 14px;          /* Tamaño de la fuente */
+    -fx-padding: 10px 20px;       /* Espaciado interno */
+    -fx-border-color: transparent;
+}
+
+/* Cambiar el color al pasar el cursor */
+.button:hover {
+    -fx-background-color: #778DA9; /* Color más claro */
+}
+
+.button:pressed {
+    -fx-background-color: #1B263B; /* Color aún más oscuro */
 }

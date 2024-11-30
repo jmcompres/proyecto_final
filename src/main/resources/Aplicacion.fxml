@@ -15,29 +15,30 @@
    <right>
       <VBox fx:id="menuLateral" prefHeight="522.0" prefWidth="242.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Paradas">
+            <Label fx:id="labelParadas" text="Paradas">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="254.0" text="Button" />
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Button" />
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="245.0" text="Button" />
+            <Button fx:id="btnAgregarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="254.0" text="Agregar" />
+            <Button fx:id="btnModificarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Modificar" />
+            <Button fx:id="btnEliminarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="245.0" text="Eliminar" />
             <Pane fx:id="panelEspaciado" prefHeight="49.0" prefWidth="242.0" />
-            <Label text="Rutas">
+            <Label fx:id="labelRutas" text="Rutas">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="245.0" text="Button" />
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Button" />
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="247.0" text="Button" />
+            <Button fx:id="btnAgregarR" mnemonicParsing="false" prefHeight="26.0" prefWidth="245.0" text="Agregar" />
+            <Button fx:id="btnModificarR" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Modificar" />
+            <Button fx:id="btnEliminarR" mnemonicParsing="false" prefHeight="26.0" prefWidth="247.0" text="Eliminar" />
             <Pane fx:id="panelEspaciado2" prefHeight="49.0" prefWidth="242.0" />
-            <Label text="Ruta óptima">
+            <Label fx:id="labelRutaOptima" text="Ruta óptima">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
+            <Button fx:id="btnBuscar" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Buscar" />
          </children>
       </VBox>
    </right>

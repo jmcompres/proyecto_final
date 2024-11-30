@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -60,13 +61,74 @@ public class Controlador {
     @FXML private Spinner<Double> spnLatitud;
     @FXML private Spinner<Double> spnLongitudM;
     @FXML private Spinner<Double> spnLatitudM;
+    @FXML private Button btnAgregarP;
+    @FXML private Button btnModificarP;
+    @FXML private Button btnEliminarP;
+    @FXML private Button btnAgregarR;
+    @FXML private Button btnModificarR;
+    @FXML private Button btnEliminarR;
+    @FXML private Button btnBuscar;
     private static double latMax = 90.0d, lonMax = 180.0d;
 
 
     public void initialize() {
 
         Image image = new Image(getClass().getResourceAsStream("/images/mapa_mundi.jpg"));
+        Image image2 = new Image(getClass().getResourceAsStream("/images/add.png"));
+        Image image3 = new Image(getClass().getResourceAsStream("/images/edit.png"));
+        Image image4 = new Image(getClass().getResourceAsStream("/images/delete.png"));
+        Image image5 = new Image(getClass().getResourceAsStream("/images/search.png"));
         mapaGrafos.setImage(image);
+
+        ImageView imagenAgregar = new ImageView();
+        imagenAgregar.setFitWidth(40);
+        imagenAgregar.setFitHeight(40);
+        imagenAgregar.setImage(image2);
+        btnAgregarP.setGraphic(imagenAgregar);
+        btnAgregarP.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
+        //btnAgregarParada.setAlignment(Pos.CENTER_RIGHT);
+
+        ImageView imagenModificar = new ImageView();
+        imagenModificar.setFitWidth(40);
+        imagenModificar.setFitHeight(40);
+        imagenModificar.setImage(image3);
+        btnModificarP.setGraphic(imagenModificar);
+        btnModificarP.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
+
+        ImageView imagenEliminar = new ImageView();
+        imagenEliminar.setFitWidth(40);
+        imagenEliminar.setFitHeight(40);
+        imagenEliminar.setImage(image4);
+        btnEliminarP.setGraphic(imagenEliminar);
+        btnEliminarP.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
+
+        ImageView imagenAgregar2 = new ImageView();
+        imagenAgregar2.setFitWidth(40);
+        imagenAgregar2.setFitHeight(40);
+        imagenAgregar2.setImage(image2);
+        btnAgregarR.setGraphic(imagenAgregar2);
+        btnAgregarR.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
+
+        ImageView imagenModificar2 = new ImageView();
+        imagenModificar2.setFitWidth(40);
+        imagenModificar2.setFitHeight(40);
+        imagenModificar2.setImage(image3);
+        btnModificarR.setGraphic(imagenModificar2);
+        btnModificarR.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
+
+        ImageView imagenEliminar2 = new ImageView();
+        imagenEliminar2.setFitWidth(40);
+        imagenEliminar2.setFitHeight(40);
+        imagenEliminar2.setImage(image4);
+        btnEliminarR.setGraphic(imagenEliminar2);
+        btnEliminarR.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
+
+        ImageView imagenBuscar = new ImageView();
+        imagenBuscar.setFitWidth(40);
+        imagenBuscar.setFitHeight(40);
+        imagenBuscar.setImage(image5);
+        btnBuscar.setGraphic(imagenBuscar);
+        btnBuscar.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
 
         SpinnerValueFactory<Double> longitudValueFactory = new DoubleSpinnerValueFactory(-180.0, 180.0, 0.0, 1);
         spnLongitud.setValueFactory(longitudValueFactory);
