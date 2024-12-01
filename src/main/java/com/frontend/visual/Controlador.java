@@ -81,51 +81,51 @@ public class Controlador {
         mapaGrafos.setImage(image);
 
         ImageView imagenAgregar = new ImageView();
-        imagenAgregar.setFitWidth(40);
-        imagenAgregar.setFitHeight(40);
+        imagenAgregar.setFitWidth(30);
+        imagenAgregar.setFitHeight(30);
         imagenAgregar.setImage(image2);
         btnAgregarP.setGraphic(imagenAgregar);
         btnAgregarP.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
         //btnAgregarParada.setAlignment(Pos.CENTER_RIGHT);
 
         ImageView imagenModificar = new ImageView();
-        imagenModificar.setFitWidth(40);
-        imagenModificar.setFitHeight(40);
+        imagenModificar.setFitWidth(30);
+        imagenModificar.setFitHeight(30);
         imagenModificar.setImage(image3);
         btnModificarP.setGraphic(imagenModificar);
         btnModificarP.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
 
         ImageView imagenEliminar = new ImageView();
-        imagenEliminar.setFitWidth(40);
-        imagenEliminar.setFitHeight(40);
+        imagenEliminar.setFitWidth(30);
+        imagenEliminar.setFitHeight(30);
         imagenEliminar.setImage(image4);
         btnEliminarP.setGraphic(imagenEliminar);
         btnEliminarP.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
 
         ImageView imagenAgregar2 = new ImageView();
-        imagenAgregar2.setFitWidth(40);
-        imagenAgregar2.setFitHeight(40);
+        imagenAgregar2.setFitWidth(30);
+        imagenAgregar2.setFitHeight(30);
         imagenAgregar2.setImage(image2);
         btnAgregarR.setGraphic(imagenAgregar2);
         btnAgregarR.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
 
         ImageView imagenModificar2 = new ImageView();
-        imagenModificar2.setFitWidth(40);
-        imagenModificar2.setFitHeight(40);
+        imagenModificar2.setFitWidth(30);
+        imagenModificar2.setFitHeight(30);
         imagenModificar2.setImage(image3);
         btnModificarR.setGraphic(imagenModificar2);
         btnModificarR.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
 
         ImageView imagenEliminar2 = new ImageView();
-        imagenEliminar2.setFitWidth(40);
-        imagenEliminar2.setFitHeight(40);
+        imagenEliminar2.setFitWidth(30);
+        imagenEliminar2.setFitHeight(30);
         imagenEliminar2.setImage(image4);
         btnEliminarR.setGraphic(imagenEliminar2);
         btnEliminarR.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
 
         ImageView imagenBuscar = new ImageView();
-        imagenBuscar.setFitWidth(40);
-        imagenBuscar.setFitHeight(40);
+        imagenBuscar.setFitWidth(30);
+        imagenBuscar.setFitHeight(30);
         imagenBuscar.setImage(image5);
         btnBuscar.setGraphic(imagenBuscar);
         btnBuscar.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);

@@ -15,7 +15,7 @@
    <right>
       <VBox fx:id="menuLateral" prefHeight="522.0" prefWidth="242.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="labelParadas" text="Paradas">
+            <Label fx:id="labelParadas" prefHeight="35.0" prefWidth="245.0" text="Paradas">
                <font>
                   <Font size="24.0" />
                </font>
@@ -23,8 +23,8 @@
             <Button fx:id="btnAgregarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="254.0" text="Agregar" />
             <Button fx:id="btnModificarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Modificar" />
             <Button fx:id="btnEliminarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="245.0" text="Eliminar" />
-            <Pane fx:id="panelEspaciado" prefHeight="49.0" prefWidth="242.0" />
-            <Label fx:id="labelRutas" text="Rutas">
+            <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
+            <Label fx:id="labelRutas" prefHeight="35.0" prefWidth="246.0" text="Rutas">
                <font>
                   <Font size="24.0" />
                </font>
@@ -32,8 +32,8 @@
             <Button fx:id="btnAgregarR" mnemonicParsing="false" prefHeight="26.0" prefWidth="245.0" text="Agregar" />
             <Button fx:id="btnModificarR" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Modificar" />
             <Button fx:id="btnEliminarR" mnemonicParsing="false" prefHeight="26.0" prefWidth="247.0" text="Eliminar" />
-            <Pane fx:id="panelEspaciado2" prefHeight="49.0" prefWidth="242.0" />
-            <Label fx:id="labelRutaOptima" text="Ruta óptima">
+            <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
+            <Label fx:id="labelRutaOptima" prefHeight="35.0" prefWidth="244.0" text="Ruta óptima">
                <font>
                   <Font size="24.0" />
                </font>

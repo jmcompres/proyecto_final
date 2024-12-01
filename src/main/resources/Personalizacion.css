@@ -1,76 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+
 #panelPrincipal{
-    -fx-background-color: #1B263B;
-    -fx-border-color: #415A77;
+    -fx-background-color: #301c41;
+    -fx-border-color: #301c41;
     /*-fx-border-width: 1;
     -fx-border-radius: 5;
     -fx-background-radius: 5;*/
 }
 
 #panelSuperior {
-    -fx-background-color: #415A77;
+    -fx-background-color: linear-gradient(to right, #1c0b2b, #413b6b);
+    /*-fx-background-color: #415A77;
     -fx-border-color: #415A77;
     /*-fx-border-width: 1;
     -fx-border-radius: 5;
     -fx-background-radius: 5;*/
 }
 
-#panelEspaciado{
-    -fx-background-color: #415A77;
-    -fx-border-color: #415A77;
-    /*-fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;*/
-}
-
-#panelEspaciado2{
-    -fx-background-color: #415A77;
-    -fx-border-color: #415A77;
-    /*-fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;*/
-}
 
 #menuLateral {
-    -fx-background-color: #415A77;
-    -fx-border-color: #415A77;
+    -fx-background-color: #413b6b;
+    -fx-border-color: #413b6b;
     /*-fx-border-width: 1;
     -fx-border-radius: 5;
     -fx-background-radius: 5;*/
+}
+
+.label{
+    -fx-text-fill: #fcfdff;
+    font-family: "Montserrat", sans-serif;
+    /*font-family: "Roboto", sans-serif;*/
+    /*font-family: "Lato", sans-serif;*/
+    -fx-alignment: center;
+    -fx-font-weight: bold;
 }
 
 #labelSuperior{
-    -fx-text-fill: white;
-    /*-fx-font-style: ;*/
+    font-family: "Montserrat", sans-serif;
+    /*font-family: "Bebas Neue", sans-serif;*/
+    -fx-font-weight: bold;
 }
 
 #labelParadas{
-    -fx-text-fill: white;
     -fx-font-size: 20px;
 }
 
 #labelRutas{
-    -fx-text-fill: white;
     -fx-font-size: 20px;
 }
 
 #labelRutaOptima{
-    -fx-text-fill: white;
     -fx-font-size: 20px;
 }
 
 .button {
-    -fx-background-color:  #415A77; /* Color base del botón */
-    -fx-text-fill: white;         /* Color del texto */
-    -fx-font-size: 14px;          /* Tamaño de la fuente */
-    -fx-padding: 10px 20px;       /* Espaciado interno */
+    -fx-background-color:  #413b6b;
+    -fx-text-fill: #fcfdff;
+    -fx-font-size: 20px;
+    -fx-padding: 10px 20px;
     -fx-border-color: transparent;
+    font-family: "Roboto", sans-serif;
+    -fx-font-weight: 500;
+    -fx-alignment: center-right;
 }
 
-/* Cambiar el color al pasar el cursor */
+
 .button:hover {
-    -fx-background-color: #778DA9; /* Color más claro */
+    -fx-background-color: #5c65c0; /* Color más claro */
 }
 
 .button:pressed {
-    -fx-background-color: #1B263B; /* Color aún más oscuro */
+    -fx-background-color: #301c41; /* Color aún más oscuro */
 }
