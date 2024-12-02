@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+
+#panelPrincipal{
+    -fx-background-color: #301c41;
+    -fx-border-color: #301c41;
+    /*-fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;*/
+}
+
+#panelSuperior {
+    -fx-background-color: linear-gradient(to right, #1c0b2b, #413b6b);
+    /*-fx-background-color: #415A77;
+    -fx-border-color: #415A77;
+    /*-fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;*/
+}
+
+
+#menuLateral {
+    -fx-background-color: #413b6b;
+    -fx-border-color: #413b6b;
+    /*-fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;*/
+}
+
+.label{
+    -fx-text-fill: #fcfdff;
+    font-family: "Montserrat", sans-serif;
+    -fx-alignment: center;
+    -fx-font-weight: bold;
+}
+
+#labelSuperior{
+    font-family: "Montserrat", sans-serif;
+    -fx-font-weight: bold;
+}
+
+#labelParadas{
+    -fx-font-size: 20px;
+}
+
+#labelRutas{
+    -fx-font-size: 20px;
+}
+
+#labelRutaOptima{
+    -fx-font-size: 20px;
+}
+
+.button {
+    -fx-background-color:  #413b6b;
+    -fx-text-fill: #fcfdff;
+    -fx-font-size: 20px;
+    -fx-padding: 10px 20px;
+    -fx-border-color: transparent;
+    font-family: "Roboto", sans-serif;
+    -fx-font-weight: 500;
+    -fx-alignment: center-right;
+}
+
+
+.button:hover {
+    -fx-background-color: #5c65c0; /* Color más claro */
+}
+
+.button:pressed {
+    -fx-background-color: #301c41; /* Color aún más oscuro */
+}
+

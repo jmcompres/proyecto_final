@@ -12,9 +12,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/Aplicacion.fxml"));
         Scene scene = new Scene(root);
+        String css = this.getClass().getResource("/Personalizacion.css").toExternalForm();
+        scene.getStylesheets().add(css);
 
         primaryStage.setResizable(false);
-        //primaryStage.setMaximized(true);
+        primaryStage.setMaximized(true);
 
         primaryStage.setTitle("Gestor de Rutas");
         primaryStage.setScene(scene);

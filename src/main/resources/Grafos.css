@@ -1,0 +1,14 @@
+graph {
+    fill-color: #301c41; /* Color del fondo */
+}
+
+node {
+    fill-color: #5c65c0; /* Color de los nodos */
+    size: 40px;
+}
+
+edge {
+    fill-color: #6f95ff; /* Color de las aristas */
+    size: 6px;
+    arrow-size: 35px, 25px;
+}
