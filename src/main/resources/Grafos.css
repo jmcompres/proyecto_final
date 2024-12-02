@@ -9,4 +9,6 @@ node {
 
 edge {
     fill-color: #6f95ff; /* Color de las aristas */
+    size: 6px;
+    arrow-size: 35px, 25px;
 }
