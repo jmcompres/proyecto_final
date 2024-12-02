@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
@@ -42,10 +43,20 @@
          </children>
       </VBox>
    </right>
-   <center>
-      <Pane fx:id="panelPrincipal" prefHeight="522.0" prefWidth="445.0" BorderPane.alignment="CENTER">
+   <top>
+      <Pane fx:id="panelSuperior" prefHeight="76.0" prefWidth="712.0" BorderPane.alignment="CENTER">
          <children>
-            <Pane fx:id="panelAgregar" prefHeight="398.0" prefWidth="632.0" visible="false">
+            <Label fx:id="labelSuperior" layoutX="14.0" layoutY="12.0" text="Gestor de Rutas">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+         </children></Pane>
+   </top>
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Pane fx:id="panelAgregar" prefHeight="398.0" prefWidth="632.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Button fx:id="btnAgregar" layoutX="540.0" layoutY="353.0" mnemonicParsing="false" text="Agregar" />
                   <Label layoutX="75.0" layoutY="25.0" text="Nombre:">
@@ -74,7 +85,7 @@
                   </Label>
                </children>
             </Pane>
-            <Pane fx:id="panelModificar" prefHeight="390.0" prefWidth="620.0" visible="false">
+            <Pane fx:id="panelModificar" prefHeight="390.0" prefWidth="620.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Button fx:id="btnModificar" disable="true" layoutX="519.0" layoutY="323.0" mnemonicParsing="false" onAction="#modificarP" text="Modificar" />
                   <ListView fx:id="listaParadas" layoutX="61.0" layoutY="95.0" prefHeight="200.0" prefWidth="200.0" />
@@ -104,13 +115,13 @@
                   </Label>
                </children>
             </Pane>
-            <Pane fx:id="panelEliminar" prefHeight="398.0" prefWidth="632.0" visible="false">
+            <Pane fx:id="panelEliminar" prefHeight="398.0" prefWidth="632.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <ListView fx:id="listaParadasEliminar" layoutX="216.0" layoutY="99.0" prefHeight="200.0" prefWidth="200.0" />
                   <Button fx:id="btnEliminar" disable="true" layoutX="534.0" layoutY="326.0" mnemonicParsing="false" onAction="#eliminarP" text="Eliminar" />
                </children>
             </Pane>
-            <Pane fx:id="panelAgregarRuta" prefHeight="390.0" prefWidth="632.0" visible="false">
+            <Pane fx:id="panelAgregarRuta" prefHeight="390.0" prefWidth="632.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <ListView fx:id="listaOrigen" layoutX="48.0" layoutY="54.0" prefHeight="119.0" prefWidth="200.0" />
                   <Pane layoutX="316.0" layoutY="64.0" prefHeight="200.0" prefWidth="270.0">
@@ -149,7 +160,7 @@
                   <ListView fx:id="listaDestino" disable="true" layoutX="48.0" layoutY="238.0" prefHeight="119.0" prefWidth="200.0" />
                </children>
             </Pane>
-            <Pane fx:id="panelModificarRuta" prefHeight="398.0" prefWidth="632.0" visible="false">
+            <Pane fx:id="panelModificarRuta" prefHeight="398.0" prefWidth="632.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <ListView fx:id="listaRutas" layoutX="43.0" layoutY="68.0" prefHeight="200.0" prefWidth="200.0" />
                   <Label layoutX="308.0" layoutY="68.0" text="Tiempo:">
@@ -173,31 +184,22 @@
                   <Button fx:id="btnModificarRuta" layoutX="549.0" layoutY="347.0" mnemonicParsing="false" onAction="#modificarR" text="Modificar" />
                </children>
             </Pane>
-            <Pane fx:id="panelEliminarRuta" prefHeight="390.0" prefWidth="620.0" visible="false">
+            <Pane fx:id="panelEliminarRuta" prefHeight="390.0" prefWidth="620.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <ListView fx:id="listaEliminarRuta" layoutX="210.0" layoutY="95.0" prefHeight="200.0" prefWidth="200.0" />
                   <Button fx:id="btnEliminarRuta" layoutX="518.0" layoutY="330.0" mnemonicParsing="false" onAction="#eliminarR" text="Eliminar" />
                </children>
             </Pane>
       
-            <BorderPane fx:id="contenedorGrafo" prefWidth="400.0" visible="false">
+                  <BorderPane fx:id="contenedorGrafo" prefWidth="400.0" visible="false">
                <center>
                   <Pane fx:id="contenedor" prefHeight="238.0" prefWidth="450.0" style="-fx-border-color: black; -fx-border-width: 6; -fx-padding: 10; -fx-border-style: solid; -fx-border-radius: 5px;">
                      <ImageView fx:id="mapaGrafos" fitHeight="228.0" fitWidth="400.0" preserveRatio="true" visible="false" />
                   </Pane>
                </center>
             </BorderPane>
+            <Pane fx:id="panelPrincipal" prefHeight="522.0" prefWidth="445.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
          </children>
-      </Pane>
+      </AnchorPane>
    </center>
-   <top>
-      <Pane fx:id="panelSuperior" prefHeight="76.0" prefWidth="712.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label fx:id="labelSuperior" layoutX="14.0" layoutY="12.0" text="Gestor de Rutas">
-               <font>
-                  <Font size="36.0" />
-               </font>
-            </Label>
-         </children></Pane>
-   </top>
 </BorderPane>

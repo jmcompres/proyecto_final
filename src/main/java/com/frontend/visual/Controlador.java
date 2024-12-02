@@ -6,13 +6,11 @@ import com.backend.GestorRutas;
 import com.backend.Parada;
 import com.backend.Ruta;
 import com.backend.Localizacion;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -22,6 +20,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.control.SpinnerValueFactory.DoubleSpinnerValueFactory;
+import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.ui.fx_viewer.FxViewer;
+import org.graphstream.ui.fx_viewer.FxViewPanel;
+import org.graphstream.ui.javafx.FxGraphRenderer;
 
 
 public class Controlador {
@@ -68,10 +70,30 @@ public class Controlador {
     @FXML private Button btnModificarR;
     @FXML private Button btnEliminarR;
     @FXML private Button btnBuscar;
+    @FXML private Pane panelPrincipal;
     private static double latMax = 90.0d, lonMax = 180.0d;
 
 
     public void initialize() {
+       // System.setProperty("org.graphstream.ui", "javafx");
+
+        MultiGraph graph = new MultiGraph("GrafoEjemplo");
+        graph.setAttribute("ui.antialias");
+        graph.setAttribute("ui.quality");
+        graph.setAttribute("ui.stylesheet", "url('file:src/main/resources/Grafos.css')");
+
+        FxViewer viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
+        viewer.enableAutoLayout();
+
+        FxViewPanel panel = (FxViewPanel) viewer.addDefaultView(false, new FxGraphRenderer());
+
+        panelPrincipal.getChildren().add(panel);
+        panel.prefHeightProperty().bind(panelPrincipal.heightProperty());
+        panel.prefWidthProperty().bind(panelPrincipal.widthProperty());
+
+        graph.addNode("A").setAttribute("ui.label", "Nodo A");
+        graph.addNode("B").setAttribute("ui.label", "Nodo B");
+        graph.addEdge("AB", "A", "B", true).setAttribute("ui.label", "A->B");
 
         Image image = new Image(getClass().getResourceAsStream("/images/mapa_mundi.jpg"));
         Image image2 = new Image(getClass().getResourceAsStream("/images/add.png"));
@@ -86,7 +108,6 @@ public class Controlador {
         imagenAgregar.setImage(image2);
         btnAgregarP.setGraphic(imagenAgregar);
         btnAgregarP.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
-        //btnAgregarParada.setAlignment(Pos.CENTER_RIGHT);
 
         ImageView imagenModificar = new ImageView();
         imagenModificar.setFitWidth(30);
