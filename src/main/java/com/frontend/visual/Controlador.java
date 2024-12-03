@@ -23,7 +23,9 @@ import javafx.scene.shape.Line;
 import javafx.scene.control.SpinnerValueFactory.DoubleSpinnerValueFactory;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.fx_viewer.FxViewer;
+import org.graphstream.ui.geom.Point3;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
 import org.graphstream.ui.javafx.FxGraphRenderer;
 
@@ -71,18 +73,26 @@ public class Controlador {
     @FXML private Button btnBuscar;
     @FXML private Pane panelPrincipal;
     private static double latMax = 90.0d, lonMax = 180.0d;
-    private MultiGraph graph = new MultiGraph("Grafo");
+    private SingleGraph graph = new SingleGraph("Fixed Position Graph");
+
+    FxViewer viewer;
+    FxViewPanel panel;
 
     public void initialize() {
 
         graph.setAttribute("ui.antialias", true);
         graph.setAttribute("ui.quality", true);
         graph.setAttribute("ui.stylesheet", "url('file:src/main/resources/Grafos.css')");
+        graph.setAttribute("layout.force", false);
 
-        FxViewer viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
+        viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.disableAutoLayout();
 
-        FxViewPanel panel = (FxViewPanel) viewer.addDefaultView(false, new FxGraphRenderer());
+        panel = (FxViewPanel) viewer.addDefaultView(false, new FxGraphRenderer());
+        panel.getCamera().setAutoFitView(false);
+        panel.getCamera().setGraphViewport(-5, 0, panel.widthProperty().doubleValue(), panel.heightProperty().doubleValue());
+        panel.getCamera().setViewCenter(0,0,0);
+        panel.getCamera().setViewPercent(1);
 
         panelPrincipal.getChildren().add(panel);
         panel.prefHeightProperty().bind(panelPrincipal.heightProperty());
@@ -441,11 +451,14 @@ public class Controlador {
         double x = event.getX(); // Coordenada X en el panel
         double y = event.getY(); // Coordenada Y en el panel
 
+        //y = 1-y;
+        Point3 graphCoords = panel.getCamera().transformPxToGu(x, y);
+
         // Agregar nodo al grafo
         String nodeId = "Node" + graph.getNodeCount();
         Node node = graph.addNode(nodeId);
-        node.setAttribute("xy", x, y); // Establecer posición 2D
+        node.setAttribute("xy", graphCoords.x, graphCoords.y); // Establecer posición 2D
 
-        System.out.println("Nodo agregado: " + nodeId + " en posición (" + x + ", " + y + ")");
+        System.out.println("Nodo agregado: " + nodeId + " en posición (" + graphCoords.x + ", " + graphCoords.y + ")");
     }
 }
