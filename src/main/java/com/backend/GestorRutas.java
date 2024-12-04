@@ -30,6 +30,10 @@ public class GestorRutas implements Serializable{
     private static AtomicBoolean fwEnProgreso;
     private static Map<Integer,Map<Integer,List<ParParadaRuta>>> rutasFloydWarshall;  //un mapa para cada discriminante como prioridad principal (excluyendo transbordos mínimos)
 
+    //Expansión Mínima
+    private static Map<Integer,Ruta> mstActual = null;
+    private static boolean expMinActivado = false;
+
 
     /*CONSTRUCTOR, GETTERS Y SETTERS*/
 
@@ -61,6 +65,15 @@ public class GestorRutas implements Serializable{
 
     public Map<Integer, Map<Integer, List<ParParadaRuta>>> getRutasFloydWarshall() {
         return rutasFloydWarshall;
+    }
+
+    public boolean getExpMinActivado() {
+        return expMinActivado;
+    }
+
+    public void setExpMin(boolean val)
+    {
+        expMinActivado = val;
     }
 
     
@@ -455,6 +468,9 @@ public class GestorRutas implements Serializable{
         fwEnProgreso.set(false);
     }
 
+
+    /*ALGORITMOS DE EXPANSIÓN MÍNIMA */
+
     //Este algoritmo está implementado, pero no se utiliza en el proyecto, pues el grafo es dirigido y este algoritmo no funciona para grafos dirigidos
     public Map<Integer,Ruta> prim(Preferencias[] preferencias){
         Map<Integer, RegistroDiscriminates> discriminantes = new HashMap<>(paradas.size());
@@ -580,6 +596,7 @@ public class GestorRutas implements Serializable{
                 uf.union(origen, destino);
             }
         }
+
         return mst;
     }
 
@@ -678,6 +695,12 @@ public class GestorRutas implements Serializable{
     //Método definitivo
     public List<ParParadaRuta> encontrarRuta(int idOrigen, int idDestino, Preferencias preferencias[])
     {
+        if (expMinActivado)
+        {
+            if (mstActual == null) mstActual = kruskal(preferencias);
+            return rutaExpMin(idOrigen, idDestino, mstActual);
+        }
+
         if(!prefsIguales(preferencias)) fwlisto.set(false);
         if (prefFWListo!=null && fwlisto.get()) return rutasFloydWarshall.get(idOrigen).get(idDestino);
         else if (!fwEnProgreso.get()) //evitar que hayan dos hilos haciendo la misma tarea y modificando la misma info

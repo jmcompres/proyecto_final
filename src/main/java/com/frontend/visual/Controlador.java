@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.swing.text.ChangedCharSetException;
+
 import com.backend.GestorRutas;
 import com.backend.Parada;
 import com.backend.Ruta;
@@ -87,6 +89,7 @@ public class Controlador {
     private ObservableList<String> opcionesPrefs;
     private final Set<String> prefsSeleccionadas = new HashSet<>();
 
+    @FXML private CheckBox cbxExpMin;
 
     @FXML private Pane panelPrincipal;
     private static double latMax = 90.0d, lonMax = 180.0d;
@@ -220,6 +223,11 @@ public class Controlador {
     
     private void agregarListener(ComboBox<String> fuente, List<ComboBox<String>> todos, String opcionDefault) {
         fuente.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(newValue))
+            {
+                GestorRutas.getInstance().setExpMin(false);
+                cbxExpMin.setSelected(false);
+            }
             if (oldValue != null && !oldValue.equals(opcionDefault)) {
                 prefsSeleccionadas.remove(oldValue);
             }
@@ -623,6 +631,9 @@ public class Controlador {
         }
     }
 
-
+    public void alternarExpMin()
+    {
+        GestorRutas.getInstance().setExpMin(!GestorRutas.getInstance().getExpMinActivado());
+    }
 }
 

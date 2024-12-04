@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
@@ -59,6 +60,8 @@
                <ComboBox fx:id="cmbPref4" prefHeight="26.0" prefWidth="100.0" promptText="Preferencia Cuaternaria" disable="true" />
             </HBox>
             <Button fx:id="btnBuscar" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Buscar" />
+            <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
+            <CheckBox fx:id="cbxExpMin" onAction="#alternarExpMin" text="Expansión Mínima" alignment="CENTER" style="-fx-text-fill: white;" />
          </children>
       </VBox>
    </right>
