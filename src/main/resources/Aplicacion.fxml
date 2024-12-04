@@ -10,7 +10,10 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+
 
 <BorderPane prefHeight="521.0" prefWidth="712.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.visual.Controlador">
    <right>
@@ -39,10 +42,23 @@
                   <Font size="24.0" />
                </font>
             </Label>
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+               <Label text="1ra pref.:" style="-fx-font-size: 16px;" />
+               <ComboBox fx:id="cmbPref1" prefHeight="26.0" prefWidth="100.0" promptText="Preferencia Principal" />
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+               <Label text="2da pref.:" style="-fx-font-size: 16px;" />
+               <ComboBox fx:id="cmbPref2" prefHeight="26.0" prefWidth="100.0" promptText="Preferencia Secundaria" disable="true" />
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+               <Label text="3ra pref.:" style="-fx-font-size: 16px;" />
+               <ComboBox fx:id="cmbPref3" prefHeight="26.0" prefWidth="100.0" promptText="Preferencia Terciaria" disable="true" />
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+               <Label text="4ta pref.:" style="-fx-font-size: 16px;" />
+               <ComboBox fx:id="cmbPref4" prefHeight="26.0" prefWidth="100.0" promptText="Preferencia Cuaternaria" disable="true" />
+            </HBox>
             <Button fx:id="btnBuscar" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Buscar" />
-            <ComboBox fx:id="cmbPref1" prefHeight="26.0" prefWidth="246.0" promptText="Preferencia Principal" />
-            <ComboBox fx:id="cmbPref2" prefHeight="26.0" prefWidth="246.0" promptText="Preferencia Secundaria" />
-            <ComboBox fx:id="cmbPref3" prefHeight="26.0" prefWidth="246.0" promptText="Preferencia Terciaria" />
          </children>
       </VBox>
    </right>
