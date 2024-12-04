@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
@@ -39,6 +40,9 @@
                </font>
             </Label>
             <Button fx:id="btnBuscar" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Buscar" />
+            <ComboBox fx:id="cmbPref1" prefHeight="26.0" prefWidth="246.0" promptText="Preferencia Principal" />
+            <ComboBox fx:id="cmbPref2" prefHeight="26.0" prefWidth="246.0" promptText="Preferencia Secundaria" />
+            <ComboBox fx:id="cmbPref3" prefHeight="26.0" prefWidth="246.0" promptText="Preferencia Terciaria" />
          </children>
       </VBox>
    </right>

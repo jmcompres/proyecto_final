@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
@@ -20,7 +21,7 @@
                   <Font size="24.0" />
                </font>
             </Label>
-            <Button fx:id="btnAgregarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="254.0" text="Agregar" />
+            <Button fx:id="btnAgregarP" mnemonicParsing="false" onAction="#agregarParada" prefHeight="26.0" prefWidth="254.0" text="Agregar" />
             <Button fx:id="btnModificarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Modificar" />
             <Button fx:id="btnEliminarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="245.0" text="Eliminar" />
             <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
@@ -29,7 +30,7 @@
                   <Font size="24.0" />
                </font>
             </Label>
-            <Button fx:id="btnAgregarR" mnemonicParsing="false" prefHeight="26.0" prefWidth="245.0" text="Agregar" />
+            <Button fx:id="btnAgregarR" mnemonicParsing="false" onAction="#agregarRuta" prefHeight="26.0" prefWidth="245.0" text="Agregar" />
             <Button fx:id="btnModificarR" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Modificar" />
             <Button fx:id="btnEliminarR" mnemonicParsing="false" prefHeight="26.0" prefWidth="247.0" text="Eliminar" />
             <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
@@ -39,6 +40,9 @@
                </font>
             </Label>
             <Button fx:id="btnBuscar" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Buscar" />
+            <ComboBox fx:id="cmbPref1" prefHeight="26.0" prefWidth="246.0" promptText="Preferencia Principal" />
+            <ComboBox fx:id="cmbPref2" prefHeight="26.0" prefWidth="246.0" promptText="Preferencia Secundaria" />
+            <ComboBox fx:id="cmbPref3" prefHeight="26.0" prefWidth="246.0" promptText="Preferencia Terciaria" />
          </children>
       </VBox>
    </right>

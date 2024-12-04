@@ -1,5 +1,7 @@
 package com.frontend.visual;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -73,7 +75,14 @@ public class Controlador {
     @FXML private Button btnAgregarR;
     @FXML private Button btnModificarR;
     @FXML private Button btnEliminarR;
+
     @FXML private Button btnBuscar;
+    @FXML private ComboBox<String> cmbPref1;
+    @FXML private ComboBox<String> cmbPref2;
+    @FXML private ComboBox<String> cmbPref3;
+    private ObservableList<String> opcionesPrefs;
+
+
     @FXML private Pane panelPrincipal;
     private static double latMax = 90.0d, lonMax = 180.0d;
     private SingleGraph graph = new SingleGraph("Fixed Position Graph");
@@ -166,8 +175,42 @@ public class Controlador {
         spnLatitud.setValueFactory(latitudValueFactory);
         spnLatitudM.setValueFactory(latitudValueFactory);
 
-
+        //Iniciar los comboboxes
+        String opcionDefault = "Ninguna";
+        opcionesPrefs = FXCollections.observableArrayList("Costo", "Distancia", "Tiempo", "Transbordos", opcionDefault);
+        cmbPref1.setItems(FXCollections.observableArrayList(opcionesPrefs));
+        cmbPref2.setItems(FXCollections.observableArrayList(opcionesPrefs));
+        cmbPref3.setItems(FXCollections.observableArrayList(opcionesPrefs));
+        agregarListener(cmbPref1, new ArrayList<>(Arrays.asList(cmbPref2, cmbPref3)), opcionDefault);
+        agregarListener(cmbPref2, new ArrayList<>(Arrays.asList(cmbPref1, cmbPref3)), opcionDefault);
+        agregarListener(cmbPref3, new ArrayList<>(Arrays.asList(cmbPref1, cmbPref2)), opcionDefault);
     }
+
+    /*MÉTODOS DE INICIALIZACIÓN*/
+    private void agregarListener(ComboBox<String> fuente, List<ComboBox<String>> otros, String opcionDefault)
+    {
+        fuente.valueProperty().addListener((obs, antiguoVal, neoVal) -> {
+
+            if (antiguoVal != null && !antiguoVal.equals(opcionDefault)) {
+                for (ComboBox<String> comboBox : otros) {
+                    if (!comboBox.getItems().contains(antiguoVal)) {
+                        comboBox.getItems().add(antiguoVal);
+                    }
+                }
+            }
+
+            // Remover la nueva opción seleccionada de los otros ComboBoxes
+            if (neoVal != null && !neoVal.equals(opcionDefault)) {
+                for (ComboBox<String> comboBox : otros) {
+                    comboBox.getItems().remove(neoVal);
+                }
+            }
+        });
+    }
+
+
+
+
 
     public void agregarParada(ActionEvent e){
         panel.setOnMouseClicked(this::handleMouseClick);

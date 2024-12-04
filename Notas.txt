@@ -21,3 +21,5 @@ Ideas
 
 Tener a los nodos en la clase controladora en un ArrayList para acceder
 en tiempo constante (probablemente se accederá más de lo que se insertará o eliminará)
+
+-hacer que no se pueda seleccionar buscar ruta óptima si la preferencia principal no está seleccionada o es "Ninguna"
