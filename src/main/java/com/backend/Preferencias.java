@@ -17,4 +17,13 @@ public enum Preferencias { //Enum con valores para facilitar el acceso a las rut
     public int getValor() {
         return valor;
     }
+
+    public static Preferencias getPorValor(int valor) {
+        for (Preferencias p : Preferencias.values()) {
+            if (p.valor == valor) {
+                return p;
+            }
+        }
+        throw new IllegalArgumentException("Valor inválido: " + valor);
+    }
 }
