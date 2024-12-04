@@ -14,30 +14,24 @@ import com.backend.GestorRutas;
 import com.backend.Parada;
 import com.backend.Ruta;
 import com.backend.Localizacion;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
-import javafx.geometry.Point2D;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.control.SpinnerValueFactory.DoubleSpinnerValueFactory;
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.geom.Point3;
 import org.graphstream.ui.graphicGraph.stylesheet.Value;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
 import org.graphstream.ui.javafx.FxGraphRenderer;
+
+import java.util.Optional;
 
 
 public class Controlador {
@@ -47,33 +41,19 @@ public class Controlador {
     @FXML private TextField txtNombre;
     @FXML private TextField txtLocalizacion;
     @FXML private Pane panelModificar;
-    @FXML private ListView<Parada> listaParadas;
     @FXML private Button btnModificar;
     @FXML private TextField txtNombreM;
     @FXML private TextField txtLocalizacionM;
-    @FXML private Pane panelEliminar;
-    @FXML private ListView<Parada> listaParadasEliminar;
-    @FXML private Button btnEliminar;
     @FXML private Pane panelAgregarRuta;
-    @FXML private ListView<Parada> listaOrigen;
-    @FXML private ListView<Parada> listaDestino;
     @FXML private Spinner<Double> spnTiempo;
     @FXML private Spinner<Double> spnDistancia;
     @FXML private Spinner<Double> spnCosto;
     @FXML private Button btnAgregarRuta;
     @FXML private Button btnModificarRuta;
     @FXML private Pane panelModificarRuta;
-    @FXML private ListView<Ruta> listaRutas;
     @FXML private Spinner<Double> spnModificarTiempo;
     @FXML private Spinner<Double> spnModificarDistancia;
     @FXML private Spinner<Double> spnModificarCosto;
-    @FXML private Pane panelEliminarRuta;
-    @FXML private ListView<Ruta> listaEliminarRuta;
-    @FXML private Button btnEliminarRuta;
-    @FXML private Spinner<Double> spnLongitud;
-    @FXML private Spinner<Double> spnLatitud;
-    @FXML private Spinner<Double> spnLongitudM;
-    @FXML private Spinner<Double> spnLatitudM;
     @FXML private Button btnAgregarP;
     @FXML private Button btnModificarP;
     @FXML private Button btnEliminarP;
@@ -92,13 +72,15 @@ public class Controlador {
     @FXML private CheckBox cbxExpMin;
 
     @FXML private Pane panelPrincipal;
-    private static double latMax = 90.0d, lonMax = 180.0d;
-    private SingleGraph graph = new SingleGraph("Fixed Position Graph");
 
+    private SingleGraph graph = new SingleGraph("Fixed Position Graph");
     FxViewer viewer;
     FxViewPanel panel;
     private Node nodoSeleccionado1;
     private Node nodoSeleccionado2;
+    private Accion accionActual = Accion.NINGUNA;
+    private Double posX;
+    private Double posY;
 
     public void initialize() {
 
@@ -281,242 +263,123 @@ public class Controlador {
         panelModificarRuta.setVisible(false);
         panelEliminarRuta.setVisible(false);
         panelAgregar.setVisible(true);
+    }
 
-        txtNombre.setText("");
-        txtLocalizacion.setText("");*/
+    public void setAccionActual(Accion accion) {
+        this.accionActual = accion;
+    }
+
+    public void agregarParada(ActionEvent e) {
+        setAccionActual(Accion.AGREGAR_NODO);
+        panel.setOnMouseClicked(this::handlePanelClick);
     }
 
     public void agregarP(ActionEvent e) {
-        Localizacion neoLoca = new Localizacion(spnLongitud.getValue(), spnLatitud.getValue(), 0, txtLocalizacion.getText());
+        Localizacion neoLoca = new Localizacion(posX, posY, 0, txtLocalizacion.getText());
         GestorRutas.getInstance().agregarParada(txtNombre.getText(), neoLoca);
+        int id = GestorRutas.getInstance().getIdParadaActual()-1;
+        System.out.println(GestorRutas.getInstance().getParadas().get(id).getNombre());
+        String nodeId = ""+id;
+        Node newNode = graph.addNode(nodeId);
+        newNode.setAttribute("x", posX);
+        newNode.setAttribute("y", posY);
         panelAgregar.setVisible(false);
-        spnLongitud.getValueFactory().setValue(0.0d);
-        spnLatitud.getValueFactory().setValue(0.0d);
-
+        panelAgregar.toBack();
+        txtNombre.setText("");
+        txtLocalizacion.setText("");
     }
 
     public void modificarParada(ActionEvent e) {
-        panelAgregar.setVisible(false);
-        panelEliminar.setVisible(false);
-        panelAgregarRuta.setVisible(false);
-        panelModificarRuta.setVisible(false);
-        panelEliminarRuta.setVisible(false);
+        setAccionActual(Accion.MODIFICAR_NODO);
+        panel.setOnMouseClicked(this::handlePanelClick);
+
         panelModificar.setVisible(true);
 
-        listaParadas.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
-        ObservableList<Parada> paradas = FXCollections.observableArrayList(GestorRutas.getInstance().getParadas().values());
-        listaParadas.setCellFactory(param -> new ListCell<Parada>() {
-            @Override
-            protected void updateItem(Parada parada, boolean empty) {
-                super.updateItem(parada, empty);
-                if (empty || parada == null) {
-                    setText(null);
-                } else {
-                    setText(parada.getNombre());
-                }
-            }
-        });
-        listaParadas.setItems(paradas);
-
-        listaParadas.setOnMouseClicked(event -> {
-            Parada parada = listaParadas.getSelectionModel().getSelectedItem();
-            txtNombreM.setText(parada.getNombre());
-            txtLocalizacionM.setText(parada.getLocalizacion().getDescripcionDireccion());
-            spnLongitudM.getValueFactory().setValue(parada.getLocalizacion().getLongitud());
-            spnLatitudM.getValueFactory().setValue(parada.getLocalizacion().getLatitud());
-            btnModificar.setDisable(false);
-        });
 
     }
 
     public void modificarP(ActionEvent e) {
-        btnModificar.setDisable(true);
-        Parada parada = listaParadas.getSelectionModel().getSelectedItem();
+       /* btnModificar.setDisable(true);
+
         parada.setNombre(txtNombreM.getText());
         parada.getLocalizacion().setDescripcionDireccion(txtLocalizacionM.getText());
-        parada.getLocalizacion().setLongitud(spnLongitudM.getValue());
-        parada.getLocalizacion().setLatitud(spnLatitudM.getValue());
-        listaParadas.getSelectionModel().clearSelection();
+
         panelModificar.setVisible(false);
+        panelModificar.toBack();*/
 
     }
 
     public void eliminarParada(ActionEvent e) {
+        setAccionActual(Accion.ELIMINAR_NODO);
+        panel.setOnMouseClicked(this::handlePanelClick);
         panelModificar.setVisible(false);
         panelAgregar.setVisible(false);
         panelAgregarRuta.setVisible(false);
         panelModificarRuta.setVisible(false);
-        panelEliminarRuta.setVisible(false);
-        panelEliminar.setVisible(true);
-
-        listaParadasEliminar.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
-        ObservableList<Parada> paradasE = FXCollections.observableArrayList(GestorRutas.getInstance().getParadas().values());
-        listaParadasEliminar.setCellFactory(param -> new ListCell<Parada>() {
-            @Override
-            protected void updateItem(Parada parada, boolean empty) {
-                super.updateItem(parada, empty);
-                if (empty || parada == null) {
-                    setText(null);
-                } else {
-                    setText(parada.getNombre());
-                }
-            }
-        });
-        listaParadasEliminar.setItems(paradasE);
-
-        listaParadasEliminar.setOnMouseClicked(event -> {
-            btnEliminar.setDisable(false);
-        });
 
     }
 
     public void eliminarP(ActionEvent e) {
-        btnEliminar.setDisable(true);
+        /*btnEliminar.setDisable(true);
         Parada parada = listaParadasEliminar.getSelectionModel().getSelectedItem();
         GestorRutas.getInstance().eliminarParada(parada.getId());
-        listaParadasEliminar.getItems().remove(parada);
-        panelEliminar.setVisible(false);
+        panelEliminar.setVisible(false);*/
     }
 
     public void agregarRuta(ActionEvent e) {
+        setAccionActual(Accion.AGREGAR_ARISTA);
         panel.setOnMouseClicked(this::handlePanelClick);
-        /*panelModificar.setVisible(false);
+        panelModificar.setVisible(false);
         panelAgregar.setVisible(false);
-        panelEliminar.setVisible(false);
         panelModificarRuta.setVisible(false);
-        panelEliminarRuta.setVisible(false);
         panelAgregarRuta.setVisible(true);
 
-        listaOrigen.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        ObservableList<Parada> paradas = FXCollections.observableArrayList(GestorRutas.getInstance().getParadas().values());
-        listaOrigen.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(Parada parada, boolean empty) {
-                super.updateItem(parada, empty);
-                if (empty || parada == null) {
-                    setText(null);
-                } else {
-                    setText(parada.getNombre());
-                }
-            }
-        });
-        listaOrigen.setItems(paradas);
-
-        listaOrigen.setOnMouseClicked(event -> {
-            Parada paradaOrigen = listaOrigen.getSelectionModel().getSelectedItem();
-            ObservableList<Parada> paradas2 = FXCollections.observableArrayList(GestorRutas.getInstance().getParadas().values());
-            listaDestino.setItems(paradas2);
-            listaDestino.getItems().remove(paradaOrigen);
-            listaDestino.setDisable(false);
-            listaOrigen.setDisable(true);
-        });
-
-        listaDestino.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        listaDestino.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(Parada parada, boolean empty) {
-                super.updateItem(parada, empty);
-                if (empty || parada == null) {
-                    setText(null);
-                } else {
-                    setText(parada.getNombre());
-                }
-            }
-        });
-
-        listaDestino.setOnMouseClicked(event -> {
-            spnTiempo.setDisable(false);
-            spnDistancia.setDisable(false);
-            spnCosto.setDisable(false);
-            btnAgregarRuta.setDisable(false);
-        });
 
         SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, 1.0f, 0.5f);
         SpinnerValueFactory<Double> valueFactory2 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, 1.0f, 0.5f);
         SpinnerValueFactory<Double> valueFactory3 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, 1.0f, 0.5f);
         spnTiempo.setValueFactory(valueFactory);
         spnDistancia.setValueFactory(valueFactory2);
-        spnCosto.setValueFactory(valueFactory3);*/
+        spnCosto.setValueFactory(valueFactory3);
     }
 
     public void agregarR(ActionEvent e) {
-        Parada origen = listaOrigen.getSelectionModel().getSelectedItem();
-        Parada destino = listaDestino.getSelectionModel().getSelectedItem();
-        float tiempo = spnTiempo.getValue().floatValue();
+        /*float tiempo = spnTiempo.getValue().floatValue();
         float distancia = spnDistancia.getValue().floatValue();
         float costo = spnCosto.getValue().floatValue();
         GestorRutas.getInstance().agregarRuta(origen.getId(), destino.getId(), tiempo, distancia, costo);
-        listaOrigen.getSelectionModel().clearSelection();
-        listaOrigen.setDisable(false);
-        listaDestino.getSelectionModel().clearSelection();
-        listaDestino.setDisable(true);
         spnTiempo.setDisable(true);
         spnDistancia.setDisable(true);
         spnCosto.setDisable(true);
         btnAgregarRuta.setDisable(true);
-        panelAgregarRuta.setVisible(false);
+        panelAgregarRuta.setVisible(false);*/
     }
 
     public void modificarRuta(ActionEvent e) {
+        setAccionActual(Accion.MODIFICAR_ARISTA);
+        panel.setOnMouseClicked(this::handlePanelClick);
         panelModificar.setVisible(false);
         panelAgregar.setVisible(false);
-        panelEliminar.setVisible(false);
         panelAgregarRuta.setVisible(false);
-        panelEliminarRuta.setVisible(false);
         panelModificarRuta.setVisible(true);
-
-        listaRutas.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
-        ObservableList<Ruta> rutas = FXCollections.observableArrayList(GestorRutas.getInstance().getRutas().values());
-
-        listaRutas.setCellFactory(param -> new ListCell<Ruta>() {
-            @Override
-            protected void updateItem(Ruta ruta, boolean empty) {
-                super.updateItem(ruta, empty);
-                if (empty || ruta == null) {
-                    setText(null);
-                } else {
-                    String origenNombre = ruta.getOrigen() != null ? ruta.getOrigen().getNombre() : "Desconocido";
-                    String destinoNombre = ruta.getDestino() != null ? ruta.getDestino().getNombre() : "Desconocido";
-                    setText(origenNombre + " - " + destinoNombre);
-                }
-            }
-        });
-        listaRutas.setItems(rutas);
-
-        listaRutas.setOnMouseClicked(event -> {
-            Ruta ruta = listaRutas.getSelectionModel().getSelectedItem();
-            spnModificarTiempo.setDisable(false);
-            spnModificarDistancia.setDisable(false);
-            spnModificarCosto.setDisable(false);
-            btnModificarRuta.setDisable(false);
-            SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, ruta.getTiempo(), 0.5f);
-            SpinnerValueFactory<Double> valueFactory2 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, ruta.getDistancia(), 0.5f);
-            SpinnerValueFactory<Double> valueFactory3 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, ruta.getCostoBruto(), 0.5f);
-            spnModificarTiempo.setValueFactory(valueFactory);
-            spnModificarDistancia.setValueFactory(valueFactory2);
-            spnModificarCosto.setValueFactory(valueFactory3);
-        });
 
     }
 
     public void modificarR(ActionEvent e) {
-        Ruta ruta = listaRutas.getSelectionModel().getSelectedItem();
-        ruta.setTiempo(spnModificarTiempo.getValue().floatValue());
+        /*ruta.setTiempo(spnModificarTiempo.getValue().floatValue());
         ruta.setDistancia(spnModificarDistancia.getValue().floatValue());
-        ruta.setCostoBruto(spnModificarCosto.getValue().floatValue());
-        listaRutas.getSelectionModel().clearSelection();
+        ruta.setCosto(spnModificarCosto.getValue().floatValue());
         spnModificarTiempo.setDisable(true);
         spnModificarDistancia.setDisable(true);
         spnModificarCosto.setDisable(true);
         btnModificarRuta.setDisable(true);
-        panelModificarRuta.setVisible(false);
+        panelModificarRuta.setVisible(false);*/
     }
 
     public void eliminarRuta(ActionEvent e) {
-        panelModificar.setVisible(false);
+        setAccionActual(Accion.ELIMINAR_ARISTA);
+        panel.setOnMouseClicked(this::handlePanelClick);
+        /*panelModificar.setVisible(false);
         panelAgregar.setVisible(false);
         panelEliminar.setVisible(false);
         panelAgregarRuta.setVisible(false);
@@ -543,33 +406,17 @@ public class Controlador {
 
         listaEliminarRuta.setOnMouseClicked(event -> {
             btnEliminarRuta.setDisable(false);
-        });
+        });*/
     }
 
     public void eliminarR(ActionEvent e) {
-        btnEliminarRuta.setDisable(true);
+        /*btnEliminarRuta.setDisable(true);
         Ruta ruta = listaEliminarRuta.getSelectionModel().getSelectedItem();
         GestorRutas.getInstance().eliminarRuta(ruta.getId());
         listaEliminarRuta.getItems().remove(ruta);
-        panelEliminarRuta.setVisible(false);
+        panelEliminarRuta.setVisible(false);*/
     }
 
-
-    private void handleMouseClick(MouseEvent event) {
-        double x = event.getX(); // Coordenada X en el panel
-        double y = event.getY(); // Coordenada Y en el panel
-
-        //y = 1-y;
-        Point3 graphCoords = panel.getCamera().transformPxToGu(x, y);
-       // System.out.println("Clic en: (" + graphCoords.x + ", " + graphCoords.y + ")");
-
-        // Agregar nodo al grafo
-        String nodeId = "Node" + graph.getNodeCount();
-        Node node = graph.addNode(nodeId);
-        node.setAttribute("x", graphCoords.x); // Establecer posición 2D
-        node.setAttribute("y", graphCoords.y);
-       // System.out.println("Nodo: " + node.getId() + " en: (" + node.getAttribute("x") + ", " + node.getAttribute("y") + ")");
-    }
 
     private void handlePanelClick(MouseEvent event) {
         // Obtener las coordenadas del clic en el panel
@@ -578,6 +425,7 @@ public class Controlador {
 
         // Convertir las coordenadas del panel a las coordenadas del grafo
         Point3 graphCoordinates = panel.getCamera().transformPxToGu(clickX, clickY);
+        setCoordinates(graphCoordinates.x, graphCoordinates.y);
         double x = graphCoordinates.x;
         double y = graphCoordinates.y;
         System.out.println("Clic en: (" + x + ", " + y + ")");
@@ -590,36 +438,126 @@ public class Controlador {
 
             // Calcular la distancia entre el clic y el nodo
             double distancia = Math.sqrt(Math.pow(nodeX - x, 2) + Math.pow(nodeY - y, 2));
-            if (distancia < 0.5) { // Rango de selección
+            if (distancia < 0.5) { // Rango de selección, ajústalo según sea necesario
                 nodoCercano = nodo;
                 break;
             }
         }
 
-        // Si encontramos un nodo cercano, seleccionarlo
-        if (nodoCercano != null) {
-            if (nodoSeleccionado1 == null) {
-                // Si el primer nodo no está seleccionado, seleccionarlo
-                nodoSeleccionado1 = nodoCercano;
-                seleccionarNodo(nodoSeleccionado1);
-                System.out.println("Primer nodo seleccionado: " + nodoSeleccionado1.getId());
-            } else if (nodoSeleccionado2 == null && nodoCercano != nodoSeleccionado1) {
-                // Si el segundo nodo no está seleccionado, seleccionarlo (y asegurarse de que no sea el mismo que el primero)
-                nodoSeleccionado2 = nodoCercano;
-                seleccionarNodo(nodoSeleccionado2);
-                System.out.println("Segundo nodo seleccionado: " + nodoSeleccionado2.getId());
+        // Actuar según la acción seleccionada
+        if (nodoCercano != null || accionActual == Accion.AGREGAR_NODO) {
+            switch (accionActual) {
+                case AGREGAR_NODO:
+                    panelAgregar.setVisible(true);
+                    panelAgregar.toFront();
+                    break;
 
-                // Una vez que ambos nodos están seleccionados, agregar la arista entre ellos
-                agregarArista(nodoSeleccionado1, nodoSeleccionado2);
+                case MODIFICAR_NODO:
+                    if (nodoSeleccionado1 == null) {
+                        nodoSeleccionado1 = nodoCercano;
+                        seleccionarNodo(nodoSeleccionado1);
+                        System.out.println("Nodo para modificar seleccionado: " + nodoSeleccionado1.getId());
+                    } else {
+                        deselectNodo(nodoSeleccionado1);
+                        nodoSeleccionado1 = null;
+                        System.out.println("Nodo deseleccionado.");
+                    }
+                    break;
+
+                case ELIMINAR_NODO:
+                    if (nodoSeleccionado1 == null) {
+                        nodoSeleccionado1 = nodoCercano;
+                        seleccionarNodo(nodoSeleccionado1);
+                        System.out.println("Nodo para eliminar seleccionado: " + nodoSeleccionado1.getId());
+                    } else {
+                        graph.removeNode(nodoSeleccionado1.getId());
+                        deselectNodo(nodoSeleccionado1);
+                        nodoSeleccionado1 = null;
+                        System.out.println("Nodo eliminado.");
+                    }
+                    break;
+
+                case AGREGAR_ARISTA:
+                    if (nodoSeleccionado1 == null) {
+                        nodoSeleccionado1 = nodoCercano;
+                        seleccionarNodo(nodoSeleccionado1);
+                        System.out.println("Primer nodo para arista seleccionado: " + nodoSeleccionado1.getId());
+                    } else if (nodoSeleccionado2 == null) {
+                        if (nodoSeleccionado1 == nodoCercano) {
+                            System.out.println("No se puede seleccionar el mismo nodo para la arista.");
+                        } else {
+                            nodoSeleccionado2 = nodoCercano;
+                            seleccionarNodo(nodoSeleccionado2);
+                            System.out.println("Segundo nodo para arista seleccionado: " + nodoSeleccionado2.getId());
+                            agregarArista(nodoSeleccionado1, nodoSeleccionado2);
+                            deselectNodo(nodoSeleccionado1);
+                            deselectNodo(nodoSeleccionado2);
+                            nodoSeleccionado1 = null;
+                            nodoSeleccionado2 = null;
+                            System.out.println("Arista agregada entre los nodos.");
+                        }
+                    }
+                    break;
+
+                case ELIMINAR_ARISTA:
+                    if (nodoSeleccionado1 == null) {
+                        nodoSeleccionado1 = nodoCercano;
+                        seleccionarNodo(nodoSeleccionado1);
+                        System.out.println("Primer nodo para eliminar arista seleccionado: " + nodoSeleccionado1.getId());
+                    } else if (nodoSeleccionado2 == null) {
+                        if (nodoSeleccionado1 == nodoCercano) {
+                            System.out.println("No se puede seleccionar el mismo nodo para la arista.");
+                        } else {
+                            nodoSeleccionado2 = nodoCercano;
+                            seleccionarNodo(nodoSeleccionado2);
+                            System.out.println("Segundo nodo para eliminar arista seleccionado: " + nodoSeleccionado2.getId());
+                            eliminarArista(nodoSeleccionado1, nodoSeleccionado2);
+                            deselectNodo(nodoSeleccionado1);
+                            deselectNodo(nodoSeleccionado2);
+                            nodoSeleccionado1 = null;
+                            nodoSeleccionado2 = null;
+                            System.out.println("Arista eliminada entre los nodos.");
+                        }
+                    }
+                    break;
+
+                case MODIFICAR_ARISTA:
+                    if (nodoSeleccionado1 == null) {
+                        nodoSeleccionado1 = nodoCercano;
+                        seleccionarNodo(nodoSeleccionado1);
+                        System.out.println("Primer nodo para modificar arista seleccionado: " + nodoSeleccionado1.getId());
+                    } else if (nodoSeleccionado2 == null) {
+                        if (nodoSeleccionado1 == nodoCercano) {
+                            System.out.println("No se puede seleccionar el mismo nodo para la arista.");
+                        } else {
+                            nodoSeleccionado2 = nodoCercano;
+                            seleccionarNodo(nodoSeleccionado2);
+                            System.out.println("Segundo nodo para modificar arista seleccionado: " + nodoSeleccionado2.getId());
+                            modificarArista(nodoSeleccionado1, nodoSeleccionado2);
+                            deselectNodo(nodoSeleccionado1);
+                            deselectNodo(nodoSeleccionado2);
+                            nodoSeleccionado1 = null;
+                            nodoSeleccionado2 = null;
+                            System.out.println("Arista modificada entre los nodos.");
+                        }
+                    }
+                    break;
             }
         } else {
             System.out.println("No se seleccionó ningún nodo. Haz clic cerca de un nodo.");
         }
     }
 
+
+
     private void seleccionarNodo(Node nodo) {
         // Resaltar el nodo seleccionado
         nodo.setAttribute("ui.class", "selected");
+    }
+
+    private void deselectNodo(Node nodo) {
+        // Restablecer el color o quitar el estilo de selección
+        nodo.removeAttribute("ui.class");
     }
 
     private void agregarArista(Node nodo1, Node nodo2) {
@@ -635,5 +573,47 @@ public class Controlador {
     {
         GestorRutas.getInstance().setExpMin(!GestorRutas.getInstance().getExpMinActivado());
     }
+  
+    private void eliminarArista(Node origen, Node destino) {
+        String edgeId = origen.getId() + "-" + destino.getId();
+        Edge arista = graph.getEdge(edgeId);
+        if (arista != null) {
+            graph.removeEdge(arista);
+            System.out.println("Arista eliminada: " + edgeId);
+        } else {
+            System.out.println("No existe una arista entre " + origen.getId() + " y " + destino.getId());
+        }
+    }
+
+    private void modificarArista(Node origen, Node destino) {
+        String edgeId = origen.getId() + "-" + destino.getId();
+        Edge arista = graph.getEdge(edgeId);
+        if (arista != null) {
+            // Ejemplo de modificación: Cambiar el peso de la arista
+            arista.setAttribute("weight", 10.0); // Cambiar el atributo que necesites
+            System.out.println("Arista modificada: " + edgeId + " (nuevo peso: 10.0)");
+        } else {
+            System.out.println("No existe una arista entre los nodos seleccionados.");
+        }
+    }
+
+    private boolean confirmarEliminacion(String mensaje) {
+        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+        alerta.setTitle("Confirmar eliminación");
+        alerta.setHeaderText("¿Estás seguro?");
+        alerta.setContentText(mensaje);
+
+        // Esperar la respuesta del usuario
+        Optional<ButtonType> resultado = alerta.showAndWait();
+
+        // Retornar verdadero si el usuario confirma
+        return resultado.isPresent() && resultado.get() == ButtonType.OK;
+    }
+
+    public void setCoordinates(double x, double y) {
+        this.posX = x;
+        this.posY = y;
+    }
+
 }
 
