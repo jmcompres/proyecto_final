@@ -77,7 +77,14 @@
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Pane fx:id="panelAgregar" layoutX="224.8" prefHeight="46.0" prefWidth="153.0" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="400.0" AnchorPane.topAnchor="250.0">
+            <Pane fx:id="panelConfirmacion" layoutX="295.0" layoutY="198.0" prefHeight="170.0" prefWidth="439.0" visible="false">
+               <children>
+                  <Label fx:id="labelConfirmacion" layoutY="77.0" prefHeight="17.0" prefWidth="443.0" text="¿Deseas continuar con la eliminación?" />
+                  <Button fx:id="btnConfirmarEliminacion" layoutX="109.0" layoutY="124.0" mnemonicParsing="false" onAction="#confirmar" text="Eliminar" />
+                  <Button fx:id="btnCancelarEliminacion" layoutX="247.0" layoutY="124.0" mnemonicParsing="false" onAction="#cancelar" text="Cancelar" />
+               </children>
+            </Pane>
+            <Pane fx:id="panelAgregar" layoutX="224.8" prefHeight="46.0" prefWidth="153.0" visible="false" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="400.0" AnchorPane.topAnchor="250.0">
                <children>
                   <Label layoutX="125.0" layoutY="25.0" text="Nombre:">
                      <font>
@@ -96,7 +103,7 @@
             </Pane>
             <Pane fx:id="panelModificar" prefHeight="390.0" prefWidth="620.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Button fx:id="btnModificar" disable="true" layoutX="519.0" layoutY="323.0" mnemonicParsing="false" onAction="#modificarP" text="Modificar" />
+                  <Button fx:id="btnModificar" layoutX="519.0" layoutY="323.0" mnemonicParsing="false" onAction="#modificarP" text="Modificar" />
                   <Label layoutX="290.0" layoutY="25.0" text="Nombre:">
                      <font>
                         <Font size="18.0" />
