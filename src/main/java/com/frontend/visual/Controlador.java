@@ -1,10 +1,17 @@
 package com.frontend.visual;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.backend.GestorRutas;
 import com.backend.Parada;
 import com.backend.Ruta;
 import com.backend.Localizacion;
 import javafx.fxml.FXML;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -49,7 +56,17 @@ public class Controlador {
     @FXML private Button btnAgregarR;
     @FXML private Button btnModificarR;
     @FXML private Button btnEliminarR;
+
     @FXML private Button btnBuscar;
+    @FXML private ComboBox<String> cmbPref1;
+    @FXML private ComboBox<String> cmbPref2;
+    @FXML private ComboBox<String> cmbPref3;
+    @FXML private ComboBox<String> cmbPref4;
+    private ObservableList<String> opcionesPrefs;
+    private final Set<String> prefsSeleccionadas = new HashSet<>();
+
+    @FXML private CheckBox cbxExpMin;
+
     @FXML private Pane panelPrincipal;
 
     private SingleGraph graph = new SingleGraph("Fixed Position Graph");
@@ -136,7 +153,95 @@ public class Controlador {
         btnBuscar.setGraphic(imagenBuscar);
         btnBuscar.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
 
+        //Iniciar los comboboxes
+        String opcionDefault = "Ninguna";
+        opcionesPrefs = FXCollections.observableArrayList("Costo", "Distancia", "Tiempo", "Transbordos", opcionDefault);
+
+        List<ComboBox<String>> comboBoxes = Arrays.asList(cmbPref1, cmbPref2, cmbPref3, cmbPref4);
+        for (ComboBox<String> comboBox : comboBoxes) {
+            comboBox.setItems(FXCollections.observableArrayList(opcionesPrefs));
+            comboBox.setValue(opcionDefault);
+            configurarCellFactory(comboBox);
+        }
+        for (ComboBox<String> comboBox : comboBoxes) {
+            agregarListener(comboBox, comboBoxes, opcionDefault);
+        }
+        agregarHabilitadores(cmbPref1, cmbPref2, opcionDefault);
+        agregarHabilitadores(cmbPref2, cmbPref3, opcionDefault);
+        agregarHabilitadores(cmbPref3, cmbPref4, opcionDefault);
     }
+
+
+    /*MÉTODOS DE INICIALIZACIÓN*/
+    private void configurarCellFactory(ComboBox<String> comboBox) {
+        comboBox.setCellFactory(lv -> new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setDisable(false);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    boolean deshabilitado = prefsSeleccionadas.contains(item) && !item.equals(comboBox.getValue());
+                    setDisable(deshabilitado);
+                    setStyle(deshabilitado ? "-fx-text-fill: gray; -fx-opacity: 0.5;" : "");
+                }
+            }
+        });
+    }
+    
+    private void agregarListener(ComboBox<String> fuente, List<ComboBox<String>> todos, String opcionDefault) {
+        fuente.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (!oldValue.equals(newValue))
+            {
+                GestorRutas.getInstance().setExpMin(false);
+                cbxExpMin.setSelected(false);
+            }
+            if (oldValue != null && !oldValue.equals(opcionDefault)) {
+                prefsSeleccionadas.remove(oldValue);
+            }
+            if (newValue != null && !newValue.equals(opcionDefault)) {
+                prefsSeleccionadas.add(newValue);
+            }
+    
+            // Actualizar solo las celdas sin modificar los ítems
+            for (ComboBox<String> comboBox : todos) {
+                comboBox.setCellFactory(lv -> new ListCell<String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                            setDisable(false);
+                            setStyle("");
+                        } else {
+                            setText(item);
+                            boolean deshabilitado = prefsSeleccionadas.contains(item) && !item.equals(comboBox.getValue());
+                            setDisable(deshabilitado);
+                            setStyle(deshabilitado ? "-fx-text-fill: gray; -fx-opacity: 0.5;" : "");
+                        }
+                    }
+                });
+            }
+        });
+    }
+    
+    private void agregarHabilitadores(ComboBox<String> fuente, ComboBox<String> siguiente, String opcionDefault) {
+        fuente.valueProperty().addListener((obs, antiguoVal, neoVal) -> {
+            if (neoVal.equals(opcionDefault)) {
+                // Desactivar y restablecer el siguiente cmb si la opción por defecto está seleccionada
+                siguiente.setDisable(true);
+                siguiente.setValue(opcionDefault);
+            } else {
+                // Activar el siguiente cmb si la opción por defecto no está seleccionada
+                siguiente.setDisable(false);
+            }
+        });
+    }
+
+
 
     public void setAccionActual(Accion accion) {
         this.accionActual = accion;
@@ -481,6 +586,11 @@ public class Controlador {
     public void setCoordinates(double x, double y) {
         this.posX = x;
         this.posY = y;
+    }
+
+    public void alternarExpMin()
+    {
+        GestorRutas.getInstance().setExpMin(!GestorRutas.getInstance().getExpMinActivado());
     }
 
 }
