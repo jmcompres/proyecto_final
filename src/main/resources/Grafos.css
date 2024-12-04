@@ -12,3 +12,8 @@ edge {
     size: 6px;
     arrow-size: 35px, 25px;
 }
+
+node.selected {
+    fill-color: #413b6b; /* Color del nodo seleccionado */
+
+}
