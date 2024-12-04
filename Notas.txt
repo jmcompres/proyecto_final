@@ -4,6 +4,7 @@ General:
 - Es posible que haya que añadir condiciones en los getters y setters
 - Investigar para qué podríamos usar los árboles de expansión mínima
 - Controlar las preferencias que se le pasan a los algoritmos de expansión mínima, solo distancia, costo y tiempo (no tiene sentido con transbordos)
+- Falta desactivar expansión mínima cuando se agrega, modifican o borran paradas/rutas, ya está cuando se cambian las preferencias
 
 Clase Nodo:
 - Se tienen las adyacencias en listas (en este caso LinkedHashSets, para evitar las repeticiones) porque para los algoritmos de todas formas se tendrán que explorar todos los
@@ -21,3 +22,5 @@ Ideas
 
 Tener a los nodos en la clase controladora en un ArrayList para acceder
 en tiempo constante (probablemente se accederá más de lo que se insertará o eliminará)
+
+-hacer que no se pueda seleccionar buscar ruta óptima si la preferencia principal no está seleccionada o es "Ninguna"
