@@ -5,27 +5,20 @@
 #panelPrincipal{
     -fx-background-color: #301c41;
     -fx-border-color: #301c41;
-    /*-fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;*/
 }
 
 #panelSuperior {
     -fx-background-color: linear-gradient(to right, #1c0b2b, #413b6b);
-    /*-fx-background-color: #415A77;
-    -fx-border-color: #415A77;
-    /*-fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;*/
 }
 
+#panelAgregar {
+    -fx-background-color: #413b6b;
+    -fx-border-color: #413b6b;
+}
 
 #menuLateral {
     -fx-background-color: #413b6b;
     -fx-border-color: #413b6b;
-    /*-fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;*/
 }
 
 .label{
