@@ -4,8 +4,6 @@ import com.backend.GestorRutas;
 import com.backend.Parada;
 import com.backend.Ruta;
 import com.backend.Localizacion;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
@@ -14,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.control.SpinnerValueFactory.DoubleSpinnerValueFactory;
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.fx_viewer.FxViewer;
@@ -187,7 +186,7 @@ public class Controlador {
     }
 
     public void modificarParada(ActionEvent e) {
-        setAccionActual(Accion.MODIFICAR);
+        setAccionActual(Accion.MODIFICAR_NODO);
         panel.setOnMouseClicked(this::handlePanelClick);
         /*panelAgregar.setVisible(false);
         panelEliminar.setVisible(false);
@@ -236,7 +235,7 @@ public class Controlador {
     }
 
     public void eliminarParada(ActionEvent e) {
-        setAccionActual(Accion.ELIMINAR);
+        setAccionActual(Accion.ELIMINAR_NODO);
         panel.setOnMouseClicked(this::handlePanelClick);
         /*panelModificar.setVisible(false);
         panelAgregar.setVisible(false);
@@ -356,7 +355,9 @@ public class Controlador {
     }
 
     public void modificarRuta(ActionEvent e) {
-        panelModificar.setVisible(false);
+        setAccionActual(Accion.MODIFICAR_ARISTA);
+        panel.setOnMouseClicked(this::handlePanelClick);
+        /*panelModificar.setVisible(false);
         panelAgregar.setVisible(false);
         panelEliminar.setVisible(false);
         panelAgregarRuta.setVisible(false);
@@ -394,7 +395,7 @@ public class Controlador {
             spnModificarTiempo.setValueFactory(valueFactory);
             spnModificarDistancia.setValueFactory(valueFactory2);
             spnModificarCosto.setValueFactory(valueFactory3);
-        });
+        });*/
 
     }
 
@@ -412,7 +413,9 @@ public class Controlador {
     }
 
     public void eliminarRuta(ActionEvent e) {
-        panelModificar.setVisible(false);
+        setAccionActual(Accion.ELIMINAR_ARISTA);
+        panel.setOnMouseClicked(this::handlePanelClick);
+        /*panelModificar.setVisible(false);
         panelAgregar.setVisible(false);
         panelEliminar.setVisible(false);
         panelAgregarRuta.setVisible(false);
@@ -439,7 +442,7 @@ public class Controlador {
 
         listaEliminarRuta.setOnMouseClicked(event -> {
             btnEliminarRuta.setDisable(false);
-        });
+        });*/
     }
 
     public void eliminarR(ActionEvent e) {
@@ -449,24 +452,6 @@ public class Controlador {
         listaEliminarRuta.getItems().remove(ruta);
         panelEliminarRuta.setVisible(false);
     }
-
-    private void handleMouseClick(MouseEvent event) {
-        double x = event.getX(); // Coordenada X en el panel
-        double y = event.getY(); // Coordenada Y en el panel
-
-        //y = 1-y;
-        Point3 graphCoords = panel.getCamera().transformPxToGu(x, y);
-        // System.out.println("Clic en: (" + graphCoords.x + ", " + graphCoords.y + ")");
-
-        // Agregar nodo al grafo
-        String nodeId = "Node" + graph.getNodeCount();
-        Node node = graph.addNode(nodeId);
-        node.setAttribute("x", graphCoords.x); // Establecer posición 2D
-        node.setAttribute("y", graphCoords.y);
-        // System.out.println("Nodo: " + node.getId() + " en: (" + node.getAttribute("x") + ", " + node.getAttribute("y") + ")");
-    }
-
-
 
 
     private void handlePanelClick(MouseEvent event) {
@@ -494,40 +479,35 @@ public class Controlador {
             }
         }
 
-        // Si encontramos un nodo cercano, actuamos según la acción seleccionada
+        // Actuar según la acción seleccionada
         if (nodoCercano != null || accionActual == Accion.AGREGAR_NODO) {
             switch (accionActual) {
                 case AGREGAR_NODO:
-                    // Si la acción es AGREGAR_NODO, simplemente agregamos el nodo
                     System.out.println("Nodo nuevo agregado en: (" + x + ", " + y + ")");
                     String nodeId = "Node" + graph.getNodeCount();
-                    Node node = graph.addNode(nodeId);
-                    node.setAttribute("x", graphCoordinates.x); // Establecer posición 2D
-                    node.setAttribute("y", graphCoordinates.y);
+                    Node newNode = graph.addNode(nodeId);
+                    newNode.setAttribute("x", graphCoordinates.x);
+                    newNode.setAttribute("y", graphCoordinates.y);
                     break;
 
-                case MODIFICAR:
-                    // Solo se puede seleccionar un nodo para modificar
+                case MODIFICAR_NODO:
                     if (nodoSeleccionado1 == null) {
                         nodoSeleccionado1 = nodoCercano;
                         seleccionarNodo(nodoSeleccionado1);
                         System.out.println("Nodo para modificar seleccionado: " + nodoSeleccionado1.getId());
                     } else {
-                        // Si ya hay un nodo seleccionado, deseleccionarlo
                         deselectNodo(nodoSeleccionado1);
                         nodoSeleccionado1 = null;
                         System.out.println("Nodo deseleccionado.");
                     }
                     break;
 
-                case ELIMINAR:
-                    // Eliminar el nodo seleccionado
+                case ELIMINAR_NODO:
                     if (nodoSeleccionado1 == null) {
                         nodoSeleccionado1 = nodoCercano;
                         seleccionarNodo(nodoSeleccionado1);
                         System.out.println("Nodo para eliminar seleccionado: " + nodoSeleccionado1.getId());
                     } else {
-                        // Eliminar el nodo
                         graph.removeNode(nodoSeleccionado1.getId());
                         deselectNodo(nodoSeleccionado1);
                         nodoSeleccionado1 = null;
@@ -536,17 +516,13 @@ public class Controlador {
                     break;
 
                 case AGREGAR_ARISTA:
-                    // Selección de nodos para agregar arista
                     if (nodoSeleccionado1 == null) {
                         nodoSeleccionado1 = nodoCercano;
                         seleccionarNodo(nodoSeleccionado1);
                         System.out.println("Primer nodo para arista seleccionado: " + nodoSeleccionado1.getId());
                     } else if (nodoSeleccionado2 == null) {
-                        // Comprobar si el nodo seleccionado es el mismo que el primero
                         if (nodoSeleccionado1 == nodoCercano) {
                             System.out.println("No se puede seleccionar el mismo nodo para la arista.");
-                            deselectNodo(nodoSeleccionado1); // Deseleccionar el primer nodo
-                            nodoSeleccionado1 = null; // Limpiar la referencia
                         } else {
                             nodoSeleccionado2 = nodoCercano;
                             seleccionarNodo(nodoSeleccionado2);
@@ -560,11 +536,57 @@ public class Controlador {
                         }
                     }
                     break;
+
+                case ELIMINAR_ARISTA:
+                    if (nodoSeleccionado1 == null) {
+                        nodoSeleccionado1 = nodoCercano;
+                        seleccionarNodo(nodoSeleccionado1);
+                        System.out.println("Primer nodo para eliminar arista seleccionado: " + nodoSeleccionado1.getId());
+                    } else if (nodoSeleccionado2 == null) {
+                        if (nodoSeleccionado1 == nodoCercano) {
+                            System.out.println("No se puede seleccionar el mismo nodo para la arista.");
+                        } else {
+                            nodoSeleccionado2 = nodoCercano;
+                            seleccionarNodo(nodoSeleccionado2);
+                            System.out.println("Segundo nodo para eliminar arista seleccionado: " + nodoSeleccionado2.getId());
+                            eliminarArista(nodoSeleccionado1, nodoSeleccionado2);
+                            deselectNodo(nodoSeleccionado1);
+                            deselectNodo(nodoSeleccionado2);
+                            nodoSeleccionado1 = null;
+                            nodoSeleccionado2 = null;
+                            System.out.println("Arista eliminada entre los nodos.");
+                        }
+                    }
+                    break;
+
+                case MODIFICAR_ARISTA:
+                    if (nodoSeleccionado1 == null) {
+                        nodoSeleccionado1 = nodoCercano;
+                        seleccionarNodo(nodoSeleccionado1);
+                        System.out.println("Primer nodo para modificar arista seleccionado: " + nodoSeleccionado1.getId());
+                    } else if (nodoSeleccionado2 == null) {
+                        if (nodoSeleccionado1 == nodoCercano) {
+                            System.out.println("No se puede seleccionar el mismo nodo para la arista.");
+                        } else {
+                            nodoSeleccionado2 = nodoCercano;
+                            seleccionarNodo(nodoSeleccionado2);
+                            System.out.println("Segundo nodo para modificar arista seleccionado: " + nodoSeleccionado2.getId());
+                            modificarArista(nodoSeleccionado1, nodoSeleccionado2);
+                            deselectNodo(nodoSeleccionado1);
+                            deselectNodo(nodoSeleccionado2);
+                            nodoSeleccionado1 = null;
+                            nodoSeleccionado2 = null;
+                            System.out.println("Arista modificada entre los nodos.");
+                        }
+                    }
+                    break;
             }
         } else {
             System.out.println("No se seleccionó ningún nodo. Haz clic cerca de un nodo.");
         }
     }
+
+
 
     private void seleccionarNodo(Node nodo) {
         // Resaltar el nodo seleccionado
@@ -582,6 +604,29 @@ public class Controlador {
             String aristaId = nodo1.getId() + "-" + nodo2.getId(); // Generar un identificador único para la arista
             graph.addEdge(aristaId, nodo1.getId(), nodo2.getId(), true); // true para crear una arista dirigida
             System.out.println("Arista agregada entre " + nodo1.getId() + " y " + nodo2.getId());
+        }
+    }
+
+    private void eliminarArista(Node origen, Node destino) {
+        String edgeId = origen.getId() + "-" + destino.getId();
+        Edge arista = graph.getEdge(edgeId);
+        if (arista != null) {
+            graph.removeEdge(arista);
+            System.out.println("Arista eliminada: " + edgeId);
+        } else {
+            System.out.println("No existe una arista entre " + origen.getId() + " y " + destino.getId());
+        }
+    }
+
+    private void modificarArista(Node origen, Node destino) {
+        String edgeId = origen.getId() + "-" + destino.getId();
+        Edge arista = graph.getEdge(edgeId);
+        if (arista != null) {
+            // Ejemplo de modificación: Cambiar el peso de la arista
+            arista.setAttribute("weight", 10.0); // Cambiar el atributo que necesites
+            System.out.println("Arista modificada: " + edgeId + " (nuevo peso: 10.0)");
+        } else {
+            System.out.println("No existe una arista entre los nodos seleccionados.");
         }
     }
 
