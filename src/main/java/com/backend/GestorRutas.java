@@ -472,6 +472,11 @@ public class GestorRutas implements Serializable{
 
 
     /*ALGORITMOS DE EXPANSIÓN MÍNIMA */
+    public void desactivarExpMin()
+    {
+        setExpMin(false);
+        mstActual = null;
+    }
 
     //Este algoritmo está implementado, pero no se utiliza en el proyecto, pues el grafo es dirigido y este algoritmo no funciona para grafos dirigidos
     public Map<Integer,Ruta> prim(Preferencias[] preferencias){

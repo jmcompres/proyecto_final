@@ -7,8 +7,11 @@ import java.util.Set;
 
 import com.backend.GestorRutas;
 import com.backend.Parada;
+import com.backend.Preferencias;
 import com.backend.Ruta;
 import com.backend.Localizacion;
+import com.backend.ParParadaRuta;
+
 import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -69,7 +72,7 @@ public class Controlador {
 
     @FXML private Pane panelPrincipal;
 
-    private SingleGraph graph = new SingleGraph("Fixed Position Graph");
+    private SingleGraph graph = new SingleGraph("Grafo");
     FxViewer viewer;
     FxViewPanel panel;
     private Node nodoSeleccionado1;
@@ -196,7 +199,7 @@ public class Controlador {
         fuente.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (!oldValue.equals(newValue))
             {
-                GestorRutas.getInstance().setExpMin(false);
+                GestorRutas.getInstance().desactivarExpMin();
                 cbxExpMin.setSelected(false);
             }
             if (oldValue != null && !oldValue.equals(opcionDefault)) {
@@ -591,6 +594,19 @@ public class Controlador {
     public void alternarExpMin()
     {
         GestorRutas.getInstance().setExpMin(!GestorRutas.getInstance().getExpMinActivado());
+    }
+
+    public List<ParParadaRuta> rutaOptima()
+    {
+        Preferencias prefs[] = new Preferencias[5];
+        prefs[0] = Preferencias.getPorValor(cmbPref1.getSelectionModel().getSelectedIndex());
+        prefs[0] = Preferencias.getPorValor(cmbPref2.getSelectionModel().getSelectedIndex());
+        prefs[0] = Preferencias.getPorValor(cmbPref3.getSelectionModel().getSelectedIndex());
+        prefs[0] = Preferencias.getPorValor(cmbPref4.getSelectionModel().getSelectedIndex());
+        prefs[0] = Preferencias.NINGUNA;
+
+        //Los ids de las paradas hay que cambiarlos según los nodos a los que se les haga click
+        return GestorRutas.getInstance().encontrarRuta(0, 0, prefs);
     }
 
 }

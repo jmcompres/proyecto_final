@@ -58,7 +58,7 @@
                <Label text="4ta pref.:" style="-fx-font-size: 16px;" />
                <ComboBox fx:id="cmbPref4" prefHeight="26.0" prefWidth="100.0" promptText="Preferencia Cuaternaria" disable="true" />
             </HBox>
-            <Button fx:id="btnBuscar" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Buscar" />
+            <Button fx:id="btnBuscar" onAction="#rutaOptima" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Buscar" />
             <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
             <CheckBox fx:id="cbxExpMin" onAction="#alternarExpMin" text="Expansión Mínima" alignment="CENTER" style="-fx-text-fill: white;" />
          </children>
