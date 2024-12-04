@@ -20,7 +20,7 @@
                   <Font size="24.0" />
                </font>
             </Label>
-            <Button fx:id="btnAgregarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="254.0" text="Agregar" />
+            <Button fx:id="btnAgregarP" mnemonicParsing="false" onAction="#agregarParada" prefHeight="26.0" prefWidth="254.0" text="Agregar" />
             <Button fx:id="btnModificarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Modificar" />
             <Button fx:id="btnEliminarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="245.0" text="Eliminar" />
             <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
@@ -29,7 +29,7 @@
                   <Font size="24.0" />
                </font>
             </Label>
-            <Button fx:id="btnAgregarR" mnemonicParsing="false" prefHeight="26.0" prefWidth="245.0" text="Agregar" />
+            <Button fx:id="btnAgregarR" mnemonicParsing="false" onAction="#agregarRuta" prefHeight="26.0" prefWidth="245.0" text="Agregar" />
             <Button fx:id="btnModificarR" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Modificar" />
             <Button fx:id="btnEliminarR" mnemonicParsing="false" prefHeight="26.0" prefWidth="247.0" text="Eliminar" />
             <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
