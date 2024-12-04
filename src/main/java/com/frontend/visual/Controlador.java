@@ -76,7 +76,8 @@ public class Controlador {
     FxViewPanel panel;
     private Node nodoSeleccionado1;
     private Node nodoSeleccionado2;
-    private Parada paradaSeleccionada = null;
+    private Parada paradaSeleccionada1 = null;
+    private Parada paradaSeleccionada2 = null;
     private Accion accionActual = Accion.NINGUNA;
     private Double posX;
     private Double posY;
@@ -276,8 +277,8 @@ public class Controlador {
     }
 
     public void modificarP(ActionEvent e) {
-        paradaSeleccionada.setNombre(txtNombreM.getText());
-        paradaSeleccionada.getLocalizacion().setDescripcionDireccion(txtLocalizacionM.getText());
+        paradaSeleccionada1.setNombre(txtNombreM.getText());
+        paradaSeleccionada1.getLocalizacion().setDescripcionDireccion(txtLocalizacionM.getText());
         panelModificar.setVisible(false);
         panelModificar.toBack();
 
@@ -291,31 +292,30 @@ public class Controlador {
 
     public void agregarRuta(ActionEvent e) {
         setAccionActual(Accion.AGREGAR_ARISTA);
-        panel.setOnMouseClicked(this::handlePanelClick);
-        panelModificar.setVisible(false);
-        panelAgregar.setVisible(false);
-        panelModificarRuta.setVisible(false);
-        panelAgregarRuta.setVisible(true);
-
-
         SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, 1.0f, 0.5f);
         SpinnerValueFactory<Double> valueFactory2 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, 1.0f, 0.5f);
         SpinnerValueFactory<Double> valueFactory3 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, 1.0f, 0.5f);
         spnTiempo.setValueFactory(valueFactory);
         spnDistancia.setValueFactory(valueFactory2);
         spnCosto.setValueFactory(valueFactory3);
+        panel.setOnMouseClicked(this::handlePanelClick);
     }
 
     public void agregarR(ActionEvent e) {
-        /*float tiempo = spnTiempo.getValue().floatValue();
-        float distancia = spnDistancia.getValue().floatValue();
-        float costo = spnCosto.getValue().floatValue();
-        GestorRutas.getInstance().agregarRuta(origen.getId(), destino.getId(), tiempo, distancia, costo);
-        spnTiempo.setDisable(true);
-        spnDistancia.setDisable(true);
-        spnCosto.setDisable(true);
-        btnAgregarRuta.setDisable(true);
-        panelAgregarRuta.setVisible(false);*/
+        GestorRutas.getInstance().agregarRuta(paradaSeleccionada1.getId(), paradaSeleccionada2.getId(), spnTiempo.getValue().floatValue(), spnDistancia.getValue().floatValue(), spnCosto.getValue().floatValue());
+        agregarArista(nodoSeleccionado1, nodoSeleccionado2);
+        deselectNodo(nodoSeleccionado1);
+        deselectNodo(nodoSeleccionado2);
+        nodoSeleccionado1 = null;
+        nodoSeleccionado2 = null;
+        panelAgregarRuta.setVisible(false);
+        panelAgregarRuta.toBack();
+        SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, 1.0f, 0.5f);
+        SpinnerValueFactory<Double> valueFactory2 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, 1.0f, 0.5f);
+        SpinnerValueFactory<Double> valueFactory3 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, 1.0f, 0.5f);
+        spnTiempo.setValueFactory(valueFactory);
+        spnDistancia.setValueFactory(valueFactory2);
+        spnCosto.setValueFactory(valueFactory3);
     }
 
     public void modificarRuta(ActionEvent e) {
@@ -396,10 +396,10 @@ public class Controlador {
                 case MODIFICAR_NODO:
                     nodoSeleccionado1 = nodoCercano;
                     seleccionarNodo(nodoSeleccionado1);
-                    paradaSeleccionada = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado1.getId()));
-                    System.out.println(paradaSeleccionada.getNombre());
-                    txtNombreM.setText(paradaSeleccionada.getNombre());
-                    txtLocalizacionM.setText(paradaSeleccionada.getLocalizacion().getDescripcionDireccion());
+                    paradaSeleccionada1 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado1.getId()));
+                    System.out.println(paradaSeleccionada1.getNombre());
+                    txtNombreM.setText(paradaSeleccionada1.getNombre());
+                    txtLocalizacionM.setText(paradaSeleccionada1.getLocalizacion().getDescripcionDireccion());
                     panelModificar.setVisible(true);
                     panelModificar.toFront();
                     deselectNodo(nodoSeleccionado1);
@@ -409,7 +409,7 @@ public class Controlador {
                 case ELIMINAR_NODO:
                     nodoSeleccionado1 = nodoCercano;
                     seleccionarNodo(nodoSeleccionado1);
-                    paradaSeleccionada = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado1.getId()));
+                    paradaSeleccionada1 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado1.getId()));
                     panelConfirmacion.setVisible(true);
                     panelConfirmacion.toFront();
                     break;
@@ -418,20 +418,16 @@ public class Controlador {
                     if (nodoSeleccionado1 == null) {
                         nodoSeleccionado1 = nodoCercano;
                         seleccionarNodo(nodoSeleccionado1);
-                        System.out.println("Primer nodo para arista seleccionado: " + nodoSeleccionado1.getId());
+                        paradaSeleccionada1 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado1.getId()));
                     } else if (nodoSeleccionado2 == null) {
                         if (nodoSeleccionado1 == nodoCercano) {
                             System.out.println("No se puede seleccionar el mismo nodo para la arista.");
                         } else {
                             nodoSeleccionado2 = nodoCercano;
                             seleccionarNodo(nodoSeleccionado2);
-                            System.out.println("Segundo nodo para arista seleccionado: " + nodoSeleccionado2.getId());
-                            agregarArista(nodoSeleccionado1, nodoSeleccionado2);
-                            deselectNodo(nodoSeleccionado1);
-                            deselectNodo(nodoSeleccionado2);
-                            nodoSeleccionado1 = null;
-                            nodoSeleccionado2 = null;
-                            System.out.println("Arista agregada entre los nodos.");
+                            paradaSeleccionada2 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado2.getId()));
+                            panelAgregarRuta.setVisible(true);
+                            panelAgregarRuta.toFront();
                         }
                     }
                     break;
@@ -498,11 +494,10 @@ public class Controlador {
     }
 
     private void agregarArista(Node nodo1, Node nodo2) {
-        // Agregar una arista entre los dos nodos seleccionados
         if (nodo1 != null && nodo2 != null) {
-            String aristaId = nodo1.getId() + "-" + nodo2.getId(); // Generar un identificador único para la arista
+            int id = GestorRutas.getInstance().getIdRutaActual()-1;
+            String aristaId = ""+id;
             graph.addEdge(aristaId, nodo1.getId(), nodo2.getId(), true); // true para crear una arista dirigida
-            System.out.println("Arista agregada entre " + nodo1.getId() + " y " + nodo2.getId());
         }
     }
 
@@ -536,7 +531,7 @@ public class Controlador {
 
 
     public void confirmar(ActionEvent e) {
-        GestorRutas.getInstance().eliminarParada(paradaSeleccionada.getId());
+        GestorRutas.getInstance().eliminarParada(paradaSeleccionada1.getId());
         panelConfirmacion.setVisible(false);
         graph.removeNode(nodoSeleccionado1.getId());
         nodoSeleccionado1 = null;

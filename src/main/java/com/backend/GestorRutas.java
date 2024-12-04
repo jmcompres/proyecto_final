@@ -65,6 +65,8 @@ public class GestorRutas implements Serializable{
 
     public int getIdParadaActual() {return idParadaActual;}
 
+    public int getIdRutaActual() {return idRutaActual;}
+
     public Map<Integer, Map<Integer, List<ParParadaRuta>>> getRutasFloydWarshall() {
         return rutasFloydWarshall;
     }
