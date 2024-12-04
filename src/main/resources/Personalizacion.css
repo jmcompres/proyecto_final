@@ -16,6 +16,11 @@
     -fx-border-color: #413b6b;
 }
 
+#panelConfirmacion {
+    -fx-background-color: #413b6b;
+    -fx-border-color: #413b6b;
+}
+
 #menuLateral {
     -fx-background-color: #413b6b;
     -fx-border-color: #413b6b;
@@ -43,6 +48,18 @@
 
 #labelRutaOptima{
     -fx-font-size: 20px;
+}
+
+#labelConfirmacion{
+    -fx-font-size: 20px;
+}
+
+#btnConfirmarEliminacion{
+    -fx-font-size: 12px;
+}
+
+#btnCancelarEliminacion{
+    -fx-font-size: 12px;
 }
 
 .button {
