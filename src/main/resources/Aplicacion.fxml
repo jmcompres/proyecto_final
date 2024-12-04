@@ -21,8 +21,8 @@
                </font>
             </Label>
             <Button fx:id="btnAgregarP" mnemonicParsing="false" onAction="#agregarParada" prefHeight="26.0" prefWidth="254.0" text="Agregar" />
-            <Button fx:id="btnModificarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="246.0" text="Modificar" />
-            <Button fx:id="btnEliminarP" mnemonicParsing="false" prefHeight="26.0" prefWidth="245.0" text="Eliminar" />
+            <Button fx:id="btnModificarP" mnemonicParsing="false" onAction="#modificarParada" prefHeight="26.0" prefWidth="246.0" text="Modificar" />
+            <Button fx:id="btnEliminarP" mnemonicParsing="false" onAction="#eliminarParada" prefHeight="26.0" prefWidth="245.0" text="Eliminar" />
             <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
             <Label fx:id="labelRutas" prefHeight="35.0" prefWidth="246.0" text="Rutas">
                <font>

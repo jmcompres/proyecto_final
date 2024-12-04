@@ -1,31 +1,20 @@
 package com.frontend.visual;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.backend.GestorRutas;
 import com.backend.Parada;
 import com.backend.Ruta;
 import com.backend.Localizacion;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
-import javafx.geometry.Point2D;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.control.SpinnerValueFactory.DoubleSpinnerValueFactory;
 import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.geom.Point3;
@@ -76,12 +65,13 @@ public class Controlador {
     @FXML private Button btnBuscar;
     @FXML private Pane panelPrincipal;
     private static double latMax = 90.0d, lonMax = 180.0d;
-    private SingleGraph graph = new SingleGraph("Fixed Position Graph");
 
+    private SingleGraph graph = new SingleGraph("Fixed Position Graph");
     FxViewer viewer;
     FxViewPanel panel;
     private Node nodoSeleccionado1;
     private Node nodoSeleccionado2;
+    private Accion accionActual = Accion.NINGUNA;
 
     public void initialize() {
 
@@ -169,8 +159,13 @@ public class Controlador {
 
     }
 
-    public void agregarParada(ActionEvent e){
-        panel.setOnMouseClicked(this::handleMouseClick);
+    public void setAccionActual(Accion accion) {
+        this.accionActual = accion;
+    }
+
+    public void agregarParada(ActionEvent e) {
+        setAccionActual(Accion.AGREGAR_NODO);
+        panel.setOnMouseClicked(this::handlePanelClick);
         /*panelModificar.setVisible(false);
         panelEliminar.setVisible(false);
         panelAgregarRuta.setVisible(false);
@@ -192,7 +187,9 @@ public class Controlador {
     }
 
     public void modificarParada(ActionEvent e) {
-        panelAgregar.setVisible(false);
+        setAccionActual(Accion.MODIFICAR);
+        panel.setOnMouseClicked(this::handlePanelClick);
+        /*panelAgregar.setVisible(false);
         panelEliminar.setVisible(false);
         panelAgregarRuta.setVisible(false);
         panelModificarRuta.setVisible(false);
@@ -223,7 +220,7 @@ public class Controlador {
             spnLatitudM.getValueFactory().setValue(parada.getLocalizacion().getLatitud());
             btnModificar.setDisable(false);
         });
-
+*/
     }
 
     public void modificarP(ActionEvent e) {
@@ -239,7 +236,9 @@ public class Controlador {
     }
 
     public void eliminarParada(ActionEvent e) {
-        panelModificar.setVisible(false);
+        setAccionActual(Accion.ELIMINAR);
+        panel.setOnMouseClicked(this::handlePanelClick);
+        /*panelModificar.setVisible(false);
         panelAgregar.setVisible(false);
         panelAgregarRuta.setVisible(false);
         panelModificarRuta.setVisible(false);
@@ -265,7 +264,7 @@ public class Controlador {
         listaParadasEliminar.setOnMouseClicked(event -> {
             btnEliminar.setDisable(false);
         });
-
+*/
     }
 
     public void eliminarP(ActionEvent e) {
@@ -277,6 +276,7 @@ public class Controlador {
     }
 
     public void agregarRuta(ActionEvent e) {
+        setAccionActual(Accion.AGREGAR_ARISTA);
         panel.setOnMouseClicked(this::handlePanelClick);
         /*panelModificar.setVisible(false);
         panelAgregar.setVisible(false);
@@ -450,22 +450,24 @@ public class Controlador {
         panelEliminarRuta.setVisible(false);
     }
 
-
     private void handleMouseClick(MouseEvent event) {
         double x = event.getX(); // Coordenada X en el panel
         double y = event.getY(); // Coordenada Y en el panel
 
         //y = 1-y;
         Point3 graphCoords = panel.getCamera().transformPxToGu(x, y);
-       // System.out.println("Clic en: (" + graphCoords.x + ", " + graphCoords.y + ")");
+        // System.out.println("Clic en: (" + graphCoords.x + ", " + graphCoords.y + ")");
 
         // Agregar nodo al grafo
         String nodeId = "Node" + graph.getNodeCount();
         Node node = graph.addNode(nodeId);
         node.setAttribute("x", graphCoords.x); // Establecer posición 2D
         node.setAttribute("y", graphCoords.y);
-       // System.out.println("Nodo: " + node.getId() + " en: (" + node.getAttribute("x") + ", " + node.getAttribute("y") + ")");
+        // System.out.println("Nodo: " + node.getId() + " en: (" + node.getAttribute("x") + ", " + node.getAttribute("y") + ")");
     }
+
+
+
 
     private void handlePanelClick(MouseEvent event) {
         // Obtener las coordenadas del clic en el panel
@@ -486,27 +488,78 @@ public class Controlador {
 
             // Calcular la distancia entre el clic y el nodo
             double distancia = Math.sqrt(Math.pow(nodeX - x, 2) + Math.pow(nodeY - y, 2));
-            if (distancia < 0.5) { // Rango de selección
+            if (distancia < 0.5) { // Rango de selección, ajústalo según sea necesario
                 nodoCercano = nodo;
                 break;
             }
         }
 
-        // Si encontramos un nodo cercano, seleccionarlo
-        if (nodoCercano != null) {
-            if (nodoSeleccionado1 == null) {
-                // Si el primer nodo no está seleccionado, seleccionarlo
-                nodoSeleccionado1 = nodoCercano;
-                seleccionarNodo(nodoSeleccionado1);
-                System.out.println("Primer nodo seleccionado: " + nodoSeleccionado1.getId());
-            } else if (nodoSeleccionado2 == null && nodoCercano != nodoSeleccionado1) {
-                // Si el segundo nodo no está seleccionado, seleccionarlo (y asegurarse de que no sea el mismo que el primero)
-                nodoSeleccionado2 = nodoCercano;
-                seleccionarNodo(nodoSeleccionado2);
-                System.out.println("Segundo nodo seleccionado: " + nodoSeleccionado2.getId());
+        // Si encontramos un nodo cercano, actuamos según la acción seleccionada
+        if (nodoCercano != null || accionActual == Accion.AGREGAR_NODO) {
+            switch (accionActual) {
+                case AGREGAR_NODO:
+                    // Si la acción es AGREGAR_NODO, simplemente agregamos el nodo
+                    System.out.println("Nodo nuevo agregado en: (" + x + ", " + y + ")");
+                    String nodeId = "Node" + graph.getNodeCount();
+                    Node node = graph.addNode(nodeId);
+                    node.setAttribute("x", graphCoordinates.x); // Establecer posición 2D
+                    node.setAttribute("y", graphCoordinates.y);
+                    break;
 
-                // Una vez que ambos nodos están seleccionados, agregar la arista entre ellos
-                agregarArista(nodoSeleccionado1, nodoSeleccionado2);
+                case MODIFICAR:
+                    // Solo se puede seleccionar un nodo para modificar
+                    if (nodoSeleccionado1 == null) {
+                        nodoSeleccionado1 = nodoCercano;
+                        seleccionarNodo(nodoSeleccionado1);
+                        System.out.println("Nodo para modificar seleccionado: " + nodoSeleccionado1.getId());
+                    } else {
+                        // Si ya hay un nodo seleccionado, deseleccionarlo
+                        deselectNodo(nodoSeleccionado1);
+                        nodoSeleccionado1 = null;
+                        System.out.println("Nodo deseleccionado.");
+                    }
+                    break;
+
+                case ELIMINAR:
+                    // Eliminar el nodo seleccionado
+                    if (nodoSeleccionado1 == null) {
+                        nodoSeleccionado1 = nodoCercano;
+                        seleccionarNodo(nodoSeleccionado1);
+                        System.out.println("Nodo para eliminar seleccionado: " + nodoSeleccionado1.getId());
+                    } else {
+                        // Eliminar el nodo
+                        graph.removeNode(nodoSeleccionado1.getId());
+                        deselectNodo(nodoSeleccionado1);
+                        nodoSeleccionado1 = null;
+                        System.out.println("Nodo eliminado.");
+                    }
+                    break;
+
+                case AGREGAR_ARISTA:
+                    // Selección de nodos para agregar arista
+                    if (nodoSeleccionado1 == null) {
+                        nodoSeleccionado1 = nodoCercano;
+                        seleccionarNodo(nodoSeleccionado1);
+                        System.out.println("Primer nodo para arista seleccionado: " + nodoSeleccionado1.getId());
+                    } else if (nodoSeleccionado2 == null) {
+                        // Comprobar si el nodo seleccionado es el mismo que el primero
+                        if (nodoSeleccionado1 == nodoCercano) {
+                            System.out.println("No se puede seleccionar el mismo nodo para la arista.");
+                            deselectNodo(nodoSeleccionado1); // Deseleccionar el primer nodo
+                            nodoSeleccionado1 = null; // Limpiar la referencia
+                        } else {
+                            nodoSeleccionado2 = nodoCercano;
+                            seleccionarNodo(nodoSeleccionado2);
+                            System.out.println("Segundo nodo para arista seleccionado: " + nodoSeleccionado2.getId());
+                            agregarArista(nodoSeleccionado1, nodoSeleccionado2);
+                            deselectNodo(nodoSeleccionado1);
+                            deselectNodo(nodoSeleccionado2);
+                            nodoSeleccionado1 = null;
+                            nodoSeleccionado2 = null;
+                            System.out.println("Arista agregada entre los nodos.");
+                        }
+                    }
+                    break;
             }
         } else {
             System.out.println("No se seleccionó ningún nodo. Haz clic cerca de un nodo.");
@@ -516,6 +569,11 @@ public class Controlador {
     private void seleccionarNodo(Node nodo) {
         // Resaltar el nodo seleccionado
         nodo.setAttribute("ui.class", "selected");
+    }
+
+    private void deselectNodo(Node nodo) {
+        // Restablecer el color o quitar el estilo de selección
+        nodo.removeAttribute("ui.class");
     }
 
     private void agregarArista(Node nodo1, Node nodo2) {
