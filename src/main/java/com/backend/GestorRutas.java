@@ -30,6 +30,9 @@ public class GestorRutas implements Serializable{
     private static AtomicBoolean fwEnProgreso;
     private static Map<Integer,Map<Integer,List<ParParadaRuta>>> rutasFloydWarshall;  //un mapa para cada discriminante como prioridad principal (excluyendo transbordos mínimos)
 
+
+    /*CONSTRUCTOR, GETTERS Y SETTERS*/
+
     private GestorRutas()
     {
         paradas = new HashMap<Integer, Parada>(capacidadInicial);
@@ -62,7 +65,7 @@ public class GestorRutas implements Serializable{
 
     
 
-    /*OTROS MÉTODOS*/
+    /*MÉTODOS DE GESTIÓN DE PARADAS/RUTAS*/
 
     public int agregarParada(String nombre, Localizacion localizacion) //retorna el índice de la nueva parada
     {
@@ -143,10 +146,12 @@ public class GestorRutas implements Serializable{
         Parada pDestino = ruta.getDestino();
         float descOrg = ruta.getDescuento();
 
+        //Se prueba si el descuento genera un ciclo negativo (se puede confiar el bellman-ford para esto, ya que la existencia de la ruta asegura que exista un camino entre las dos paradas, entonces la única manera de que retorne null es si hay un ciclo negativo)
         ruta.setDescuento(neoDescuento);
         Preferencias[] prefsAux = {Preferencias.COSTO, Preferencias.TIEMPO, Preferencias.NINGUNA, Preferencias.NINGUNA, Preferencias.NINGUNA};
         if (bellmanFord(pOrigen.getId(), pDestino.getId(), prefsAux) == null)
         {
+            //Si genera un ciclo negativo, entonces no se agrega el descuento
             System.out.println("No se puede agregar tal descuento, pues habría un ciclo negativo");
             ruta.setDescuento(descOrg);
             return false;
@@ -248,7 +253,6 @@ public class GestorRutas implements Serializable{
         }
     }
 
-    //SOLO PARA TIEMPO Y DISTANCIA, COMPROBAR QUE NO SE USA CON PRIORIDAD PRINCIPAL TRANSBORDOS O COSTO
     public List<ParParadaRuta> dijkstra(int idOrigen, int idDestino, Preferencias preferencias[])  //retorna una lista con los nodos en la ruta más óptima (Solo funciona con distancias y tiempo, ya que estos solo pueden ser positivos)
     {
         if (!paradas.containsKey(idOrigen) || !paradas.containsKey(idDestino)) return null;
@@ -329,7 +333,6 @@ public class GestorRutas implements Serializable{
                 if (idAdyacente == idDestino) distanciaEncontrada = distancias.get(idAdyacente);  //Encontrada
 
                 RegistroDiscriminates discriminanteActual = new RegistroDiscriminates(paradaActual.getRutas().get(i), discriminantes.get(idActual), false, false);
-                //AQUÍ TAMBIÉN GESTIONAR SI EL DISCRIMINANTE SECUNDARIO ES IGUAL (no debería de haber problema con cómo está ahora, porrque la prioridad principal siempre será la misma [transbordos], pero el algoritmo en general se podría optimizar)
                 if (compararMultiPrefs(discriminanteActual, discriminantes.get(idAdyacente), preferencias) < 0)
                 {
                     discriminantes.replace(idAdyacente, discriminanteActual);
@@ -452,9 +455,7 @@ public class GestorRutas implements Serializable{
         fwEnProgreso.set(false);
     }
 
-
-    //controlar las preferencias que se le pasan a los algoritmos de expansión mínima, solo distancia, costo y tiempo
-
+    //Este algoritmo está implementado, pero no se utiliza en el proyecto, pues el grafo es dirigido y este algoritmo no funciona para grafos dirigidos
     public Map<Integer,Ruta> prim(Preferencias[] preferencias){
         Map<Integer, RegistroDiscriminates> discriminantes = new HashMap<>(paradas.size());
         Map<Integer, ParParadaRuta> predecesores = new HashMap<>(paradas.size());
@@ -476,7 +477,10 @@ public class GestorRutas implements Serializable{
             if(!enMST.get(idNodoActual)){
                 enMST.replace(idNodoActual, true);
 
-                Parada predecesor = predecesores.get(idNodoActual).parada();
+                Parada predecesor;
+                if (idNodoActual == paradaInicial.getId()) predecesor = null;
+                else predecesor = predecesores.get(idNodoActual).parada();
+
                 if (predecesor != null) {
                     for (Ruta ruta : predecesor.getRutas()) {
                         if (ruta.getDestino().equals(nodoActual)) {
@@ -579,6 +583,7 @@ public class GestorRutas implements Serializable{
         return mst;
     }
 
+    //Método para comprobar si las preferencias con las que se están una ruta óptima son iguales a las del mapa floyd-warshall generado
     private boolean prefsIguales(Preferencias prefs[])
     {
         if (prefFWListo == null) return false;
@@ -596,7 +601,82 @@ public class GestorRutas implements Serializable{
         return respuesta;
     }
 
-    public List<ParParadaRuta> encontrarRuta(int idOrigen, int idDestino, Preferencias preferencias[])   //método definitivo
+    //Método para encontrar ruta óptima en expansión mínima (ya que lo que queda es un árbol, solo hay una ruta entre paradas, por lo que es un simple DFS)
+    public List<ParParadaRuta> rutaExpMin(int idOrigen, int idDestino, Map<Integer, Ruta> arbolExpMin)
+    {
+        if (!paradas.containsKey(idOrigen) || !paradas.containsKey(idDestino)) return null;
+
+        List<ParParadaRuta> ruta = new LinkedList<ParParadaRuta>();
+        Map<Integer, Boolean> paradasVisitadas = new HashMap<Integer, Boolean>();
+        for (Parada p : paradas.values())
+            paradasVisitadas.put(p.getId(), false);
+        paradasVisitadas.replace(idOrigen, true);
+
+        ruta.addAll(recursionRutaExpMin(idOrigen, idDestino, arbolExpMin, paradasVisitadas));
+
+        if (ruta.isEmpty()) return null;
+        return ruta;
+    }
+    public List<ParParadaRuta> recursionRutaExpMin(int idActual, int idDestino, Map<Integer, Ruta> arbolExpMin, Map<Integer, Boolean> paradasVisitadas)
+    {
+        paradasVisitadas.replace(idActual, true);
+
+        Parada pActual = paradas.get(idActual);
+
+        //El árbol de expansión mínima se tratará como grafo no dirigido, ya que kruskal no da resultados coherentes para grafos dirigidos, por eso se itera por las paradas apuntadas y las apuntadoras, y no se toma en cuenta la dirección de la ruta
+
+        List<ParParadaRuta> listaTemp = new LinkedList<>();
+        int i = 0; //ínidice por el cuál va la iteración de paradas
+        for (Parada p : pActual.getParadasApuntadas())
+        {
+            if (!arbolExpMin.containsKey(pActual.getRutas().get(i).getId()) || paradasVisitadas.get(p.getId()))
+            {
+                i++;
+                continue;
+            }
+
+            listaTemp.add(new ParParadaRuta(pActual, pActual.getRutas().get(i)));
+            if (p.getId() == idDestino)
+            {
+                listaTemp.add(new ParParadaRuta(p, null));
+                return listaTemp;
+            }
+            listaTemp.addAll(recursionRutaExpMin(p.getId(), idDestino, arbolExpMin, paradasVisitadas));
+            if (listaTemp.size()>1) return listaTemp; //si el tamaño aumenta, entonces se encontró la ruta
+            listaTemp.remove(0); //si
+            i++;
+        }
+        for (Parada p : pActual.getParadasApuntadoras())
+        {
+            i = 0;
+            if (paradasVisitadas.get(p.getId())) continue;
+            for (Parada subp : p.getParadasApuntadas())
+            {
+                if (subp.getId() != pActual.getId() || !arbolExpMin.containsKey(p.getRutas().get(i).getId()))
+                {
+                    i++;
+                    continue;
+                }
+
+                listaTemp.add(new ParParadaRuta(pActual, p.getRutas().get(i)));
+                if (p.getId() == idDestino)
+                {
+                    listaTemp.add(new ParParadaRuta(p, p.getRutas().get(i)));
+                    return listaTemp;
+                }
+                listaTemp.addAll(recursionRutaExpMin(p.getId(), idDestino, arbolExpMin, paradasVisitadas));
+                if (listaTemp.size()>1) return listaTemp;
+                listaTemp.remove(0);
+                i++;
+            }
+        }
+
+        return new LinkedList<>(); //si no se encontró por este lado, entonces se retorna una lista vación para indicar que no se encontró
+    }
+
+
+    //Método definitivo
+    public List<ParParadaRuta> encontrarRuta(int idOrigen, int idDestino, Preferencias preferencias[])
     {
         if(!prefsIguales(preferencias)) fwlisto.set(false);
         if (prefFWListo!=null && fwlisto.get()) return rutasFloydWarshall.get(idOrigen).get(idDestino);
