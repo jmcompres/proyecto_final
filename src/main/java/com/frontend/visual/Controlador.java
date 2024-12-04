@@ -145,8 +145,6 @@ public class Controlador {
     public void agregarParada(ActionEvent e) {
         setAccionActual(Accion.AGREGAR_NODO);
         panel.setOnMouseClicked(this::handlePanelClick);
-        txtNombre.setText("");
-        txtLocalizacion.setText("");
     }
 
     public void agregarP(ActionEvent e) {
@@ -160,6 +158,8 @@ public class Controlador {
         newNode.setAttribute("y", posY);
         panelAgregar.setVisible(false);
         panelAgregar.toBack();
+        txtNombre.setText("");
+        txtLocalizacion.setText("");
     }
 
     public void modificarParada(ActionEvent e) {
