@@ -88,7 +88,7 @@
                   </TableView>
                   <Button fx:id="btnLateralModificar" disable="true" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#modificarR" prefHeight="45.0" prefWidth="241.0" text="Modificar" />
                </children>
-            </VBox>
+            </VBox> 
          </children>
       </AnchorPane>
    </right>
