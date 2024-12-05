@@ -25,14 +25,14 @@ public class GestorRutas implements Serializable{
     private Set<String> nombresParadas;                 //esto para comprobar en tiempo constante que no se repitan los nombres y ubicaciones
 
     //Atributos especiales para floyd-warshall
-    private static Preferencias[] prefFWListo;
-    private static AtomicBoolean fwlisto;
-    private static AtomicBoolean fwEnProgreso;
-    private static Map<Integer,Map<Integer,List<ParParadaRuta>>> rutasFloydWarshall;  //un mapa para cada discriminante como prioridad principal (excluyendo transbordos mínimos)
+    private Preferencias[] prefFWListo;
+    private AtomicBoolean fwlisto;
+    private AtomicBoolean fwEnProgreso;
+    private Map<Integer,Map<Integer,List<ParParadaRuta>>> rutasFloydWarshall;  //un mapa para cada discriminante como prioridad principal (excluyendo transbordos mínimos)
 
     //Expansión Mínima
-    private static Map<Integer,Ruta> mstActual = null;
-    private static boolean expMinActivado = false;
+    private Map<Integer,Ruta> mstActual;
+    private boolean expMinActivado;
 
 
     /*CONSTRUCTOR, GETTERS Y SETTERS*/
@@ -48,6 +48,8 @@ public class GestorRutas implements Serializable{
         fwEnProgreso = new AtomicBoolean(false);
         idParadaActual = 1;
         idRutaActual = 1;
+        mstActual = null;
+        expMinActivado = false;
     }
 
     public static GestorRutas getInstance()
