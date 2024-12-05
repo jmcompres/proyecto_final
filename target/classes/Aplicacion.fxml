@@ -65,28 +65,61 @@
                   <CheckBox fx:id="cbxExpMin" alignment="CENTER" onAction="#alternarExpMin" style="-fx-text-fill: white;" text="Expansión Mínima" />
                </children>
             </VBox>
-            <VBox fx:id="panelLateralEliminarRuta" prefHeight="200.0" prefWidth="100.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox fx:id="panelLateralEliminarRuta" prefHeight="200.0" prefWidth="236.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <TableView fx:id="tablaEliminarRuta" prefHeight="700.0" prefWidth="200.0">
+                  <TableView fx:id="tablaEliminarRuta" prefHeight="700.0" prefWidth="241.0">
                     <columns>
-                      <TableColumn fx:id="columnaIdEliminar" prefWidth="75.0" text="ID" />
-                      <TableColumn fx:id="columnaOrigenEliminar" prefWidth="80.7999267578125" text="Origen" />
-                        <TableColumn fx:id="columnaDestinoEliminar" prefWidth="82.4000244140625" text="Destino" />
+                      <TableColumn fx:id="columnaIdEliminar" prefWidth="75.0" sortable="false" text="ID" />
+                      <TableColumn fx:id="columnaOrigenEliminar" prefWidth="80.7999267578125" sortable="false" text="Origen" />
+                        <TableColumn fx:id="columnaDestinoEliminar" prefWidth="94.0" sortable="false" text="Destino" />
                     </columns>
                   </TableView>
-                  <Button fx:id="btnLateralEliminar" mnemonicParsing="false" onAction="#eliminarR" prefHeight="40.0" prefWidth="241.0" text="Eliminar" />
+                  <Button fx:id="btnLateralEliminar" disable="true" mnemonicParsing="false" onAction="#eliminarR" prefHeight="26.0" prefWidth="250.0" text="Eliminar" />
                </children>
             </VBox>
-            <VBox fx:id="panelLateralModificarRuta" prefHeight="200.0" prefWidth="100.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox fx:id="panelLateralModificarRuta" prefHeight="200.0" prefWidth="250.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <TableView fx:id="tablaModificarRuta" prefHeight="700.0" prefWidth="242.0">
+                  <TableView fx:id="tablaModificarRuta" minWidth="-Infinity" prefHeight="700.0" prefWidth="250.0">
                     <columns>
-                      <TableColumn fx:id="columnaIdModificar" prefWidth="75.99993896484375" text="ID" />
-                      <TableColumn fx:id="columnaOrigenModificar" prefWidth="79.9998779296875" text="Origen" />
-                        <TableColumn fx:id="columnaDestinoModificar" prefWidth="84.800048828125" text="Destino" />
+                      <TableColumn fx:id="columnaIdModificar" editable="false" prefWidth="75.99993896484375" sortable="false" text="ID" />
+                      <TableColumn fx:id="columnaOrigenModificar" prefWidth="79.9998779296875" sortable="false" text="Origen" />
+                        <TableColumn fx:id="columnaDestinoModificar" prefWidth="94.0" sortable="false" text="Destino" />
                     </columns>
                   </TableView>
-                  <Button fx:id="btnLateralModificar" disable="true" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#modificarR" prefHeight="45.0" prefWidth="241.0" text="Modificar" />
+                  <Button fx:id="btnLateralModificar" disable="true" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#modificarR" prefHeight="46.0" prefWidth="250.0" text="Modificar" />
+               </children>
+            </VBox>
+            <VBox fx:id="panelModificarRuta" prefHeight="200.0" prefWidth="100.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label prefHeight="27.0" prefWidth="70.0" text="Tiempo:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Spinner fx:id="spnModificarTiempo" />
+                  <Pane prefHeight="52.0" prefWidth="250.0" visible="false" />
+                  <Label text="Distancia:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Spinner fx:id="spnModificarDistancia" />
+                  <Pane prefHeight="52.0" prefWidth="250.0" />
+                  <Label text="Costo:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Spinner fx:id="spnModificarCosto" />
+                  <Pane prefHeight="52.0" prefWidth="250.0" />
+                  <Label text="Descuento(%):">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Spinner fx:id="spnModificarDescuento" editable="true" />
+                  <Pane prefHeight="52.0" prefWidth="250.0" />
+                  <Button fx:id="btnModificarRuta" disable="false" mnemonicParsing="false" onAction="#ocultarM" prefHeight="43.0" prefWidth="250.0" text="Modificar" />
                </children>
             </VBox> 
          </children>
@@ -103,110 +136,86 @@
          </children></Pane>
    </top>
    <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="200.0" prefWidth="850.0" BorderPane.alignment="CENTER">
          <children>
-            <Pane fx:id="panelAgregar" layoutX="224.8" prefHeight="46.0" prefWidth="153.0" visible="false" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="400.0" AnchorPane.topAnchor="250.0">
+            <Pane fx:id="panelAgregar" layoutX="428.0" layoutY="150.0" prefHeight="233.0" prefWidth="445.0" visible="false">
                <children>
-                  <Label layoutX="125.0" layoutY="25.0" text="Nombre:">
+                  <Label layoutX="98.0" layoutY="42.0" text="Nombre:">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtNombre" layoutX="250.0" layoutY="27.0" />
-                  <TextField fx:id="txtLocalizacion" layoutX="250.0" layoutY="77.0" />
-                  <Label layoutX="100.0" layoutY="75.0" text="Localización:">
+                  <TextField fx:id="txtNombre" layoutX="223.0" layoutY="44.0" />
+                  <TextField fx:id="txtLocalizacion" layoutX="223.0" layoutY="94.0" />
+                  <Label layoutX="73.0" layoutY="92.0" text="Localización:">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Button fx:id="btnAgregar" layoutX="165.0" layoutY="150.0" mnemonicParsing="false" onAction="#agregarP" text="Agregar" />
+                  <Button fx:id="btnAgregar" layoutX="169.0" layoutY="155.0" mnemonicParsing="false" onAction="#agregarP" text="Agregar" />
                </children>
             </Pane>
-            <Pane fx:id="panelModificar" prefHeight="390.0" prefWidth="620.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Pane fx:id="panelModificar" layoutX="314.0" layoutY="134.0" prefHeight="310.0" prefWidth="542.0" visible="false">
                <children>
-                  <Button fx:id="btnModificar" disable="false" layoutX="519.0" layoutY="323.0" mnemonicParsing="false" onAction="#modificarP" text="Modificar" />
-                  <Label layoutX="290.0" layoutY="25.0" text="Nombre:">
+                  <Button fx:id="btnModificar" disable="false" layoutX="204.0" layoutY="218.0" mnemonicParsing="false" onAction="#modificarP" text="Modificar" />
+                  <Label layoutX="129.0" layoutY="79.0" text="Nombre:">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtNombreM" layoutX="425.0" layoutY="25.0" />
-                  <TextField fx:id="txtLocalizacionM" layoutX="425.0" layoutY="75.0" />
-                  <Label layoutX="290.0" layoutY="75.0" text="Localización:">
+                  <TextField fx:id="txtNombreM" layoutX="264.0" layoutY="79.0" />
+                  <TextField fx:id="txtLocalizacionM" layoutX="264.0" layoutY="129.0" />
+                  <Label layoutX="129.0" layoutY="129.0" text="Localización:">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
                </children>
             </Pane>
-            <Pane fx:id="panelAgregarRuta" prefHeight="390.0" prefWidth="632.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Pane fx:id="panelAgregarRuta" layoutX="347.0" layoutY="100.0" prefHeight="390.0" prefWidth="632.0" visible="false">
                <children>
-                  <Button fx:id="btnAgregarRuta" layoutX="548.0" layoutY="344.0" mnemonicParsing="false" onAction="#agregarR" text="Agregar" />
-                  <Label layoutX="272.0" layoutY="164.0" text="Tiempo:">
+                  <Button fx:id="btnAgregarRuta" layoutX="447.0" layoutY="172.0" mnemonicParsing="false" onAction="#agregarR" text="Agregar" />
+                  <Label layoutX="98.0" layoutY="114.0" text="Tiempo:">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Label layoutX="272.0" layoutY="233.0" text="Distancia:">
+                  <Label layoutX="98.0" layoutY="183.0" text="Distancia:">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Label layoutX="272.0" layoutY="299.0" text="Costo:">
+                  <Label layoutX="98.0" layoutY="249.0" text="Costo:">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Spinner fx:id="spnTiempo" layoutX="348.0" layoutY="165.0" />
-                  <Spinner fx:id="spnDistancia" layoutX="351.0" layoutY="234.0" />
-                  <Spinner fx:id="spnCosto" layoutX="351.0" layoutY="300.0" />
-               </children>
-            </Pane>
-            <Pane fx:id="panelModificarRuta" prefHeight="398.0" prefWidth="632.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <Label layoutX="308.0" layoutY="68.0" text="Tiempo:">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="302.0" layoutY="135.0" text="Distancia:">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="302.0" layoutY="199.0" text="Costo:">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="302.0" layoutY="263.0" text="Descuento(%):">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Spinner fx:id="spnModificarTiempo" layoutX="426.0" layoutY="69.0" />
-                  <Spinner fx:id="spnModificarDistancia" layoutX="426.0" layoutY="136.0" />
-                  <Spinner fx:id="spnModificarCosto" layoutX="426.0" layoutY="200.0" />
-                  <Spinner fx:id="spnModificarDescuento" layoutX="426.0" layoutY="263.0" />
-                  <Button fx:id="btnModificarRuta" disable="false" layoutX="549.0" layoutY="347.0" mnemonicParsing="false" onAction="#ocultarM" text="Modificar" />
+                  <Spinner fx:id="spnTiempo" editable="true" layoutX="185.0" layoutY="115.0" />
+                  <Spinner fx:id="spnDistancia" editable="true" layoutX="188.0" layoutY="184.0" />
+                  <Spinner fx:id="spnCosto" editable="true" layoutX="188.0" layoutY="250.0" />
                </children>
             </Pane>
             <Pane fx:id="panelPrincipal" prefHeight="522.0" prefWidth="445.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <Pane fx:id="panelConfirmacion" layoutX="219.0" layoutY="150.0" prefHeight="200.0" prefWidth="418.0" visible="false">
+            <Pane fx:id="panelConfirmacion" layoutX="422.0" layoutY="184.0" prefHeight="200.0" prefWidth="418.0" visible="false">
                <children>
-                  <Button fx:id="btnConfirmarEliminacion" layoutX="93.0" layoutY="149.0" mnemonicParsing="false" onAction="#confirmar" text="Eliminar" />
-                  <Button fx:id="btnCancelarEliminacion" layoutX="247.0" layoutY="149.0" mnemonicParsing="false" onAction="#cancelar" text="Cancelar" />
-                  <Label fx:id="labelConfirmacion" layoutX="-3.0" layoutY="83.0" prefHeight="17.0" prefWidth="424.0" text="¿Desea continuar con la eliminación?" />
+                  <Button fx:id="btnConfirmarEliminacion" layoutX="78.0" layoutY="140.0" mnemonicParsing="false" onAction="#confirmar" text="Eliminar" />
+                  <Button fx:id="btnCancelarEliminacion" layoutX="232.0" layoutY="140.0" mnemonicParsing="false" onAction="#cancelar" text="Cancelar" />
+                  <Label fx:id="labelConfirmacion" layoutX="-3.0" layoutY="67.0" prefHeight="17.0" prefWidth="424.0" text="¿Desea continuar con la eliminación?" />
                </children>
             </Pane>
          </children>
       </AnchorPane>
    </center>
    <bottom>
-      <Pane fx:id="panelInferior" prefHeight="30.0" prefWidth="500.0">
+      <AnchorPane>
          <children>
-            <Label fx:id="labelCoordenadas" layoutX="10.0" layoutY="5.0" style="-fx-text-fill: white;" text="Latitud: 0°, Longitud: 0°" />
+            <Pane fx:id="panelInferior" prefHeight="30.0" prefWidth="955.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label fx:id="labelCoordenadas" layoutX="10.0" layoutY="5.0" style="-fx-text-fill: #301c41;" text="Latitud: 0°, Longitud: 0°" />
+               </children>
+            </Pane>
+            <Pane fx:id="panelInferior2" layoutX="950.4" prefHeight="30.0" prefWidth="249.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
          </children>
-      </Pane>
+      </AnchorPane>
    </bottom>
 </BorderPane>

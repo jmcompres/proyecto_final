@@ -211,7 +211,7 @@
          <children>
             <Pane fx:id="panelInferior" prefHeight="30.0" prefWidth="955.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Label fx:id="labelCoordenadas" layoutX="10.0" layoutY="5.0" style="-fx-text-fill: white;" text="Latitud: 0°, Longitud: 0°" />
+                  <Label fx:id="labelCoordenadas" layoutX="10.0" layoutY="5.0" style="-fx-text-fill: #301c41;" text="Latitud: 0°, Longitud: 0°" />
                </children>
             </Pane>
             <Pane fx:id="panelInferior2" layoutX="950.4" prefHeight="30.0" prefWidth="249.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />

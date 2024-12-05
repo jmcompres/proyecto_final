@@ -295,8 +295,7 @@ public class Controlador {
         fuente.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (!oldValue.equals(newValue))
             {
-                GestorRutas.getInstance().desactivarExpMin();
-                cbxExpMin.setSelected(false);
+                noExpMin();
             }
             if (oldValue != null && !oldValue.equals(opcionDefault)) {
                 prefsSeleccionadas.remove(oldValue);
@@ -363,7 +362,7 @@ public class Controlador {
 
     public void agregarParada(ActionEvent e) {
         /**/
-        labelCoordenadas.setStyle("-fx-text-fill: black;");
+        labelCoordenadas.setStyle("-fx-text-fill: white;");
         mouseTracking = true;
         /**/
         setAccionActual(Accion.AGREGAR_NODO);
@@ -384,6 +383,8 @@ public class Controlador {
         panelAgregar.toBack();
         txtNombre.setText("");
         txtLocalizacion.setText("");
+
+        noExpMin();
     }
 
     public void modificarParada(ActionEvent e) {
@@ -396,7 +397,7 @@ public class Controlador {
         paradaSeleccionada1.getLocalizacion().setDescripcionDireccion(txtLocalizacionM.getText());
         panelModificar.setVisible(false);
         panelModificar.toBack();
-
+        noExpMin();
     }
 
     public void eliminarParada(ActionEvent e) {
@@ -525,7 +526,7 @@ public class Controlador {
     private void handlePanelClick(MouseEvent event) {
         /**/
         mouseTracking = false;
-        labelCoordenadas.setStyle("-fx-text-fill: white;");
+        labelCoordenadas.setStyle("-fx-text-fill: #301c41;");
         /**/
         /**/
         // Convertir las coordenadas del panel a las coordenadas del grafo
@@ -644,6 +645,8 @@ public class Controlador {
             arista.setAttribute("Tiempo", tiempo);
             arista.setAttribute("Distancia", distancia);
             arista.setAttribute("Costo", costo);
+
+            noExpMin();
         }
     }
 
@@ -674,6 +677,7 @@ public class Controlador {
             rutaSeleccionada.setDescuento(descuento/100);
             //deseleccionar arista
             aristasDelGrafo.get(rutaSeleccionada.getId()).removeAttribute("ui.class");
+            noExpMin();
         } else {
             System.out.println("No existe una arista entre los nodos seleccionados.");
         }
@@ -700,6 +704,7 @@ public class Controlador {
             GestorRutas.getInstance().eliminarParada(paradaSeleccionada1.getId());
             graph.removeNode(nodoSeleccionado1.getId());
             nodoSeleccionado1 = null;
+            noExpMin();
         }
         panelConfirmacion.setVisible(false);
     }
@@ -792,6 +797,13 @@ public class Controlador {
             nodo.removeAttribute("ui.class");
             if (arista != null) arista.removeAttribute("ui.class");
         }
+    }
+
+    private void noExpMin()
+    {
+        GestorRutas.getInstance().desactivarExpMin();
+        cbxExpMin.setSelected(false);
+        desModoExpMin();
     }
 
 }
