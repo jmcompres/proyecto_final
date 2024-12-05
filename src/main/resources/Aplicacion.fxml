@@ -88,6 +88,39 @@
                   </TableView>
                   <Button fx:id="btnLateralModificar" disable="true" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#modificarR" prefHeight="46.0" prefWidth="250.0" text="Modificar" />
                </children>
+            </VBox>
+            <VBox fx:id="panelModificarRuta" prefHeight="200.0" prefWidth="100.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label prefHeight="27.0" prefWidth="70.0" text="Tiempo:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Spinner fx:id="spnModificarTiempo" />
+                  <Pane prefHeight="52.0" prefWidth="250.0" visible="false" />
+                  <Label text="Distancia:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Spinner fx:id="spnModificarDistancia" />
+                  <Pane prefHeight="52.0" prefWidth="250.0" />
+                  <Label text="Costo:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Spinner fx:id="spnModificarCosto" />
+                  <Pane prefHeight="52.0" prefWidth="250.0" />
+                  <Label text="Descuento(%):">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Spinner fx:id="spnModificarDescuento" editable="true" />
+                  <Pane prefHeight="52.0" prefWidth="250.0" />
+                  <Button fx:id="btnModificarRuta" disable="false" mnemonicParsing="false" onAction="#ocultarM" prefHeight="43.0" prefWidth="250.0" text="Modificar" />
+               </children>
             </VBox> 
          </children>
       </AnchorPane>
@@ -160,35 +193,6 @@
                   <Spinner fx:id="spnTiempo" editable="true" layoutX="185.0" layoutY="115.0" />
                   <Spinner fx:id="spnDistancia" editable="true" layoutX="188.0" layoutY="184.0" />
                   <Spinner fx:id="spnCosto" editable="true" layoutX="188.0" layoutY="250.0" />
-               </children>
-            </Pane>
-            <Pane fx:id="panelModificarRuta" layoutX="375.0" layoutY="113.0" prefHeight="306.0" prefWidth="512.0" visible="false">
-               <children>
-                  <Label layoutX="39.0" layoutY="55.0" text="Tiempo:">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="33.0" layoutY="122.0" text="Distancia:">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="33.0" layoutY="186.0" text="Costo:">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="33.0" layoutY="250.0" text="Descuento(%):">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Spinner fx:id="spnModificarTiempo" layoutX="175.0" layoutY="52.0" />
-                  <Spinner fx:id="spnModificarDistancia" layoutX="175.0" layoutY="119.0" />
-                  <Spinner fx:id="spnModificarCosto" layoutX="175.0" layoutY="183.0" />
-                  <Spinner fx:id="spnModificarDescuento" editable="true" layoutX="175.0" layoutY="246.0" />
-                  <Button fx:id="btnModificarRuta" disable="false" layoutX="347.0" layoutY="141.0" mnemonicParsing="false" onAction="#ocultarM" text="Modificar" />
                </children>
             </Pane>
             <Pane fx:id="panelPrincipal" prefHeight="522.0" prefWidth="445.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
