@@ -1,12 +1,12 @@
 package com.backend;
 
-import java.util.List;
-import java.util.Map;
+//import java.util.List;
+//import java.util.Map;
 
 public class PruebaBackend {
     public static void main(String[] args) {
 
-        GestorRutas g = GestorRutas.getInstance();
+        //GestorRutas g = GestorRutas.getInstance();
 
         // int id1 = g.agregarParada("p1", null);
         // int id2 = g.agregarParada("p2", null);
@@ -139,65 +139,65 @@ public class PruebaBackend {
 
 
         /*PROBANDO EXPANSIÓN MÍNIMA*/
-        Preferencias[] prefs = {Preferencias.TIEMPO, null, null, null, null};
+        // Preferencias[] prefs = {Preferencias.TIEMPO, null, null, null, null};
 
-        int idA = g.agregarParada("A", null);
-        int idB = g.agregarParada("B", null);
-        int idC = g.agregarParada("C", null);
-        int idD = g.agregarParada("D", null);
-        int idE = g.agregarParada("E", null);
-        int idF = g.agregarParada("F", null);
-        int idG = g.agregarParada("G", null);
-        int idH = g.agregarParada("H", null);
-        int idI = g.agregarParada("I", null);
-        int idJ = g.agregarParada("J", null);
-        int idK = g.agregarParada("K", null);
+        // int idA = g.agregarParada("A", null);
+        // int idB = g.agregarParada("B", null);
+        // int idC = g.agregarParada("C", null);
+        // int idD = g.agregarParada("D", null);
+        // int idE = g.agregarParada("E", null);
+        // int idF = g.agregarParada("F", null);
+        // int idG = g.agregarParada("G", null);
+        // int idH = g.agregarParada("H", null);
+        // int idI = g.agregarParada("I", null);
+        // int idJ = g.agregarParada("J", null);
+        // int idK = g.agregarParada("K", null);
 
-        g.agregarRuta(idA, idB, 8, 0, 0);  //1
-        g.agregarRuta(idA, idH, 10, 0, 0); //2
-        g.agregarRuta(idA, idI, 6, 0, 0);  //3
-        g.agregarRuta(idA, idJ, 12, 0, 0); //4
-        g.agregarRuta(idA, idK, 3, 0, 0);  //5
+        // g.agregarRuta(idA, idB, 8, 0, 0);  //1
+        // g.agregarRuta(idA, idH, 10, 0, 0); //2
+        // g.agregarRuta(idA, idI, 6, 0, 0);  //3
+        // g.agregarRuta(idA, idJ, 12, 0, 0); //4
+        // g.agregarRuta(idA, idK, 3, 0, 0);  //5
 
-        g.agregarRuta(idB, idC, 10, 0, 0); //6
-        g.agregarRuta(idB, idE, 2, 0, 0);  //7
-        g.agregarRuta(idB, idK, 7, 0, 0);  //8
+        // g.agregarRuta(idB, idC, 10, 0, 0); //6
+        // g.agregarRuta(idB, idE, 2, 0, 0);  //7
+        // g.agregarRuta(idB, idK, 7, 0, 0);  //8
 
-        g.agregarRuta(idC, idD, 9, 0, 0);  //9
-        g.agregarRuta(idC, idK, 5, 0, 0);  //10
+        // g.agregarRuta(idC, idD, 9, 0, 0);  //9
+        // g.agregarRuta(idC, idK, 5, 0, 0);  //10
 
-        g.agregarRuta(idD, idE, 13, 0, 0); //11
-        g.agregarRuta(idD, idF, 12, 0, 0); //12
+        // g.agregarRuta(idD, idE, 13, 0, 0); //11
+        // g.agregarRuta(idD, idF, 12, 0, 0); //12
 
-        g.agregarRuta(idE, idF, 10, 0, 0); //13
-        g.agregarRuta(idE, idG, 6, 0, 0);  //14
+        // g.agregarRuta(idE, idF, 10, 0, 0); //13
+        // g.agregarRuta(idE, idG, 6, 0, 0);  //14
 
-        g.agregarRuta(idF, idG, 8, 0, 0);  //15
+        // g.agregarRuta(idF, idG, 8, 0, 0);  //15
 
-        g.agregarRuta(idG, idA, 9, 0, 0);  //16
-        g.agregarRuta(idG, idH, 7, 0, 0);  //17
+        // g.agregarRuta(idG, idA, 9, 0, 0);  //16
+        // g.agregarRuta(idG, idH, 7, 0, 0);  //17
 
-        g.agregarRuta(idH, idI, 3, 0, 0);  //18
+        // g.agregarRuta(idH, idI, 3, 0, 0);  //18
 
-        g.agregarRuta(idI, idJ, 10, 0, 0); //19
+        // g.agregarRuta(idI, idJ, 10, 0, 0); //19
 
-        g.agregarRuta(idJ, idK, 8, 0, 0);  //20
+        // g.agregarRuta(idJ, idK, 8, 0, 0);  //20
 
-        Map<Integer,Ruta> m = g.kruskal(prefs);
-        for (Ruta r : m.values())
-        {
-            System.out.println(r.getId());
-        }
+        // Map<Integer,Ruta> m = g.kruskal(prefs);
+        // for (Ruta r : m.values())
+        // {
+        //     System.out.println(r.getId());
+        // }
 
-        System.out.println("");
+        // System.out.println("");
 
-        List<ParParadaRuta> l = g.rutaExpMin(idJ, idA, m);
-        for (ParParadaRuta p : l)
-        {
-            System.out.print(p.parada().getId());
-            if (p.ruta() != null) System.out.println(" :"+p.ruta().getId()+": ");
-            else System.out.println(" end");
-        }
+        // List<ParParadaRuta> l = g.rutaExpMin(idJ, idA, m);
+        // for (ParParadaRuta p : l)
+        // {
+        //     System.out.print(p.parada().getId());
+        //     if (p.ruta() != null) System.out.println(" :"+p.ruta().getId()+": ");
+        //     else System.out.println(" end");
+        // }
 
 
         

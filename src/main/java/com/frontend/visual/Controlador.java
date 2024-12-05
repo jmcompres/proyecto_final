@@ -2,6 +2,7 @@ package com.frontend.visual;
 
 import java.util.*;
 
+import com.backend.GestorArchivos;
 import com.backend.GestorRutas;
 import com.backend.Parada;
 
@@ -10,6 +11,7 @@ import com.backend.Ruta;
 import com.backend.Localizacion;
 import com.backend.ParParadaRuta;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
@@ -268,6 +270,10 @@ public class Controlador {
             }
         });
         /**/
+
+        Platform.runLater(() -> {
+            cargarDataDeFichero();
+        });
     }
 
 
@@ -356,6 +362,7 @@ public class Controlador {
         if (nodoSeleccionado1 != null && accion!=Accion.MOSTRAR_RUTA) deselectNodo(nodoSeleccionado1);
         if (nodoSeleccionado2 != null && accion!=Accion.MOSTRAR_RUTA) deselectNodo(nodoSeleccionado2);
         if (ultimaRutaCalculada != null && accion!=Accion.MOSTRAR_RUTA) desResaltarRuta();
+        if (accion == Accion.NINGUNA) GestorArchivos.guardarData();
         /**/
         this.accionActual = accion;
     }
@@ -371,7 +378,7 @@ public class Controlador {
 
     public void agregarP(ActionEvent e) {
         Localizacion neoLoca = new Localizacion(longitud, latitud, 0, txtLocalizacion.getText());
-        int id = GestorRutas.getInstance().agregarParada(txtNombre.getText(), neoLoca);
+        int id = GestorRutas.getInstance().agregarParada(txtNombre.getText(), neoLoca, gPosX, gPosY);
         System.out.println(GestorRutas.getInstance().getParadas().get(id).getNombre());
         String nodeId = ""+id;
         Node newNode = graph.addNode(nodeId);
@@ -839,6 +846,43 @@ public class Controlador {
         }
         setAccionActual(Accion.MOSTRAR_RUTA);
         labelInfoAccion.setText(String.format("COSTO: %.2f  TIEMPO: %.2f  DISTANCIA: %.2f  TRANSBORDOS: %.2f", costo, tiempo, distancia, transbordos));
+    }
+
+    public void cargarDataDeFichero()
+    {
+        float w = panelPrincipal.widthProperty().floatValue();
+        float h = panelPrincipal.heightProperty().floatValue();
+
+        Map<Integer, Parada> paradas = GestorRutas.getInstance().getParadas();
+        for (Parada p : paradas.values())
+        {
+            int id = p.getId();
+            String nodeId = ""+id;
+            Node newNode = graph.addNode(nodeId);
+            newNode.setAttribute("ui.label", newNode.getId());
+            nodosDelGrafo.put(id, newNode);
+            Double coordx = p.getCoordx();
+            Double coordy = p.getCoordy();
+            newNode.setAttribute("x", coordx);
+            newNode.setAttribute("y", coordy);
+        }
+
+        Map<Integer, Ruta> rutas = GestorRutas.getInstance().getRutas();
+        for (Ruta r : rutas.values())
+        {
+            Node nodo1 = nodosDelGrafo.get(r.getOrigen().getId());
+            Node nodo2 = nodosDelGrafo.get(r.getDestino().getId());
+            String aristaId = String.valueOf(r.getId());
+            graph.addEdge(aristaId, nodo1.getId(), nodo2.getId(), true);
+            Edge arista = graph.getEdge(aristaId);
+
+            arista.setAttribute("ui.label", "T: " + r.getTiempo() + " D: " + r.getDistancia() + " C: " + r.getCostoBruto());
+            aristasDelGrafo.put(r.getId(), arista);
+            arista.setAttribute("Tiempo", r.getTiempo());
+            arista.setAttribute("Distancia", r.getDistancia());
+            arista.setAttribute("Costo", r.getCostoBruto());
+        }
+
     }
 
 }

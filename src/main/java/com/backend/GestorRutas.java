@@ -17,8 +17,8 @@ public class GestorRutas implements Serializable{
 
     private static GestorRutas instancia = null;
     private static int capacidadInicial = 50;           //capacidad inicial para los ArrayLists con los nodos, paradas y rutas
-    private static int idParadaActual = 1;              //Los ids se irán auto-asignando
-    private static int idRutaActual = 1;
+    private int idParadaActual;              //Los ids se irán auto-asignando
+    private int idRutaActual;
 
     private Map<Integer, Parada> paradas;               //la clave Integer es el atributo id de la parada
     private Map<Integer, Ruta> rutas;
@@ -46,11 +46,13 @@ public class GestorRutas implements Serializable{
         prefFWListo = null;
         fwlisto = new AtomicBoolean(false);
         fwEnProgreso = new AtomicBoolean(false);
+        idParadaActual = 1;
+        idRutaActual = 1;
     }
 
     public static GestorRutas getInstance()
     {
-        //if (instancia == null) instancia = GestorArchivos.cargarData();
+        if (instancia == null) instancia = GestorArchivos.cargarData();
         if (instancia == null) instancia = new GestorRutas();
         return instancia;
     }
@@ -84,11 +86,11 @@ public class GestorRutas implements Serializable{
 
     /*MÉTODOS DE GESTIÓN DE PARADAS/RUTAS*/
 
-    public int agregarParada(String nombre, Localizacion localizacion) //retorna el índice de la nueva parada
+    public int agregarParada(String nombre, Localizacion localizacion, Double coordx, Double coordy) //retorna el índice de la nueva parada
     {
         if (nombresParadas.contains(nombre)) return -1;
 
-        Parada neoParada = new Parada(idParadaActual, nombre, localizacion);
+        Parada neoParada = new Parada(idParadaActual, nombre, localizacion, coordx, coordy);
         paradas.put(idParadaActual,neoParada);
         nombresParadas.add(nombre);
         idParadaActual += 1;
@@ -280,7 +282,7 @@ public class GestorRutas implements Serializable{
         }
     }
 
-    public List<ParParadaRuta> dijkstra(int idOrigen, int idDestino, Preferencias preferencias[])  //retorna una lista con los nodos en la ruta más óptima (Solo funciona con distancias y tiempo, ya que estos solo pueden ser positivos)
+    private List<ParParadaRuta> dijkstra(int idOrigen, int idDestino, Preferencias preferencias[])  //retorna una lista con los nodos en la ruta más óptima (Solo funciona con distancias y tiempo, ya que estos solo pueden ser positivos)
     {
         if (!paradas.containsKey(idOrigen) || !paradas.containsKey(idDestino)) return null;
 
@@ -321,7 +323,7 @@ public class GestorRutas implements Serializable{
         return rutaOptima(predecesores,idDestino);
     }
 
-    public List<ParParadaRuta> rutaTransbordosMinimos(int idOrigen, int idDestino, Preferencias[] preferencias) //Búsqueda de amplitud modificada para trabajar con preferencias
+    private List<ParParadaRuta> rutaTransbordosMinimos(int idOrigen, int idDestino, Preferencias[] preferencias) //Búsqueda de amplitud modificada para trabajar con preferencias
     {
         if (!paradas.containsKey(idDestino) || !paradas.containsKey(idOrigen)) return null;
 
@@ -375,7 +377,7 @@ public class GestorRutas implements Serializable{
         return rutaOptima(predecesores, idDestino);
     }
 
-    public List<ParParadaRuta> bellmanFord(int idOrigen, int idDestino, Preferencias[] preferencias){
+    private List<ParParadaRuta> bellmanFord(int idOrigen, int idDestino, Preferencias[] preferencias){
         Map<Integer, RegistroDiscriminates> discriminantes = new HashMap<>(paradas.size());
         Map<Integer, ParParadaRuta> predecesores = new HashMap<>(paradas.size());
         Map<Integer, Boolean> enCola = new HashMap<>(paradas.size());
@@ -412,7 +414,7 @@ public class GestorRutas implements Serializable{
         return rutaOptima(predecesores, idDestino);
     }
 
-    public synchronized void floydWarshall(Preferencias[] preferencias) {
+    private synchronized void floydWarshall(Preferencias[] preferencias) {
         fwEnProgreso.set(true);
         // Información básica para el algoritmo
         Map<Integer,Map<Integer,List<ParParadaRuta>>> mapaPreferencia = new HashMap<Integer,Map<Integer,List<ParParadaRuta>>>();
@@ -600,7 +602,7 @@ public class GestorRutas implements Serializable{
         }
     }
 
-    public Map<Integer,Ruta> kruskal(Preferencias[] preferencias){
+    private Map<Integer,Ruta> kruskal(Preferencias[] preferencias){
         Map<Integer, Ruta> mst = new HashMap<>();
         PriorityQueue<ParRutaDiscriminante> pq = new PriorityQueue<>();
         for (Ruta r : rutas.values()) pq.offer(new ParRutaDiscriminante(r, new RegistroDiscriminates(r, null, false, false), preferencias));
@@ -638,7 +640,7 @@ public class GestorRutas implements Serializable{
     }
 
     //Método para encontrar ruta óptima en expansión mínima (ya que lo que queda es un árbol, solo hay una ruta entre paradas, por lo que es un simple DFS)
-    public List<ParParadaRuta> rutaExpMin(int idOrigen, int idDestino, Map<Integer, Ruta> arbolExpMin)
+    private List<ParParadaRuta> rutaExpMin(int idOrigen, int idDestino, Map<Integer, Ruta> arbolExpMin)
     {
         if (!paradas.containsKey(idOrigen) || !paradas.containsKey(idDestino)) return null;
 
@@ -653,7 +655,7 @@ public class GestorRutas implements Serializable{
         if (ruta.isEmpty()) return null;
         return ruta;
     }
-    public List<ParParadaRuta> recursionRutaExpMin(int idActual, int idDestino, Map<Integer, Ruta> arbolExpMin, Map<Integer, Boolean> paradasVisitadas)
+    private List<ParParadaRuta> recursionRutaExpMin(int idActual, int idDestino, Map<Integer, Ruta> arbolExpMin, Map<Integer, Boolean> paradasVisitadas)
     {
         paradasVisitadas.replace(idActual, true);
 

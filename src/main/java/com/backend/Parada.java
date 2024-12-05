@@ -9,6 +9,8 @@ import java.util.Set;
 public class Parada implements Serializable{
 
     private static final long serialVersionUID = 1L;
+    private Double coordx; //para el grafo
+    private Double coordy;
 
     private int id;
     private String nombre;
@@ -18,13 +20,15 @@ public class Parada implements Serializable{
     private List<Ruta> rutas;                //en orden con las paradas a las que apunta
     private Set<Parada> paradasApuntadoras;  //estas son las paradas que apuntan a esta (esta lista facilitará luego eliminar los enlaces de esas paradas cuando se elimine esta parada)
 
-    protected Parada(int id, String nombre, Localizacion localizacion) {
+    protected Parada(int id, String nombre, Localizacion localizacion, Double coordx, Double coordy) {
         this.id = id;
         this.nombre = nombre;
         this.localizacion = localizacion;
         paradasApuntadas = new ArrayList<>();
         paradasApuntadoras = new LinkedHashSet<>();
         rutas = new ArrayList<>();
+        this.coordx = coordx;
+        this.coordy = coordy;
     }
 
     public int getId() {
@@ -65,6 +69,22 @@ public class Parada implements Serializable{
 
     public void setRutas(List<Ruta> rutas) {
         this.rutas = rutas;
+    }
+
+    public Double getCoordx() {
+        return coordx;
+    }
+
+    public void setCoordx(Double coordx) {
+        this.coordx = coordx;
+    }
+
+    public Double getCoordy() {
+        return coordy;
+    }
+
+    public void setCoordy(Double coordy) {
+        this.coordy = coordy;
     }
 
     public Set<Parada> getParadasApuntadoras() {
