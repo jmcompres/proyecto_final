@@ -5,8 +5,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -15,11 +13,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="450.0" prefWidth="786.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.visual.Controlador">
+<BorderPane prefHeight="621.0" prefWidth="920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frontend.visual.Controlador">
    <right>
-      <AnchorPane prefHeight="800.0" prefWidth="242.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="menuLateral" prefHeight="522.0" prefWidth="242.0" BorderPane.alignment="CENTER">
          <children>
-
             <Label fx:id="labelParadas" prefHeight="35.0" prefWidth="245.0" text="Paradas">
                <font>
                   <Font size="24.0" />
@@ -62,80 +59,8 @@
             <Button fx:id="btnBuscar" mnemonicParsing="false" onAction="#encontrarRuta" disable="true" prefHeight="26.0" prefWidth="246.0" text="Buscar" />
             <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
             <CheckBox fx:id="cbxExpMin" alignment="CENTER" onAction="#alternarExpMin" style="-fx-text-fill: white;" text="Expansión Mínima" />
-
-            <VBox fx:id="menuLateral" prefHeight="522.0" prefWidth="242.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <Label fx:id="labelParadas" prefHeight="35.0" prefWidth="245.0" text="Paradas">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-                  <Button fx:id="btnAgregarP" mnemonicParsing="false" onAction="#agregarParada" prefHeight="26.0" prefWidth="254.0" text="Agregar" />
-                  <Button fx:id="btnModificarP" mnemonicParsing="false" onAction="#modificarParada" prefHeight="26.0" prefWidth="246.0" text="Modificar" />
-                  <Button fx:id="btnEliminarP" mnemonicParsing="false" onAction="#eliminarParada" prefHeight="26.0" prefWidth="245.0" text="Eliminar" />
-                  <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
-                  <Label fx:id="labelRutas" prefHeight="35.0" prefWidth="246.0" text="Rutas">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-                  <Button fx:id="btnAgregarR" mnemonicParsing="false" onAction="#agregarRuta" prefHeight="26.0" prefWidth="245.0" text="Agregar" />
-                  <Button fx:id="btnModificarR" mnemonicParsing="false" onAction="#modificarRuta" prefHeight="26.0" prefWidth="246.0" text="Modificar" />
-                  <Button fx:id="btnEliminarR" mnemonicParsing="false" onAction="#eliminarRuta" prefHeight="26.0" prefWidth="247.0" text="Eliminar" />
-                  <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
-                  <Label fx:id="labelRutaOptima" prefHeight="35.0" prefWidth="244.0" text="Ruta óptima">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-                  <HBox alignment="CENTER_RIGHT" spacing="10">
-                     <Label style="-fx-font-size: 16px;" text="1ra pref.:" />
-                     <ComboBox fx:id="cmbPref1" prefHeight="26.0" prefWidth="100.0" promptText="Preferencia Principal" />
-                  </HBox>
-                  <HBox alignment="CENTER_RIGHT" spacing="10">
-                     <Label style="-fx-font-size: 16px;" text="2da pref.:" />
-                     <ComboBox fx:id="cmbPref2" disable="true" prefHeight="26.0" prefWidth="100.0" promptText="Preferencia Secundaria" />
-                  </HBox>
-                  <HBox alignment="CENTER_RIGHT" spacing="10">
-                     <Label style="-fx-font-size: 16px;" text="3ra pref.:" />
-                     <ComboBox fx:id="cmbPref3" disable="true" prefHeight="26.0" prefWidth="100.0" promptText="Preferencia Terciaria" />
-                  </HBox>
-                  <HBox alignment="CENTER_RIGHT" spacing="10">
-                     <Label style="-fx-font-size: 16px;" text="4ta pref.:" />
-                     <ComboBox fx:id="cmbPref4" disable="true" prefHeight="26.0" prefWidth="100.0" promptText="Preferencia Cuaternaria" />
-                  </HBox>
-                  <Button fx:id="btnBuscar" mnemonicParsing="false" onAction="#rutaOptima" prefHeight="26.0" prefWidth="246.0" text="Buscar" />
-                  <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
-                  <CheckBox fx:id="cbxExpMin" alignment="CENTER" onAction="#alternarExpMin" style="-fx-text-fill: white;" text="Expansión Mínima" />
-               </children>
-            </VBox>
-            <VBox fx:id="panelLateralModificarRuta" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <TableView fx:id="tablaModificarRuta" prefHeight="710.0" prefWidth="242.0">
-                    <columns>
-                      <TableColumn fx:id="columnaIdModificar" prefWidth="75.0" text="ID" />
-                      <TableColumn fx:id="columnaOrigenModificar" prefWidth="75.0" text="Origen" />
-                        <TableColumn fx:id="columnaDestinoModificar" prefWidth="90.3997802734375" text="Destino" />
-                    </columns>
-                  </TableView>
-                  <Button fx:id="btnLateralModificar" disable="true" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#modificarR" prefHeight="45.0" prefWidth="242.0" text="Modificar" />
-               </children>
-            </VBox>
-            <VBox fx:id="panelLateralModifiarRuta" prefHeight="200.0" prefWidth="100.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <TableView fx:id="tablaEliminarRuta" minHeight="-Infinity" prefHeight="700.0" prefWidth="242.0">
-                    <columns>
-                      <TableColumn fx:id="columnaIdEliminar" prefWidth="75.0" text="ID" />
-                      <TableColumn fx:id="columnaOrigenEliminar" prefWidth="75.0" text="Origen" />
-                        <TableColumn fx:id="columnaDestinoEliminar" prefWidth="90.4000244140625" text="Destino" />
-                    </columns>
-                  </TableView>
-                  <Button fx:id="btnLateralEliminar" disable="true" mnemonicParsing="false" prefHeight="45.0" prefWidth="242.0" text="Eliminar" />
-               </children>
-            </VBox>
-
          </children>
-      </AnchorPane>
+      </VBox>
    </right>
    <top>
       <Pane fx:id="panelSuperior" prefHeight="76.0" prefWidth="712.0" BorderPane.alignment="CENTER">
@@ -244,7 +169,7 @@
    <bottom>
       <Pane fx:id="panelInferior" prefHeight="30.0" prefWidth="500.0">
          <children>
-            <Label fx:id="labelCoordenadas" layoutX="10.0" layoutY="5.0" style="-fx-text-fill: white;" text="Latitud: 0°, Longitud: 0°" />
+            <Label fx:id="labelCoordenadas" layoutX="10.0" layoutY="5.0" text="Latitud: 0°, Longitud: 0°" style="-fx-text-fill: white;" />
          </children>
       </Pane>
    </bottom>
