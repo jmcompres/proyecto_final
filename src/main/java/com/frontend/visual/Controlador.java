@@ -15,6 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -54,7 +55,16 @@ public class Controlador {
     @FXML private Button btnAgregarR;
     @FXML private Button btnModificarR;
     @FXML private Button btnEliminarR;
-
+    @FXML private TableView<Ruta> tablaModificarRuta;
+    @FXML private TableColumn<Ruta,String> columnaIdModificar;
+    @FXML private TableColumn<Ruta,String> columnaOrigenModificar;
+    @FXML private TableColumn<Ruta,String> columnaDestinoModificar;
+    @FXML private TableView<Ruta> tablaEliminarRuta;
+    @FXML private TableColumn<Ruta,String> columnaIdEliminar;
+    @FXML private TableColumn<Ruta,String> columnaOrigenEliminar;
+    @FXML private TableColumn<Ruta,String> columnaDestinoEliminar;
+    @FXML private Button btnLateralModificar;
+    @FXML private Button btnLateralEliminar;
     @FXML private Button btnBuscar;
     @FXML private ComboBox<String> cmbPref1;
     @FXML private ComboBox<String> cmbPref2;
@@ -76,6 +86,7 @@ public class Controlador {
     private Parada paradaSeleccionada1 = null;
     private Parada paradaSeleccionada2 = null;
     private Accion accionActual = Accion.NINGUNA;
+    private Ruta rutaSeleccionada = null;
 
     private Double posX;
     private Double posY;
@@ -97,6 +108,14 @@ public class Controlador {
 
 
     public void initialize() {
+
+        columnaIdModificar.setCellValueFactory(new PropertyValueFactory<>("id"));
+        columnaOrigenModificar.setCellValueFactory(new PropertyValueFactory<>("origen"));
+        columnaDestinoModificar.setCellValueFactory(new PropertyValueFactory<>("destino"));
+
+        columnaIdEliminar.setCellValueFactory(new PropertyValueFactory<>("id"));
+        columnaOrigenEliminar.setCellValueFactory(new PropertyValueFactory<>("origen"));
+        columnaDestinoEliminar.setCellValueFactory(new PropertyValueFactory<>("destino"));
 
         graph.setAttribute("ui.antialias", true);
         graph.setAttribute("ui.quality", true);
@@ -349,8 +368,13 @@ public class Controlador {
     }
 
     public void modificarRuta(ActionEvent e) {
-        setAccionActual(Accion.MODIFICAR_ARISTA);
-        panel.setOnMouseClicked(this::handlePanelClick);
+        ObservableList<Ruta> rutasModificar = FXCollections.observableArrayList(GestorRutas.getInstance().getRutas().values());
+        tablaModificarRuta.setItems(rutasModificar);
+        rutaSeleccionada = tablaModificarRuta.getSelectionModel().getSelectedItem();
+        if(rutaSeleccionada != null){
+            btnLateralModificar.setDisable(false);
+        }
+
     }
 
     public void modificarR(ActionEvent e) {
@@ -365,9 +389,12 @@ public class Controlador {
     }
 
     public void eliminarRuta(ActionEvent e) {
+        ObservableList<Ruta> rutasEliminar = FXCollections.observableArrayList(GestorRutas.getInstance().getRutas().values());
+        tablaEliminarRuta.setItems(rutasEliminar);
+        if(rutaSeleccionada != null){
+            btnLateralEliminar.setDisable(false);
+        }
         parada_Ruta = true;
-        setAccionActual(Accion.ELIMINAR_ARISTA);
-        panel.setOnMouseClicked(this::handlePanelClick);
     }
 
 
@@ -449,50 +476,6 @@ public class Controlador {
                     }
                     break;
 
-                case ELIMINAR_ARISTA:
-                    if (nodoSeleccionado1 == null) {
-                        nodoSeleccionado1 = nodoCercano;
-                        seleccionarNodo(nodoSeleccionado1);
-                        paradaSeleccionada1 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado1.getId()));
-                    } else if (nodoSeleccionado2 == null) {
-                        if (nodoSeleccionado1 == nodoCercano) {
-                            System.out.println("No se puede seleccionar el mismo nodo para la arista.");
-                        } else {
-                            nodoSeleccionado2 = nodoCercano;
-                            seleccionarNodo(nodoSeleccionado2);
-                            paradaSeleccionada2 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado2.getId()));
-                            panelConfirmacion.setVisible(true);
-                            panelConfirmacion.toFront();
-                        }
-                    }
-                    break;
-
-                case MODIFICAR_ARISTA:
-                    if (nodoSeleccionado1 == null) {
-                        nodoSeleccionado1 = nodoCercano;
-                        seleccionarNodo(nodoSeleccionado1);
-                        paradaSeleccionada1 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado1.getId()));
-                    } else if (nodoSeleccionado2 == null) {
-                        if (nodoSeleccionado1 == nodoCercano) {
-                            System.out.println("No se puede seleccionar el mismo nodo para la arista.");
-                        } else {
-                            nodoSeleccionado2 = nodoCercano;
-                            paradaSeleccionada2 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado2.getId()));
-                            seleccionarNodo(nodoSeleccionado2);
-
-                            rutaEncontrada = GestorRutas.getInstance().buscarRuta(paradaSeleccionada1, paradaSeleccionada2);
-
-                            SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaEncontrada.getTiempo(), 0.5f);
-                            SpinnerValueFactory<Double> valueFactory2 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaEncontrada.getDistancia(), 0.5f);
-                            SpinnerValueFactory<Double> valueFactory3 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaEncontrada.getCostoBruto(), 0.5f);
-                            spnModificarTiempo.setValueFactory(valueFactory);
-                            spnModificarDistancia.setValueFactory(valueFactory2);
-                            spnModificarCosto.setValueFactory(valueFactory3);
-                            panelModificarRuta.setVisible(true);
-                            panelModificarRuta.toFront();
-                        }
-                    }
-                    break;
             }
         } else {
             System.out.println("No se seleccionó ningún nodo. Haz clic cerca de un nodo.");
@@ -529,8 +512,7 @@ public class Controlador {
         if (arista != null) {
             graph.removeEdge(arista);
             System.out.println("Arista eliminada: " + edgeId);
-            Ruta ruta = GestorRutas.getInstance().buscarRuta(paradaSeleccionada1, paradaSeleccionada2);
-            GestorRutas.getInstance().eliminarRuta(ruta.getId());
+            GestorRutas.getInstance().eliminarRuta(rutaSeleccionada.getId());
         } else {
             System.out.println("No existe una arista entre " + origen.getId() + " y " + destino.getId());
         }
@@ -544,9 +526,9 @@ public class Controlador {
             arista.setAttribute("Distancia", distancia);
             arista.setAttribute("Costo", costo);
 
-            rutaEncontrada.setTiempo(tiempo);
-            rutaEncontrada.setDistancia(distancia);
-            rutaEncontrada.setCostoBruto(costo);
+            rutaSeleccionada.setTiempo(tiempo);
+            rutaSeleccionada.setDistancia(distancia);
+            rutaSeleccionada.setCostoBruto(costo);
         } else {
             System.out.println("No existe una arista entre los nodos seleccionados.");
         }
