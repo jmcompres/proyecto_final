@@ -376,6 +376,7 @@ public class Controlador {
         System.out.println(GestorRutas.getInstance().getParadas().get(id).getNombre());
         String nodeId = ""+id;
         Node newNode = graph.addNode(nodeId);
+        newNode.setAttribute("ui.label", newNode.getId());
         nodosDelGrafo.put(id, newNode);
         newNode.setAttribute("x", gPosX);
         newNode.setAttribute("y", gPosY);
@@ -627,6 +628,7 @@ public class Controlador {
             String aristaId = String.valueOf(id);
             graph.addEdge(aristaId, nodo1.getId(), nodo2.getId(), true); // true para crear una arista dirigida
             Edge arista = graph.getEdge(aristaId);
+            arista.setAttribute("ui.label", "T: " + tiempo + " D: " + distancia + " C: " + costo);
             aristasDelGrafo.put(id, arista);
             arista.setAttribute("Tiempo", tiempo);
             arista.setAttribute("Distancia", distancia);
@@ -653,6 +655,7 @@ public class Controlador {
             arista.setAttribute("Distancia", distancia);
             arista.setAttribute("Costo", costo);
             arista.setAttribute("Descuento", descuento);
+            arista.setAttribute("ui.label", "T: " + tiempo + " D: " + distancia + " C: " + costo);
 
             rutaSeleccionada.setTiempo(tiempo);
             rutaSeleccionada.setDistancia(distancia);
