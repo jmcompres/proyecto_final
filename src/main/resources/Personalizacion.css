@@ -221,3 +221,46 @@
     -fx-background-color: #6f95ff ; /* Color al pasar el mouse */
 }
 
+.combo-box {
+    -fx-background-color: #5c65c0; /* Fondo */
+    -fx-text-fill: #fcfdff; /* Color del texto */
+    -fx-font-size: 14px; /* Tamaño de la fuente */
+    -fx-font-weight: bold; /* Negrita */
+    -fx-alignment: center; /* Centrado */
+    -fx-border-color: #413b6b; /* Borde */
+}
+
+.combo-box:hover {
+    -fx-background-color: #6f95ff; /* Color al pasar el mouse */
+}
+
+.combo-box:pressed {
+    -fx-background-color: #301c41; /* Color al presionar */
+}
+
+.combo-box-popup {
+    -fx-background-color: #5c65c0; /* Fondo */
+    -fx-text-fill: #fcfdff; /* Color del texto */
+    -fx-font-size: 14px; /* Tamaño de la fuente */
+    -fx-font-weight: bold; /* Negrita */
+    -fx-alignment: center; /* Centrado */
+    -fx-border-color: #413b6b; /* Borde */
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: #5c65c0; /* Fondo */
+    -fx-text-fill: #fcfdff; /* Color del texto */
+    -fx-font-size: 14px; /* Tamaño de la fuente */
+    -fx-font-weight: bold; /* Negrita */
+    -fx-alignment: center; /* Centrado */
+    -fx-border-color: #413b6b; /* Borde */
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #6f95ff; /* Color al pasar el mouse */
+}
+
+.combo-box-popup .list-cell:pressed {
+    -fx-background-color: #301c41; /* Color al presionar */
+}
+
