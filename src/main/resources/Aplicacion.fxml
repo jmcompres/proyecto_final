@@ -58,7 +58,7 @@
             </HBox>
             <Button fx:id="btnBuscar" mnemonicParsing="false" onAction="#encontrarRuta" disable="true" prefHeight="26.0" prefWidth="246.0" text="Buscar" />
             <Pane prefHeight="49.0" prefWidth="242.0" visible="false" />
-            <CheckBox fx:id="cbxExpMin" alignment="CENTER" onAction="#alternarExpMin" style="-fx-text-fill: white;" text="Expansión Mínima" />
+            <CheckBox fx:id="cbxExpMin" disable="true" alignment="CENTER" onAction="#alternarExpMin" style="-fx-text-fill: white;" text="Expansión Mínima" />
          </children>
       </VBox>
    </right>

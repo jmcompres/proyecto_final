@@ -27,3 +27,13 @@ edge.highlight
 {
     fill-color: #a5890c;
 }
+
+edge.invisible
+{
+    fill-color: #301c41;
+}
+
+edge.mstEdge
+{
+    arrow-size: 0px, 0px;
+}
