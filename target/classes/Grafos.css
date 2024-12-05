@@ -36,6 +36,12 @@ edge.highlight
     fill-color: #a5890c;
 }
 
+edge.highlightExpMin
+{
+    fill-color: #a5890c;
+    arrow-size: 0px, 0px;
+}
+
 edge.invisible
 {
     fill-color: #301c41;

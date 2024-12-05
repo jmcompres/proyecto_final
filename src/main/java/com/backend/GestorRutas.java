@@ -608,7 +608,7 @@ public class GestorRutas implements Serializable{
         Map<Integer, Ruta> mst = new HashMap<>();
         PriorityQueue<ParRutaDiscriminante> pq = new PriorityQueue<>();
         for (Ruta r : rutas.values()) pq.offer(new ParRutaDiscriminante(r, new RegistroDiscriminates(r, null, false, false), preferencias));
-        UnionFind uf = new UnionFind(paradas.size()+1);
+        UnionFind uf = new UnionFind(idParadaActual+2);
 
         while(mst.size() < paradas.size() - 1 && !pq.isEmpty()){
             Ruta ruta = pq.poll().ruta;

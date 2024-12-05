@@ -361,7 +361,12 @@ public class Controlador {
         /**/
         if (nodoSeleccionado1 != null && accion!=Accion.MOSTRAR_RUTA) deselectNodo(nodoSeleccionado1);
         if (nodoSeleccionado2 != null && accion!=Accion.MOSTRAR_RUTA) deselectNodo(nodoSeleccionado2);
-        if (ultimaRutaCalculada != null && accion!=Accion.MOSTRAR_RUTA) desResaltarRuta();
+        if (ultimaRutaCalculada != null && accion!=Accion.MOSTRAR_RUTA)
+        {
+            desResaltarRuta();
+            nodoSeleccionado1 = null;
+            nodoSeleccionado2 =  null;
+        }
         if (accion == Accion.NINGUNA) GestorArchivos.guardarData();
         /**/
         this.accionActual = accion;
@@ -754,6 +759,7 @@ public class Controlador {
         mst = GestorRutas.getInstance().getMst(getPrefs());
         for (Map.Entry<Integer, Edge> entry : aristasDelGrafo.entrySet())
         {
+            entry.getValue().removeAttribute("ui.class");
             if (!mst.containsKey(entry.getKey())) entry.getValue().setAttribute("ui.class", "invisible");
             else entry.getValue().setAttribute("ui.class", "mstEdge");
         }
@@ -795,6 +801,12 @@ public class Controlador {
 
     private void resaltarRuta(List<ParParadaRuta> ruta)
     {
+        if (rutaOptima() == null)
+        {
+            setAccionActual(Accion.NINGUNA);
+            nodoSeleccionado1 = null;
+            nodoSeleccionado2 = null;
+        }
         for (ParParadaRuta pr : ruta)
         {
             Node nodo = nodosDelGrafo.get(pr.parada().getId());
@@ -802,7 +814,11 @@ public class Controlador {
             if (pr.ruta() != null) arista = aristasDelGrafo.get(pr.ruta().getId());
             nodo.removeAttribute("ui.class");
             nodo.setAttribute("ui.class", "highlight");
-            if (arista != null) arista.setAttribute("ui.class", "highlight");
+            if (arista != null)
+            {
+                if (GestorRutas.getInstance().getExpMinActivado()) arista.setAttribute("ui.class", "highlightExpMin");
+                else arista.setAttribute("ui.class", "highlight");
+            }
         }
     }
 
@@ -814,7 +830,11 @@ public class Controlador {
             Edge arista = null;
             if (pr.ruta() != null) arista = aristasDelGrafo.get(pr.ruta().getId());
             nodo.removeAttribute("ui.class");
-            if (arista != null) arista.removeAttribute("ui.class");
+            if (arista != null)
+            {
+                arista.removeAttribute("ui.class");
+                if (GestorRutas.getInstance().getExpMinActivado()) arista.setAttribute("ui.class", "mstEdge");
+            }
         }
     }
 
