@@ -447,6 +447,12 @@ public class Controlador {
                 System.out.println("Item seleccionado: " + newValue);
                 rutaSeleccionada = newValue;
                 btnLateralModificar.setDisable(false);
+
+                //Resaltar la ruta
+                Edge neoArista = aristasDelGrafo.get(newValue.getId());
+                neoArista.setAttribute("ui.class", "highlight");
+                Edge oldArista = aristasDelGrafo.get(oldValue.getId());
+                oldArista.removeAttribute("ui.class");
             } else {
                 System.out.println("No hay item seleccionado.");
             }
@@ -501,6 +507,11 @@ public class Controlador {
                 System.out.println("Item seleccionado: " + newValue);
                 rutaSeleccionada = newValue;
                 btnLateralEliminar.setDisable(false);
+
+                Edge neoArista = aristasDelGrafo.get(newValue.getId());
+                neoArista.setAttribute("ui.class", "highlight");
+                Edge oldArista = aristasDelGrafo.get(oldValue.getId());
+                oldArista.removeAttribute("ui.class");
             } else {
                 System.out.println("No hay item seleccionado.");
             }
@@ -661,6 +672,8 @@ public class Controlador {
             rutaSeleccionada.setDistancia(distancia);
             rutaSeleccionada.setCostoBruto(costo);
             rutaSeleccionada.setDescuento(descuento/100);
+            //deseleccionar arista
+            aristasDelGrafo.get(rutaSeleccionada.getId()).removeAttribute("ui.class");
         } else {
             System.out.println("No existe una arista entre los nodos seleccionados.");
         }
