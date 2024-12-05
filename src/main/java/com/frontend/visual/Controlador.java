@@ -108,7 +108,7 @@ public class Controlador {
 
     /**///atributos para mostrar las coordenadas del mouse
     @FXML
-    private Label labelCoordenadas;
+    private Label labelInfoAccion;
     private static boolean mouseTracking = false;
     /**/
 
@@ -264,7 +264,7 @@ public class Controlador {
             {
                 longitud = (event.getX()-(panelPrincipal.widthProperty().doubleValue()/2))/((panelPrincipal.widthProperty().doubleValue()/2))*180;
                 latitud = (event.getY()-(panelPrincipal.heightProperty().doubleValue()/2))/((panelPrincipal.heightProperty().doubleValue()/2))*90;
-                labelCoordenadas.setText(String.format("Latitud: %.2f°, Longitud: %.2f°", -latitud, longitud));
+                labelInfoAccion.setText(String.format("ACCIÓN: AGREGAR PARADA    Latitud: %.2f°, Longitud: %.2f°", -latitud, longitud));
             }
         });
         /**/
@@ -353,16 +353,16 @@ public class Controlador {
 
     public void setAccionActual(Accion accion) {
         /**/
-        if (nodoSeleccionado1 != null) deselectNodo(nodoSeleccionado1);
-        if (nodoSeleccionado2 != null) deselectNodo(nodoSeleccionado2);
-        if (ultimaRutaCalculada != null) desResaltarRuta();
+        if (nodoSeleccionado1 != null && accion!=Accion.MOSTRAR_RUTA) deselectNodo(nodoSeleccionado1);
+        if (nodoSeleccionado2 != null && accion!=Accion.MOSTRAR_RUTA) deselectNodo(nodoSeleccionado2);
+        if (ultimaRutaCalculada != null && accion!=Accion.MOSTRAR_RUTA) desResaltarRuta();
         /**/
         this.accionActual = accion;
     }
 
     public void agregarParada(ActionEvent e) {
         /**/
-        labelCoordenadas.setStyle("-fx-text-fill: white;");
+        labelInfoAccion.setText("ACCIÓN: AGREGAR PARADA    Latitud: 0°, Longitud: 0°");
         mouseTracking = true;
         /**/
         setAccionActual(Accion.AGREGAR_NODO);
@@ -385,9 +385,11 @@ public class Controlador {
         txtLocalizacion.setText("");
 
         noExpMin();
+        quitarAccion();
     }
 
     public void modificarParada(ActionEvent e) {
+        labelInfoAccion.setText("ACCIÓN: MODIFICAR PARADA");
         setAccionActual(Accion.MODIFICAR_NODO);
         panel.setOnMouseClicked(this::handlePanelClick);
     }
@@ -398,12 +400,14 @@ public class Controlador {
         panelModificar.setVisible(false);
         panelModificar.toBack();
         noExpMin();
+        quitarAccion();
     }
 
     public void eliminarParada(ActionEvent e) {
         parada_Ruta = false;
         setAccionActual(Accion.ELIMINAR_NODO);
         panel.setOnMouseClicked(this::handlePanelClick);
+        labelInfoAccion.setText("ACCIÓN: ELIMINAR PARADA");
     }
 
 
@@ -416,6 +420,7 @@ public class Controlador {
         spnDistancia.setValueFactory(valueFactory2);
         spnCosto.setValueFactory(valueFactory3);
         panel.setOnMouseClicked(this::handlePanelClick);
+        labelInfoAccion.setText("ACCIÓN: AGREGAR RUTA");
     }
 
     public void agregarR(ActionEvent e) {
@@ -437,6 +442,7 @@ public class Controlador {
 
     public void modificarRuta(ActionEvent e) {
         accionActual = Accion.NINGUNA;
+        labelInfoAccion.setText("ACCIÓN: MODIFICAR RUTA");
         panelLateralModificarRuta.setVisible(true);
         panelLateralModificarRuta.toFront();
         menuLateral.setVisible(false);
@@ -497,6 +503,7 @@ public class Controlador {
 
     public void eliminarRuta(ActionEvent e) {
         accionActual = Accion.NINGUNA;
+        labelInfoAccion.setText("ACCIÓN: ELIMINAR RUTA");
         panelLateralEliminarRuta.setVisible(true);
         panelLateralEliminarRuta.toFront();
         menuLateral.setVisible(false);
@@ -526,7 +533,6 @@ public class Controlador {
     private void handlePanelClick(MouseEvent event) {
         /**/
         mouseTracking = false;
-        labelCoordenadas.setStyle("-fx-text-fill: #301c41;");
         /**/
         /**/
         // Convertir las coordenadas del panel a las coordenadas del grafo
@@ -614,6 +620,7 @@ public class Controlador {
                             seleccionarNodo(nodoSeleccionado2);
                             paradaSeleccionada2 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado2.getId()));
                             resaltarRuta(rutaOptima());
+                            infoRutaOptima();
                         }
                     }
                     break;
@@ -647,6 +654,7 @@ public class Controlador {
             arista.setAttribute("Costo", costo);
 
             noExpMin();
+            quitarAccion();
         }
     }
 
@@ -675,9 +683,11 @@ public class Controlador {
             rutaSeleccionada.setDistancia(distancia);
             rutaSeleccionada.setCostoBruto(costo);
             rutaSeleccionada.setDescuento(descuento/100);
+
             //deseleccionar arista
             aristasDelGrafo.get(rutaSeleccionada.getId()).removeAttribute("ui.class");
             noExpMin();
+            quitarAccion();
         } else {
             System.out.println("No existe una arista entre los nodos seleccionados.");
         }
@@ -704,8 +714,9 @@ public class Controlador {
             GestorRutas.getInstance().eliminarParada(paradaSeleccionada1.getId());
             graph.removeNode(nodoSeleccionado1.getId());
             nodoSeleccionado1 = null;
-            noExpMin();
         }
+        noExpMin();
+        quitarAccion();
         panelConfirmacion.setVisible(false);
     }
 
@@ -750,6 +761,7 @@ public class Controlador {
 
     public void encontrarRuta()
     {
+        labelInfoAccion.setText("ACCIÓN: BUSCAR RUTA ÓPTIMA");
         setAccionActual(Accion.BUSCAR_RUTA);
         panel.setOnMouseClicked(this::handlePanelClick);
     }
@@ -804,6 +816,29 @@ public class Controlador {
         GestorRutas.getInstance().desactivarExpMin();
         cbxExpMin.setSelected(false);
         desModoExpMin();
+    }
+
+    private void quitarAccion()
+    {
+        setAccionActual(Accion.NINGUNA);
+        labelInfoAccion.setText("ACCIÓN: NINGUNA");
+    }
+
+    private void infoRutaOptima()
+    {
+        float costo = 0, tiempo = 0, distancia = 0, transbordos = 0;
+        for (ParParadaRuta pr : ultimaRutaCalculada)
+        {
+            if (pr.ruta() != null)
+            {
+                transbordos++;
+                costo += pr.ruta().getCostoNeto();
+                tiempo += pr.ruta().getTiempo();
+                distancia += pr.ruta().getDistancia();
+            }
+        }
+        setAccionActual(Accion.MOSTRAR_RUTA);
+        labelInfoAccion.setText(String.format("COSTO: %.2f  TIEMPO: %.2f  DISTANCIA: %.2f  TRANSBORDOS: %.2f", costo, tiempo, distancia, transbordos));
     }
 
 }

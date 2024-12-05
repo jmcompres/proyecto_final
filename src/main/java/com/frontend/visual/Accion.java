@@ -6,5 +6,6 @@ public enum Accion {
     MODIFICAR_NODO,
     ELIMINAR_NODO,
     AGREGAR_ARISTA,
-    BUSCAR_RUTA
+    BUSCAR_RUTA,
+    MOSTRAR_RUTA
 }
