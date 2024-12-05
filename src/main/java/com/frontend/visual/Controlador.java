@@ -20,6 +20,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
@@ -55,6 +56,9 @@ public class Controlador {
     @FXML private Button btnAgregarR;
     @FXML private Button btnModificarR;
     @FXML private Button btnEliminarR;
+    @FXML private VBox menuLateral;
+    @FXML private Pane panelLateralModificarRuta;
+    @FXML private Pane panelLateralEliminarRuta;
     @FXML private TableView<Ruta> tablaModificarRuta;
     @FXML private TableColumn<Ruta,String> columnaIdModificar;
     @FXML private TableColumn<Ruta,String> columnaOrigenModificar;
@@ -387,34 +391,72 @@ public class Controlador {
     }
 
     public void modificarRuta(ActionEvent e) {
+        accionActual = Accion.NINGUNA;
+        panelLateralModificarRuta.setVisible(true);
+        panelLateralModificarRuta.toFront();
+        menuLateral.setVisible(false);
+        menuLateral.toBack();
         ObservableList<Ruta> rutasModificar = FXCollections.observableArrayList(GestorRutas.getInstance().getRutas().values());
         tablaModificarRuta.setItems(rutasModificar);
-        rutaSeleccionada = tablaModificarRuta.getSelectionModel().getSelectedItem();
-        if(rutaSeleccionada != null){
-            btnLateralModificar.setDisable(false);
-        }
-
+        tablaModificarRuta.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                System.out.println("Item seleccionado: " + newValue);
+                rutaSeleccionada = newValue;
+                btnLateralModificar.setDisable(false);
+            } else {
+                System.out.println("No hay item seleccionado.");
+            }
+        });
     }
 
     public void modificarR(ActionEvent e) {
-        modificarArista(nodoSeleccionado1, nodoSeleccionado2, spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue());
-        System.out.println(GestorRutas.getInstance().getRutas().get(GestorRutas.getInstance().getIdRutaActual()-1).getTiempo());
-        deselectNodo(nodoSeleccionado1);
-        deselectNodo(nodoSeleccionado2);
-        nodoSeleccionado1 = null;
-        nodoSeleccionado2 = null;
+        panelModificarRuta.setVisible(true);
+        panelModificarRuta.toFront();
+        SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaSeleccionada.getTiempo(), 0.5f);
+        SpinnerValueFactory<Double> valueFactory2 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaSeleccionada.getDistancia(), 0.5f);
+        SpinnerValueFactory<Double> valueFactory3 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaSeleccionada.getCostoBruto(), 0.5f);
+        spnModificarTiempo.setValueFactory(valueFactory);
+        spnModificarDistancia.setValueFactory(valueFactory2);
+        spnModificarCosto.setValueFactory(valueFactory3);
+
+        modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue());
+
+
+    }
+
+    public void ocultarM(ActionEvent e){
+        modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue());
+        btnLateralModificar.setDisable(true);
+        panelLateralModificarRuta.setVisible(false);
+        panelLateralModificarRuta.toBack();
+        menuLateral.setVisible(true);
+        menuLateral.toFront();
         panelModificarRuta.setVisible(false);
         panelModificarRuta.toBack();
+        rutaSeleccionada = null;
     }
 
     public void eliminarRuta(ActionEvent e) {
+        accionActual = Accion.NINGUNA;
+        panelLateralEliminarRuta.setVisible(true);
+        panelLateralEliminarRuta.toFront();
+        menuLateral.setVisible(false);
+        menuLateral.toBack();
         ObservableList<Ruta> rutasEliminar = FXCollections.observableArrayList(GestorRutas.getInstance().getRutas().values());
         tablaEliminarRuta.setItems(rutasEliminar);
-        if(rutaSeleccionada != null){
-            btnLateralEliminar.setDisable(false);
-        }
+        tablaEliminarRuta.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                System.out.println("Item seleccionado: " + newValue);
+                rutaSeleccionada = newValue;
+                btnLateralEliminar.setDisable(false);
+            } else {
+                System.out.println("No hay item seleccionado.");
+            }
+        });
         parada_Ruta = true;
     }
+
+    public void eliminarR(ActionEvent e) {panelConfirmacion.setVisible(true);}
 
 
     private void handlePanelClick(MouseEvent event) {
@@ -531,7 +573,7 @@ public class Controlador {
 
     private void agregarArista(int id, Node nodo1, Node nodo2, float tiempo, float distancia, float costo) {
         if (nodo1 != null && nodo2 != null) {
-            String aristaId = nodo1.getId() + "-" + nodo2.getId();
+            String aristaId = String.valueOf(id);
             graph.addEdge(aristaId, nodo1.getId(), nodo2.getId(), true); // true para crear una arista dirigida
             Edge arista = graph.getEdge(aristaId);
             aristasDelGrafo.put(id, arista);
@@ -541,20 +583,19 @@ public class Controlador {
         }
     }
 
-    private void eliminarArista(Node origen, Node destino) {
-        String edgeId = origen.getId() + "-" + destino.getId();
+    private void eliminarArista(int id) {
+        String edgeId = String.valueOf(id);
         Edge arista = graph.getEdge(edgeId);
         if (arista != null) {
             graph.removeEdge(arista);
-            System.out.println("Arista eliminada: " + edgeId);
             GestorRutas.getInstance().eliminarRuta(rutaSeleccionada.getId());
         } else {
-            System.out.println("No existe una arista entre " + origen.getId() + " y " + destino.getId());
+            System.out.println("No existe la arista");
         }
     }
 
-    private void modificarArista(Node origen, Node destino, float tiempo, float distancia, float costo) {
-        String edgeId = origen.getId() + "-" + destino.getId();
+    private void modificarArista(int id, float tiempo, float distancia, float costo) {
+        String edgeId = String.valueOf(id);
         Edge arista = graph.getEdge(edgeId);
         if (arista != null) {
             arista.setAttribute("Tiempo", tiempo);
@@ -577,11 +618,13 @@ public class Controlador {
 
     public void confirmar(ActionEvent e) {
         if(parada_Ruta){
-            eliminarArista(nodoSeleccionado1, nodoSeleccionado2);
-            deselectNodo(nodoSeleccionado1);
-            deselectNodo(nodoSeleccionado2);
-            nodoSeleccionado1 = null;
-            nodoSeleccionado2 = null;
+            eliminarArista(rutaSeleccionada.getId());
+            panelLateralEliminarRuta.setVisible(false);
+            panelLateralEliminarRuta.toBack();
+            menuLateral.setVisible(true);
+            menuLateral.toFront();
+            rutaSeleccionada = null;
+            parada_Ruta = false;
         }else{
             GestorRutas.getInstance().eliminarParada(paradaSeleccionada1.getId());
             graph.removeNode(nodoSeleccionado1.getId());
@@ -592,10 +635,12 @@ public class Controlador {
 
     public void cancelar(ActionEvent e) {
         if(parada_Ruta) {
-            deselectNodo(nodoSeleccionado1);
-            deselectNodo(nodoSeleccionado2);
-            nodoSeleccionado1 = null;
-            nodoSeleccionado2 = null;
+            panelLateralEliminarRuta.setVisible(false);
+            panelLateralEliminarRuta.toBack();
+            menuLateral.setVisible(true);
+            menuLateral.toFront();
+            rutaSeleccionada = null;
+            parada_Ruta = false;
         }else{
             deselectNodo(nodoSeleccionado1);
             nodoSeleccionado1 = null;
