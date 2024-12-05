@@ -182,6 +182,7 @@ public class GestorRutas implements Serializable{
             ruta.setDescuento(descOrg);
             return false;
         }
+        ruta.setDescuento(descOrg);
         return true;
     }
 
@@ -609,7 +610,7 @@ public class GestorRutas implements Serializable{
             Ruta ruta = pq.poll().ruta;
             int origen = ruta.getOrigen().getId()-1;
             int destino = ruta.getDestino().getId()-1;
-            System.out.println(origen+" "+ruta);
+            System.out.println(origen+" "+destino);
             if(uf.union(origen, destino)){
                 mst.put(ruta.getId(), ruta);
                 uf.union(origen, destino);
