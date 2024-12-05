@@ -94,6 +94,7 @@ public class Controlador {
     private Parada paradaSeleccionada1 = null;
     private Parada paradaSeleccionada2 = null;
     private Accion accionActual = Accion.NINGUNA;
+    private Accion accionPrevia = null;
     private Ruta rutaSeleccionada = null;
 
     private Double posX;
@@ -364,12 +365,16 @@ public class Controlador {
         if (ultimaRutaCalculada != null && accion!=Accion.MOSTRAR_RUTA)
         {
             desResaltarRuta();
-            nodoSeleccionado1 = null;
-            nodoSeleccionado2 =  null;
         }
         if (accion == Accion.NINGUNA) GestorArchivos.guardarData();
+        accionPrevia = accionActual;
         /**/
         this.accionActual = accion;
+        if (accionActual != accionPrevia)
+        {
+            nodoSeleccionado1 = null;
+            nodoSeleccionado2 = null;
+        }
     }
 
     public void agregarParada(ActionEvent e) {
@@ -566,7 +571,7 @@ public class Controlador {
 
             // Calcular la distancia entre el clic y el nodo
             double distancia = Math.sqrt(Math.pow(nodeX - x, 2) + Math.pow(nodeY - y, 2));
-            if (distancia < 0.5) { // Rango de selección
+            if (distancia < 0.08) { // Rango de selección
                 nodoCercano = nodo;
                 break;
             }
@@ -651,7 +656,8 @@ public class Controlador {
 
     private void deselectNodo(Node nodo) {
         // Restablecer el color o quitar el estilo de selección
-        nodo.removeAttribute("ui.class");
+        if (nodo!=null) nodo.removeAttribute("ui.class");
+        else return;
     }
 
     private void agregarArista(int id, Node nodo1, Node nodo2, float tiempo, float distancia, float costo) {
@@ -783,10 +789,10 @@ public class Controlador {
     {
         Preferencias prefs[] = new Preferencias[5];
         prefs[0] = Preferencias.getPorValor(cmbPref1.getSelectionModel().getSelectedIndex());
-        prefs[0] = Preferencias.getPorValor(cmbPref2.getSelectionModel().getSelectedIndex());
-        prefs[0] = Preferencias.getPorValor(cmbPref3.getSelectionModel().getSelectedIndex());
-        prefs[0] = Preferencias.getPorValor(cmbPref4.getSelectionModel().getSelectedIndex());
-        prefs[0] = Preferencias.NINGUNA;
+        prefs[1] = Preferencias.getPorValor(cmbPref2.getSelectionModel().getSelectedIndex());
+        prefs[2] = Preferencias.getPorValor(cmbPref3.getSelectionModel().getSelectedIndex());
+        prefs[3] = Preferencias.getPorValor(cmbPref4.getSelectionModel().getSelectedIndex());
+        prefs[4] = Preferencias.NINGUNA;
 
         return prefs;
     }
@@ -836,6 +842,7 @@ public class Controlador {
                 if (GestorRutas.getInstance().getExpMinActivado()) arista.setAttribute("ui.class", "mstEdge");
             }
         }
+        ultimaRutaCalculada = null;
     }
 
     private void noExpMin()
