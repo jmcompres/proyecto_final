@@ -23,6 +23,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.geom.Point3;
@@ -82,7 +83,7 @@ public class Controlador {
     @FXML private Pane panelPrincipal;
     @FXML private Pane panelConfirmacion;
 
-    private SingleGraph graph = new SingleGraph("Grafo");
+    private MultiGraph graph = new MultiGraph("Grafo");
     FxViewer viewer;
     FxViewPanel panel;
     private Node nodoSeleccionado1;
@@ -115,6 +116,10 @@ public class Controlador {
     private Map<Integer, Node> nodosDelGrafo;
     private List<ParParadaRuta> ultimaRutaCalculada;
     private Map<Integer, Ruta> mst;
+    /**/
+
+    /**/
+    @FXML private Spinner<Double> spnModificarDescuento;
     /**/
 
 
@@ -424,17 +429,23 @@ public class Controlador {
         SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaSeleccionada.getTiempo(), 0.5f);
         SpinnerValueFactory<Double> valueFactory2 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaSeleccionada.getDistancia(), 0.5f);
         SpinnerValueFactory<Double> valueFactory3 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaSeleccionada.getCostoBruto(), 0.5f);
+        SpinnerValueFactory<Double> valueFactory4 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 1000.0f, rutaSeleccionada.getDescuento()*100, 0.5f);
+        valueFactory4.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (GestorRutas.getInstance().modificarDescuentoRuta(newValue.floatValue()/100, rutaSeleccionada.getId())) btnModificarRuta.setDisable(false);
+            else btnModificarRuta.setDisable(true);
+        });
         spnModificarTiempo.setValueFactory(valueFactory);
         spnModificarDistancia.setValueFactory(valueFactory2);
         spnModificarCosto.setValueFactory(valueFactory3);
+        spnModificarDescuento.setValueFactory(valueFactory4);
 
-        modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue());
+        modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue(), spnModificarDescuento.getValue().floatValue());
 
 
     }
 
     public void ocultarM(ActionEvent e){
-        modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue());
+        modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue(), spnModificarDescuento.getValue().floatValue());
         btnLateralModificar.setDisable(true);
         panelLateralModificarRuta.setVisible(false);
         panelLateralModificarRuta.toBack();
@@ -603,17 +614,19 @@ public class Controlador {
         }
     }
 
-    private void modificarArista(int id, float tiempo, float distancia, float costo) {
+    private void modificarArista(int id, float tiempo, float distancia, float costo, float descuento) {
         String edgeId = String.valueOf(id);
         Edge arista = graph.getEdge(edgeId);
         if (arista != null) {
             arista.setAttribute("Tiempo", tiempo);
             arista.setAttribute("Distancia", distancia);
             arista.setAttribute("Costo", costo);
+            arista.setAttribute("Descuento", descuento);
 
             rutaSeleccionada.setTiempo(tiempo);
             rutaSeleccionada.setDistancia(distancia);
             rutaSeleccionada.setCostoBruto(costo);
+            rutaSeleccionada.setDescuento(descuento/100);
         } else {
             System.out.println("No existe una arista entre los nodos seleccionados.");
         }

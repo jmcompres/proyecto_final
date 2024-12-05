@@ -179,10 +179,16 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
+                  <Label layoutX="302.0" layoutY="263.0" text="Descuento(%):">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
                   <Spinner fx:id="spnModificarTiempo" layoutX="426.0" layoutY="69.0" />
                   <Spinner fx:id="spnModificarDistancia" layoutX="426.0" layoutY="136.0" />
                   <Spinner fx:id="spnModificarCosto" layoutX="426.0" layoutY="200.0" />
-                  <Button fx:id="btnModificarRuta" layoutX="549.0" layoutY="347.0" mnemonicParsing="false" onAction="#ocultarM" text="Modificar" />
+                  <Spinner fx:id="spnModificarDescuento" layoutX="426.0" layoutY="263.0" />
+                  <Button fx:id="btnModificarRuta" disable="false" layoutX="549.0" layoutY="347.0" mnemonicParsing="false" onAction="#ocultarM" text="Modificar" />
                </children>
             </Pane>
             <Pane fx:id="panelPrincipal" prefHeight="522.0" prefWidth="445.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
