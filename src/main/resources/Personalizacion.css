@@ -41,6 +41,11 @@
     -fx-border-color: #413b6b;
 }
 
+#panelModificar{
+    -fx-background-color: #413b6b;
+    -fx-border-color: #413b6b;
+}
+
 #menuLateral {
     -fx-background-color: #413b6b;
     -fx-border-color: #413b6b;
@@ -74,12 +79,76 @@
     -fx-font-size: 20px;
 }
 
+#btnAgregar{
+    -fx-background-color: #5c65c0;
+}
+
+#btnAgregar:hover{
+    -fx-background-color: #6f95ff;
+}
+
+#btnAgregar:pressed{
+    -fx-background-color: #301c41;
+}
+
+#btnModificar{
+    -fx-background-color: #5c65c0;
+}
+
+#btnModificar:hover{
+    -fx-background-color: #6f95ff;
+}
+
+#btnModificar:pressed{
+    -fx-background-color: #301c41;
+}
+
+#btnAgregarRuta{
+    -fx-background-color: #5c65c0;
+}
+
+#btnAgregarRuta:hover{
+    -fx-background-color: #6f95ff;
+}
+
+#btnAgregarRuta:pressed{
+    -fx-background-color: #301c41;
+}
+
+#btnModificarRuta{
+    -fx-background-color: #5c65c0;
+}
+
+#btnModificarRuta:hover{
+    -fx-background-color: #6f95ff;
+}
+
+#btnModificarRuta:pressed{
+    -fx-background-color: #301c41;
+}
+
 #btnConfirmarEliminacion{
-    -fx-font-size: 12px;
+    -fx-background-color: #5c65c0;
+}
+
+#btnConfirmarEliminacion:hover{
+    -fx-background-color: #6f95ff;
+}
+
+#btnConfirmarEliminacion:pressed{
+    -fx-background-color: #301c41;
 }
 
 #btnCancelarEliminacion{
-    -fx-font-size: 12px;
+    -fx-background-color: #5c65c0;
+}
+
+#btnCancelarEliminacion:hover{
+    -fx-background-color: #6f95ff;
+}
+
+#btnCancelarEliminacion:pressed{
+    -fx-background-color: #301c41;
 }
 
 #btnLateralModificar{
