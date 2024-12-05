@@ -10,6 +10,7 @@ import com.backend.Ruta;
 import com.backend.Localizacion;
 import com.backend.ParParadaRuta;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +24,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.geom.Point3;
@@ -82,7 +84,7 @@ public class Controlador {
     @FXML private Pane panelPrincipal;
     @FXML private Pane panelConfirmacion;
 
-    private SingleGraph graph = new SingleGraph("Grafo");
+    private MultiGraph graph = new MultiGraph("Grafo");
     FxViewer viewer;
     FxViewPanel panel;
     private Node nodoSeleccionado1;
@@ -117,6 +119,10 @@ public class Controlador {
     private Map<Integer, Ruta> mst;
     /**/
 
+    /**/
+    @FXML private Spinner<Double> spnModificarDescuento;
+    /**/
+
 
     public void initialize() {
 
@@ -125,13 +131,41 @@ public class Controlador {
         nodosDelGrafo = new HashMap<Integer, Node>();
         ultimaRutaCalculada = null;
 
+        tablaModificarRuta.getStylesheets().add(getClass().getResource("/Personalizacion.css").toExternalForm());
+        tablaEliminarRuta.getStylesheets().add(getClass().getResource("/Personalizacion.css").toExternalForm());
+
         columnaIdModificar.setCellValueFactory(new PropertyValueFactory<>("id"));
-        columnaOrigenModificar.setCellValueFactory(new PropertyValueFactory<>("origen"));
-        columnaDestinoModificar.setCellValueFactory(new PropertyValueFactory<>("destino"));
+        columnaOrigenModificar.setCellValueFactory(cellData -> {
+            Ruta ruta = cellData.getValue();
+            if (ruta.getOrigen() != null) {
+                return new SimpleStringProperty(ruta.getOrigen().getNombre());
+            }
+            return new SimpleStringProperty("N/A");
+        });
+        columnaDestinoModificar.setCellValueFactory(cellData -> {
+            Ruta ruta = cellData.getValue();
+            if (ruta.getDestino() != null) {
+                return new SimpleStringProperty(ruta.getDestino().getNombre());
+            }
+            return new SimpleStringProperty("N/A");
+        });
 
         columnaIdEliminar.setCellValueFactory(new PropertyValueFactory<>("id"));
-        columnaOrigenEliminar.setCellValueFactory(new PropertyValueFactory<>("origen"));
-        columnaDestinoEliminar.setCellValueFactory(new PropertyValueFactory<>("destino"));
+        columnaOrigenEliminar.setCellValueFactory(cellData -> {
+            Ruta ruta = cellData.getValue();
+            if (ruta.getOrigen() != null) {
+                return new SimpleStringProperty(ruta.getOrigen().getNombre());
+            }
+            return new SimpleStringProperty("N/A");
+        });
+
+        columnaDestinoEliminar.setCellValueFactory(cellData -> {
+            Ruta ruta = cellData.getValue();
+            if (ruta.getDestino() != null) {
+                return new SimpleStringProperty(ruta.getDestino().getNombre());
+            }
+            return new SimpleStringProperty("N/A");
+        });
 
 
         graph.setAttribute("ui.antialias", true);
@@ -342,6 +376,7 @@ public class Controlador {
         System.out.println(GestorRutas.getInstance().getParadas().get(id).getNombre());
         String nodeId = ""+id;
         Node newNode = graph.addNode(nodeId);
+        newNode.setAttribute("ui.label", newNode.getId());
         nodosDelGrafo.put(id, newNode);
         newNode.setAttribute("x", gPosX);
         newNode.setAttribute("y", gPosY);
@@ -424,17 +459,25 @@ public class Controlador {
         SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaSeleccionada.getTiempo(), 0.5f);
         SpinnerValueFactory<Double> valueFactory2 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaSeleccionada.getDistancia(), 0.5f);
         SpinnerValueFactory<Double> valueFactory3 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaSeleccionada.getCostoBruto(), 0.5f);
+        SpinnerValueFactory<Double> valueFactory4 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 1000.0f, rutaSeleccionada.getDescuento()*100, 0.5f);
+        valueFactory4.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (GestorRutas.getInstance().modificarDescuentoRuta(newValue.floatValue()/100, rutaSeleccionada.getId())) btnModificarRuta.setDisable(false);
+            else btnModificarRuta.setDisable(true);
+        });
         spnModificarTiempo.setValueFactory(valueFactory);
         spnModificarDistancia.setValueFactory(valueFactory2);
         spnModificarCosto.setValueFactory(valueFactory3);
+        spnModificarDescuento.setValueFactory(valueFactory4);
 
-        modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue());
+        modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue(), spnModificarDescuento.getValue().floatValue());
 
 
     }
 
     public void ocultarM(ActionEvent e){
-        modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue());
+        modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue(),spnModificarDescuento.getValue().floatValue());
+        tablaModificarRuta.getSelectionModel().clearSelection();
+        modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue(), spnModificarDescuento.getValue().floatValue());
         btnLateralModificar.setDisable(true);
         panelLateralModificarRuta.setVisible(false);
         panelLateralModificarRuta.toBack();
@@ -585,6 +628,7 @@ public class Controlador {
             String aristaId = String.valueOf(id);
             graph.addEdge(aristaId, nodo1.getId(), nodo2.getId(), true); // true para crear una arista dirigida
             Edge arista = graph.getEdge(aristaId);
+            arista.setAttribute("ui.label", "T: " + tiempo + " D: " + distancia + " C: " + costo);
             aristasDelGrafo.put(id, arista);
             arista.setAttribute("Tiempo", tiempo);
             arista.setAttribute("Distancia", distancia);
@@ -603,17 +647,20 @@ public class Controlador {
         }
     }
 
-    private void modificarArista(int id, float tiempo, float distancia, float costo) {
+    private void modificarArista(int id, float tiempo, float distancia, float costo, float descuento) {
         String edgeId = String.valueOf(id);
         Edge arista = graph.getEdge(edgeId);
         if (arista != null) {
             arista.setAttribute("Tiempo", tiempo);
             arista.setAttribute("Distancia", distancia);
             arista.setAttribute("Costo", costo);
+            arista.setAttribute("Descuento", descuento);
+            arista.setAttribute("ui.label", "T: " + tiempo + " D: " + distancia + " C: " + costo);
 
             rutaSeleccionada.setTiempo(tiempo);
             rutaSeleccionada.setDistancia(distancia);
             rutaSeleccionada.setCostoBruto(costo);
+            rutaSeleccionada.setDescuento(descuento/100);
         } else {
             System.out.println("No existe una arista entre los nodos seleccionados.");
         }
@@ -632,6 +679,8 @@ public class Controlador {
             panelLateralEliminarRuta.toBack();
             menuLateral.setVisible(true);
             menuLateral.toFront();
+            btnLateralEliminar.setDisable(true);
+            tablaEliminarRuta.getSelectionModel().clearSelection();
             rutaSeleccionada = null;
             parada_Ruta = false;
         }else{

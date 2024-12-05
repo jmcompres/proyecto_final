@@ -5,12 +5,20 @@ graph {
 node {
     fill-color: #5c65c0; /* Color de los nodos */
     size: 40px;
+    text-color: #fcfdff; /* Color del texto */
+    text-size: 14px;
+    text-style: bold;
+    text-alignment: center;
 }
 
 edge {
     fill-color: #6f95ff; /* Color de las aristas */
     size: 6px;
     arrow-size: 35px, 25px;
+    text-color: #fcfdff; /* Color del texto */
+    text-size: 14px;
+    text-style: bold;
+    text-alignment: along;
 }
 
 node.selected {

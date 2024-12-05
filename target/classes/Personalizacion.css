@@ -21,12 +21,27 @@
     -fx-border-color: #413b6b;
 }
 
+#panelInferior{
+    -fx-background-color: #301c41;
+    -fx-border-color: #301c41;
+}
+
+#panelInferior2{
+    -fx-background-color: #413b6b;
+    -fx-border-color: #413b6b;
+}
+
 #panelAgregarRuta{
     -fx-background-color: #413b6b;
     -fx-border-color: #413b6b;
 }
 
 #panelModificarRuta{
+    -fx-background-color: #413b6b;
+    -fx-border-color: #413b6b;
+}
+
+#panelModificar{
     -fx-background-color: #413b6b;
     -fx-border-color: #413b6b;
 }
@@ -64,12 +79,84 @@
     -fx-font-size: 20px;
 }
 
+#btnAgregar{
+    -fx-background-color: #5c65c0;
+}
+
+#btnAgregar:hover{
+    -fx-background-color: #6f95ff;
+}
+
+#btnAgregar:pressed{
+    -fx-background-color: #301c41;
+}
+
+#btnModificar{
+    -fx-background-color: #5c65c0;
+}
+
+#btnModificar:hover{
+    -fx-background-color: #6f95ff;
+}
+
+#btnModificar:pressed{
+    -fx-background-color: #301c41;
+}
+
+#btnAgregarRuta{
+    -fx-background-color: #5c65c0;
+}
+
+#btnAgregarRuta:hover{
+    -fx-background-color: #6f95ff;
+}
+
+#btnAgregarRuta:pressed{
+    -fx-background-color: #301c41;
+}
+
+#btnModificarRuta{
+    -fx-background-color: #5c65c0;
+}
+
+#btnModificarRuta:hover{
+    -fx-background-color: #6f95ff;
+}
+
+#btnModificarRuta:pressed{
+    -fx-background-color: #301c41;
+}
+
 #btnConfirmarEliminacion{
-    -fx-font-size: 12px;
+    -fx-background-color: #5c65c0;
+}
+
+#btnConfirmarEliminacion:hover{
+    -fx-background-color: #6f95ff;
+}
+
+#btnConfirmarEliminacion:pressed{
+    -fx-background-color: #301c41;
 }
 
 #btnCancelarEliminacion{
-    -fx-font-size: 12px;
+    -fx-background-color: #5c65c0;
+}
+
+#btnCancelarEliminacion:hover{
+    -fx-background-color: #6f95ff;
+}
+
+#btnCancelarEliminacion:pressed{
+    -fx-background-color: #301c41;
+}
+
+#btnLateralModificar{
+    -fx-alignment: center;
+}
+
+#btnLateralEliminar{
+    -fx-alignment: center;
 }
 
 .button {
@@ -93,12 +180,87 @@
 }
 
 .table-view {
-    -fx-background-color: #f4f4f4;
+    -fx-border-color: #413b6b;    /* Borde exterior */
+}
+
+.table-cell{
+    -fx-text-fill: #fcfdff; /* Color del texto */
+    -fx-font-size: 14px; /* Tamaño de la fuente */
+    -fx-alignment: center; /* Centrado */
+    fx-font-family: "Roboto", sans-serif;
+    -fx-font-weight: bold;
+
 }
 
 .table-view .column-header {
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-background-color: #d3d3d3;
+    -fx-background-color: #301c41; /* Fondo de los encabezados */
+    -fx-pref-height: 40px; /* Cambia la altura del encabezado */
+    -fx-text-fill: #fcfdff;          /* Color del texto en los encabezados */
+    -fx-font-size: 14px;           /* Tamaño de la fuente */
+    -fx-font-weight: bold;         /* Negrita */
+    -fx-alignment: center;         /* Centrado */
+}
+
+
+.table-row-cell:odd {
+    -fx-background-color: #5c65c0; /* Azul claro */
+}
+
+.table-row-cell:even {
+    -fx-background-color: #413b6b; /* Azul oscuro */
+}
+
+
+.table-row-cell:selected {
+    -fx-background-color: #301c41; /* Color de fondo para la fila seleccionada */
+    -fx-text-fill: #fcfdff;         /* Color del texto en la fila seleccionada */
+}
+
+
+.table-row-cell:hover {
+    -fx-background-color: #6f95ff ; /* Color al pasar el mouse */
+}
+
+.combo-box {
+    -fx-background-color: #5c65c0; /* Fondo */
+    -fx-text-fill: #fcfdff; /* Color del texto */
+    -fx-font-size: 14px; /* Tamaño de la fuente */
+    -fx-font-weight: bold; /* Negrita */
+    -fx-alignment: center; /* Centrado */
+    -fx-border-color: #413b6b; /* Borde */
+}
+
+.combo-box:hover {
+    -fx-background-color: #6f95ff; /* Color al pasar el mouse */
+}
+
+.combo-box:pressed {
+    -fx-background-color: #301c41; /* Color al presionar */
+}
+
+.combo-box-popup {
+    -fx-background-color: #5c65c0; /* Fondo */
+    -fx-text-fill: #fcfdff; /* Color del texto */
+    -fx-font-size: 14px; /* Tamaño de la fuente */
+    -fx-font-weight: bold; /* Negrita */
+    -fx-alignment: center; /* Centrado */
+    -fx-border-color: #413b6b; /* Borde */
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: #5c65c0; /* Fondo */
+    -fx-text-fill: #fcfdff; /* Color del texto */
+    -fx-font-size: 14px; /* Tamaño de la fuente */
+    -fx-font-weight: bold; /* Negrita */
+    -fx-alignment: center; /* Centrado */
+    -fx-border-color: #413b6b; /* Borde */
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #6f95ff; /* Color al pasar el mouse */
+}
+
+.combo-box-popup .list-cell:pressed {
+    -fx-background-color: #301c41; /* Color al presionar */
 }
 
