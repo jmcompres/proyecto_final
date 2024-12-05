@@ -93,12 +93,29 @@
 }
 
 .table-view {
-    -fx-background-color: #f4f4f4;
+    -fx-background-color: #f9f9f9; /* Fondo de la tabla */
+    -fx-border-color: #cccccc;    /* Borde exterior */
+    -fx-border-width: 2px;
+    -fx-padding: 5px;
 }
 
 .table-view .column-header {
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-background-color: #d3d3d3;
+    -fx-background-color: #333333; /* Fondo de los encabezados */
+    -fx-text-fill: white;          /* Color del texto en los encabezados */
+    -fx-font-size: 14px;           /* Tamaño de la fuente */
+    -fx-font-weight: bold;         /* Negrita */
+    -fx-alignment: center;         /* Centrado */
+}
+
+.table-view .cell {
+    -fx-background-color: #ffffff; /* Fondo de las celdas */
+    -fx-text-fill: #000000;        /* Color del texto en las celdas */
+    -fx-font-size: 12px;           /* Tamaño de la fuente */
+    -fx-alignment: center-left;    /* Alineación */
+}
+
+.table-view .row:selected {
+    -fx-background-color: #4CAF50; /* Fondo al seleccionar una fila */
+    -fx-text-fill: white;          /* Color del texto al seleccionar */
 }
 

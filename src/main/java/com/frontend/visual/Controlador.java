@@ -10,6 +10,7 @@ import com.backend.Ruta;
 import com.backend.Localizacion;
 import com.backend.ParParadaRuta;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -125,13 +126,41 @@ public class Controlador {
         nodosDelGrafo = new HashMap<Integer, Node>();
         ultimaRutaCalculada = null;
 
+        tablaModificarRuta.getStylesheets().add(getClass().getResource("/Personalizacion.css").toExternalForm());
+        tablaEliminarRuta.getStylesheets().add(getClass().getResource("/Personalizacion.css").toExternalForm());
+
         columnaIdModificar.setCellValueFactory(new PropertyValueFactory<>("id"));
-        columnaOrigenModificar.setCellValueFactory(new PropertyValueFactory<>("origen"));
-        columnaDestinoModificar.setCellValueFactory(new PropertyValueFactory<>("destino"));
+        columnaOrigenModificar.setCellValueFactory(cellData -> {
+            Ruta ruta = cellData.getValue();
+            if (ruta.getOrigen() != null) {
+                return new SimpleStringProperty(ruta.getOrigen().getNombre());
+            }
+            return new SimpleStringProperty("N/A");
+        });
+        columnaDestinoModificar.setCellValueFactory(cellData -> {
+            Ruta ruta = cellData.getValue();
+            if (ruta.getDestino() != null) {
+                return new SimpleStringProperty(ruta.getDestino().getNombre());
+            }
+            return new SimpleStringProperty("N/A");
+        });
 
         columnaIdEliminar.setCellValueFactory(new PropertyValueFactory<>("id"));
-        columnaOrigenEliminar.setCellValueFactory(new PropertyValueFactory<>("origen"));
-        columnaDestinoEliminar.setCellValueFactory(new PropertyValueFactory<>("destino"));
+        columnaOrigenEliminar.setCellValueFactory(cellData -> {
+            Ruta ruta = cellData.getValue();
+            if (ruta.getOrigen() != null) {
+                return new SimpleStringProperty(ruta.getOrigen().getNombre());
+            }
+            return new SimpleStringProperty("N/A");
+        });
+
+        columnaDestinoEliminar.setCellValueFactory(cellData -> {
+            Ruta ruta = cellData.getValue();
+            if (ruta.getDestino() != null) {
+                return new SimpleStringProperty(ruta.getDestino().getNombre());
+            }
+            return new SimpleStringProperty("N/A");
+        });
 
 
         graph.setAttribute("ui.antialias", true);
@@ -435,6 +464,7 @@ public class Controlador {
 
     public void ocultarM(ActionEvent e){
         modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue());
+        tablaModificarRuta.getSelectionModel().clearSelection();
         btnLateralModificar.setDisable(true);
         panelLateralModificarRuta.setVisible(false);
         panelLateralModificarRuta.toBack();
@@ -632,6 +662,8 @@ public class Controlador {
             panelLateralEliminarRuta.toBack();
             menuLateral.setVisible(true);
             menuLateral.toFront();
+            btnLateralEliminar.setDisable(true);
+            tablaEliminarRuta.getSelectionModel().clearSelection();
             rutaSeleccionada = null;
             parada_Ruta = false;
         }else{
