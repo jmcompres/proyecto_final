@@ -76,10 +76,25 @@ public class Controlador {
     private Parada paradaSeleccionada1 = null;
     private Parada paradaSeleccionada2 = null;
     private Accion accionActual = Accion.NINGUNA;
+
     private Double posX;
     private Double posY;
     private Ruta rutaEncontrada = null;
     private boolean parada_Ruta = false;
+
+    /**/
+    private Double longitud;
+    private Double latitud;
+    private Double gPosX;
+    private Double gPosY;
+    /**/
+
+    /**///atributos para mostrar las coordenadas del mouse
+    @FXML
+    private Label labelCoordenadas;
+    private static boolean mouseTracking = false;
+    /**/
+
 
     public void initialize() {
 
@@ -172,6 +187,17 @@ public class Controlador {
         agregarHabilitadores(cmbPref1, cmbPref2, opcionDefault);
         agregarHabilitadores(cmbPref2, cmbPref3, opcionDefault);
         agregarHabilitadores(cmbPref3, cmbPref4, opcionDefault);
+
+        /**/
+        panelPrincipal.setOnMouseMoved((MouseEvent event) -> {
+            if (mouseTracking)
+            {
+                longitud = (event.getX()-(panelPrincipal.widthProperty().doubleValue()/2))/((panelPrincipal.widthProperty().doubleValue()/2))*180;
+                latitud = (event.getY()-(panelPrincipal.heightProperty().doubleValue()/2))/((panelPrincipal.heightProperty().doubleValue()/2))*90;
+                labelCoordenadas.setText(String.format("Latitud: %.2f°, Longitud: %.2f°", -latitud, longitud));
+            }
+        });
+        /**/
     }
 
 
@@ -251,19 +277,23 @@ public class Controlador {
     }
 
     public void agregarParada(ActionEvent e) {
+        /**/
+        labelCoordenadas.setStyle("-fx-text-fill: black;");
+        mouseTracking = true;
+        /**/
         setAccionActual(Accion.AGREGAR_NODO);
         panel.setOnMouseClicked(this::handlePanelClick);
     }
 
     public void agregarP(ActionEvent e) {
-        Localizacion neoLoca = new Localizacion(posX, posY, 0, txtLocalizacion.getText());
+        Localizacion neoLoca = new Localizacion(longitud, latitud, 0, txtLocalizacion.getText());
         GestorRutas.getInstance().agregarParada(txtNombre.getText(), neoLoca);
         int id = GestorRutas.getInstance().getIdParadaActual()-1;
         System.out.println(GestorRutas.getInstance().getParadas().get(id).getNombre());
         String nodeId = ""+id;
         Node newNode = graph.addNode(nodeId);
-        newNode.setAttribute("x", posX);
-        newNode.setAttribute("y", posY);
+        newNode.setAttribute("x", gPosX);
+        newNode.setAttribute("y", gPosY);
         panelAgregar.setVisible(false);
         panelAgregar.toBack();
         txtNombre.setText("");
@@ -342,16 +372,21 @@ public class Controlador {
 
 
     private void handlePanelClick(MouseEvent event) {
-        // Obtener las coordenadas del clic en el panel
+        /**/
+        mouseTracking = false;
+        labelCoordenadas.setStyle("-fx-text-fill: white;");
+        /**/
+        /**/
+        // Convertir las coordenadas del panel a las coordenadas del grafo
         double clickX = event.getX();
         double clickY = event.getY();
-
-        // Convertir las coordenadas del panel a las coordenadas del grafo
         Point3 graphCoordinates = panel.getCamera().transformPxToGu(clickX, clickY);
-        setCoordinates(graphCoordinates.x, graphCoordinates.y);
         double x = graphCoordinates.x;
         double y = graphCoordinates.y;
-        System.out.println("Clic en: (" + x + ", " + y + ")");
+        setCoordinates(x, y);
+
+        System.out.println("Clic en: (" + gPosX + ", " + gPosY + ")");
+        /**/
 
         // Buscar el nodo más cercano al clic
         Node nodoCercano = null;
@@ -518,8 +553,8 @@ public class Controlador {
     }
 
     public void setCoordinates(double x, double y) {
-        this.posX = x;
-        this.posY = y;
+        this.gPosX = x;
+        this.gPosY = y;
     }
 
 
