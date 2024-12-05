@@ -1,9 +1,6 @@
 package com.frontend.visual;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.backend.GestorRutas;
 import com.backend.Parada;
@@ -81,6 +78,8 @@ public class Controlador {
     private Accion accionActual = Accion.NINGUNA;
     private Double posX;
     private Double posY;
+    private Ruta rutaEncontrada = null;
+    private boolean parada_Ruta = false;
 
     public void initialize() {
 
@@ -285,6 +284,7 @@ public class Controlador {
     }
 
     public void eliminarParada(ActionEvent e) {
+        parada_Ruta = false;
         setAccionActual(Accion.ELIMINAR_NODO);
         panel.setOnMouseClicked(this::handlePanelClick);
     }
@@ -303,7 +303,7 @@ public class Controlador {
 
     public void agregarR(ActionEvent e) {
         GestorRutas.getInstance().agregarRuta(paradaSeleccionada1.getId(), paradaSeleccionada2.getId(), spnTiempo.getValue().floatValue(), spnDistancia.getValue().floatValue(), spnCosto.getValue().floatValue());
-        agregarArista(nodoSeleccionado1, nodoSeleccionado2);
+        agregarArista(nodoSeleccionado1, nodoSeleccionado2,spnTiempo.getValue().floatValue(), spnDistancia.getValue().floatValue(), spnCosto.getValue().floatValue());
         deselectNodo(nodoSeleccionado1);
         deselectNodo(nodoSeleccionado2);
         nodoSeleccionado1 = null;
@@ -321,41 +321,23 @@ public class Controlador {
     public void modificarRuta(ActionEvent e) {
         setAccionActual(Accion.MODIFICAR_ARISTA);
         panel.setOnMouseClicked(this::handlePanelClick);
-        panelModificar.setVisible(false);
-        panelAgregar.setVisible(false);
-        panelAgregarRuta.setVisible(false);
-        panelModificarRuta.setVisible(true);
-
     }
 
     public void modificarR(ActionEvent e) {
-        /*ruta.setTiempo(spnModificarTiempo.getValue().floatValue());
-        ruta.setDistancia(spnModificarDistancia.getValue().floatValue());
-        ruta.setCosto(spnModificarCosto.getValue().floatValue());
-        spnModificarTiempo.setDisable(true);
-        spnModificarDistancia.setDisable(true);
-        spnModificarCosto.setDisable(true);
-        btnModificarRuta.setDisable(true);
-        panelModificarRuta.setVisible(false);*/
+        modificarArista(nodoSeleccionado1, nodoSeleccionado2, spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue());
+        System.out.println(GestorRutas.getInstance().getRutas().get(GestorRutas.getInstance().getIdRutaActual()-1).getTiempo());
+        deselectNodo(nodoSeleccionado1);
+        deselectNodo(nodoSeleccionado2);
+        nodoSeleccionado1 = null;
+        nodoSeleccionado2 = null;
+        panelModificarRuta.setVisible(false);
+        panelModificarRuta.toBack();
     }
 
     public void eliminarRuta(ActionEvent e) {
+        parada_Ruta = true;
         setAccionActual(Accion.ELIMINAR_ARISTA);
         panel.setOnMouseClicked(this::handlePanelClick);
-        panelModificar.setVisible(false);
-        panelAgregar.setVisible(false);
-        panelAgregarRuta.setVisible(false);
-        panelModificarRuta.setVisible(false);
-
-
-    }
-
-    public void eliminarR(ActionEvent e) {
-        /*btnEliminarRuta.setDisable(true);
-        Ruta ruta = listaEliminarRuta.getSelectionModel().getSelectedItem();
-        GestorRutas.getInstance().eliminarRuta(ruta.getId());
-        listaEliminarRuta.getItems().remove(ruta);
-        panelEliminarRuta.setVisible(false);*/
     }
 
 
@@ -379,7 +361,7 @@ public class Controlador {
 
             // Calcular la distancia entre el clic y el nodo
             double distancia = Math.sqrt(Math.pow(nodeX - x, 2) + Math.pow(nodeY - y, 2));
-            if (distancia < 0.5) { // Rango de selección, ajústalo según sea necesario
+            if (distancia < 0.5) { // Rango de selección
                 nodoCercano = nodo;
                 break;
             }
@@ -436,20 +418,16 @@ public class Controlador {
                     if (nodoSeleccionado1 == null) {
                         nodoSeleccionado1 = nodoCercano;
                         seleccionarNodo(nodoSeleccionado1);
-                        System.out.println("Primer nodo para eliminar arista seleccionado: " + nodoSeleccionado1.getId());
+                        paradaSeleccionada1 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado1.getId()));
                     } else if (nodoSeleccionado2 == null) {
                         if (nodoSeleccionado1 == nodoCercano) {
                             System.out.println("No se puede seleccionar el mismo nodo para la arista.");
                         } else {
                             nodoSeleccionado2 = nodoCercano;
                             seleccionarNodo(nodoSeleccionado2);
-                            System.out.println("Segundo nodo para eliminar arista seleccionado: " + nodoSeleccionado2.getId());
-                            eliminarArista(nodoSeleccionado1, nodoSeleccionado2);
-                            deselectNodo(nodoSeleccionado1);
-                            deselectNodo(nodoSeleccionado2);
-                            nodoSeleccionado1 = null;
-                            nodoSeleccionado2 = null;
-                            System.out.println("Arista eliminada entre los nodos.");
+                            paradaSeleccionada2 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado2.getId()));
+                            panelConfirmacion.setVisible(true);
+                            panelConfirmacion.toFront();
                         }
                     }
                     break;
@@ -458,20 +436,25 @@ public class Controlador {
                     if (nodoSeleccionado1 == null) {
                         nodoSeleccionado1 = nodoCercano;
                         seleccionarNodo(nodoSeleccionado1);
-                        System.out.println("Primer nodo para modificar arista seleccionado: " + nodoSeleccionado1.getId());
+                        paradaSeleccionada1 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado1.getId()));
                     } else if (nodoSeleccionado2 == null) {
                         if (nodoSeleccionado1 == nodoCercano) {
                             System.out.println("No se puede seleccionar el mismo nodo para la arista.");
                         } else {
                             nodoSeleccionado2 = nodoCercano;
+                            paradaSeleccionada2 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado2.getId()));
                             seleccionarNodo(nodoSeleccionado2);
-                            System.out.println("Segundo nodo para modificar arista seleccionado: " + nodoSeleccionado2.getId());
-                            modificarArista(nodoSeleccionado1, nodoSeleccionado2);
-                            deselectNodo(nodoSeleccionado1);
-                            deselectNodo(nodoSeleccionado2);
-                            nodoSeleccionado1 = null;
-                            nodoSeleccionado2 = null;
-                            System.out.println("Arista modificada entre los nodos.");
+
+                            rutaEncontrada = GestorRutas.getInstance().buscarRuta(paradaSeleccionada1, paradaSeleccionada2);
+
+                            SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaEncontrada.getTiempo(), 0.5f);
+                            SpinnerValueFactory<Double> valueFactory2 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaEncontrada.getDistancia(), 0.5f);
+                            SpinnerValueFactory<Double> valueFactory3 = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0f, 100.0f, rutaEncontrada.getCostoBruto(), 0.5f);
+                            spnModificarTiempo.setValueFactory(valueFactory);
+                            spnModificarDistancia.setValueFactory(valueFactory2);
+                            spnModificarCosto.setValueFactory(valueFactory3);
+                            panelModificarRuta.setVisible(true);
+                            panelModificarRuta.toFront();
                         }
                     }
                     break;
@@ -493,11 +476,15 @@ public class Controlador {
         nodo.removeAttribute("ui.class");
     }
 
-    private void agregarArista(Node nodo1, Node nodo2) {
+    private void agregarArista(Node nodo1, Node nodo2, float tiempo, float distancia, float costo) {
         if (nodo1 != null && nodo2 != null) {
             int id = GestorRutas.getInstance().getIdRutaActual()-1;
-            String aristaId = ""+id;
+            String aristaId = nodo1.getId() + "-" + nodo2.getId();
             graph.addEdge(aristaId, nodo1.getId(), nodo2.getId(), true); // true para crear una arista dirigida
+            Edge arista = graph.getEdge(aristaId);
+            arista.setAttribute("Tiempo", tiempo);
+            arista.setAttribute("Distancia", distancia);
+            arista.setAttribute("Costo", costo);
         }
     }
 
@@ -507,18 +494,24 @@ public class Controlador {
         if (arista != null) {
             graph.removeEdge(arista);
             System.out.println("Arista eliminada: " + edgeId);
+            Ruta ruta = GestorRutas.getInstance().buscarRuta(paradaSeleccionada1, paradaSeleccionada2);
+            GestorRutas.getInstance().eliminarRuta(ruta.getId());
         } else {
             System.out.println("No existe una arista entre " + origen.getId() + " y " + destino.getId());
         }
     }
 
-    private void modificarArista(Node origen, Node destino) {
+    private void modificarArista(Node origen, Node destino, float tiempo, float distancia, float costo) {
         String edgeId = origen.getId() + "-" + destino.getId();
         Edge arista = graph.getEdge(edgeId);
         if (arista != null) {
-            // Ejemplo de modificación: Cambiar el peso de la arista
-            arista.setAttribute("weight", 10.0); // Cambiar el atributo que necesites
-            System.out.println("Arista modificada: " + edgeId + " (nuevo peso: 10.0)");
+            arista.setAttribute("Tiempo", tiempo);
+            arista.setAttribute("Distancia", distancia);
+            arista.setAttribute("Costo", costo);
+
+            rutaEncontrada.setTiempo(tiempo);
+            rutaEncontrada.setDistancia(distancia);
+            rutaEncontrada.setCostoBruto(costo);
         } else {
             System.out.println("No existe una arista entre los nodos seleccionados.");
         }
@@ -531,15 +524,30 @@ public class Controlador {
 
 
     public void confirmar(ActionEvent e) {
-        GestorRutas.getInstance().eliminarParada(paradaSeleccionada1.getId());
+        if(parada_Ruta){
+            eliminarArista(nodoSeleccionado1, nodoSeleccionado2);
+            deselectNodo(nodoSeleccionado1);
+            deselectNodo(nodoSeleccionado2);
+            nodoSeleccionado1 = null;
+            nodoSeleccionado2 = null;
+        }else{
+            GestorRutas.getInstance().eliminarParada(paradaSeleccionada1.getId());
+            graph.removeNode(nodoSeleccionado1.getId());
+            nodoSeleccionado1 = null;
+        }
         panelConfirmacion.setVisible(false);
-        graph.removeNode(nodoSeleccionado1.getId());
-        nodoSeleccionado1 = null;
     }
 
     public void cancelar(ActionEvent e) {
-        deselectNodo(nodoSeleccionado1);
-        nodoSeleccionado1 = null;
+        if(parada_Ruta) {
+            deselectNodo(nodoSeleccionado1);
+            deselectNodo(nodoSeleccionado2);
+            nodoSeleccionado1 = null;
+            nodoSeleccionado2 = null;
+        }else{
+            deselectNodo(nodoSeleccionado1);
+            nodoSeleccionado1 = null;
+        }
         panelConfirmacion.setVisible(false);
     }
 
@@ -560,7 +568,6 @@ public class Controlador {
         //Los ids de las paradas hay que cambiarlos según los nodos a los que se les haga click
         return GestorRutas.getInstance().encontrarRuta(0, 0, prefs);
     }
-
 
 }
 

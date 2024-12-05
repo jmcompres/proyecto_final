@@ -154,6 +154,15 @@ public class GestorRutas implements Serializable{
         rutas.remove(idRuta);
     }
 
+    public Ruta buscarRuta(Parada origen, Parada destino){
+        for(Ruta r : origen.getRutas()){
+            if(r.getDestino().equals(destino)){
+                return r;
+            }
+        }
+        return null;
+    }
+
     public boolean modificarDescuentoRuta(float neoDescuento, int idRuta)
     {
         if (!rutas.containsKey(idRuta)) return false;
