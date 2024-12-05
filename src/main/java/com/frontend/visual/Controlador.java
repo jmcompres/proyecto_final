@@ -99,6 +99,7 @@ public class Controlador {
     private Map<Integer, Edge> aristasDelGrafo;
     private Map<Integer, Node> nodosDelGrafo;
     private List<ParParadaRuta> ultimaRutaCalculada;
+    private Map<Integer, Ruta> mst;
     /**/
 
 
@@ -244,8 +245,16 @@ public class Controlador {
             if (newValue != null && !newValue.equals(opcionDefault)) {
                 prefsSeleccionadas.add(newValue);
             }
-            if (cmbPref1.getSelectionModel().getSelectedIndex() == 4) btnBuscar.setDisable(true);
-            else btnBuscar.setDisable(false);
+            if (cmbPref1.getSelectionModel().getSelectedIndex() == 4)
+            {
+                btnBuscar.setDisable(true);
+                cbxExpMin.setDisable(true);
+            }
+            else
+            {
+                btnBuscar.setDisable(false);
+                cbxExpMin.setDisable(false);
+            }
     
             // Actualizar solo las celdas sin modificar los ítems
             for (ComboBox<String> comboBox : todos) {
@@ -623,6 +632,25 @@ public class Controlador {
     public void alternarExpMin()
     {
         GestorRutas.getInstance().setExpMin(!GestorRutas.getInstance().getExpMinActivado());
+        if (GestorRutas.getInstance().getExpMinActivado()) modoExpMin();
+        else desModoExpMin();
+    }
+
+    private void modoExpMin()
+    {
+        mst = GestorRutas.getInstance().getMst(getPrefs());
+        for (Map.Entry<Integer, Edge> entry : aristasDelGrafo.entrySet())
+        {
+            if (!mst.containsKey(entry.getKey())) entry.getValue().setAttribute("ui.class", "invisible");
+            else entry.getValue().setAttribute("ui.class", "mstEdge");
+        }
+        if (ultimaRutaCalculada!=null) desResaltarRuta();
+    }
+
+    private void desModoExpMin()
+    {
+        for (Edge e: aristasDelGrafo.values())
+            e.removeAttribute("ui.class");
     }
 
     public void encontrarRuta()
@@ -631,7 +659,7 @@ public class Controlador {
         panel.setOnMouseClicked(this::handlePanelClick);
     }
 
-    public List<ParParadaRuta> rutaOptima()
+    private Preferencias[] getPrefs()
     {
         Preferencias prefs[] = new Preferencias[5];
         prefs[0] = Preferencias.getPorValor(cmbPref1.getSelectionModel().getSelectedIndex());
@@ -640,6 +668,12 @@ public class Controlador {
         prefs[0] = Preferencias.getPorValor(cmbPref4.getSelectionModel().getSelectedIndex());
         prefs[0] = Preferencias.NINGUNA;
 
+        return prefs;
+    }
+
+    public List<ParParadaRuta> rutaOptima()
+    {
+        Preferencias prefs[] = getPrefs();
         //Los ids de las paradas hay que cambiarlos según los nodos a los que se les haga click
         ultimaRutaCalculada = GestorRutas.getInstance().encontrarRuta(paradaSeleccionada1.getId(), paradaSeleccionada2.getId(), prefs);
         return ultimaRutaCalculada;

@@ -603,12 +603,13 @@ public class GestorRutas implements Serializable{
         Map<Integer, Ruta> mst = new HashMap<>();
         PriorityQueue<ParRutaDiscriminante> pq = new PriorityQueue<>();
         for (Ruta r : rutas.values()) pq.offer(new ParRutaDiscriminante(r, new RegistroDiscriminates(r, null, false, false), preferencias));
-        UnionFind uf = new UnionFind(paradas.size());
+        UnionFind uf = new UnionFind(paradas.size()+1);
 
         while(mst.size() < paradas.size() - 1 && !pq.isEmpty()){
             Ruta ruta = pq.poll().ruta;
             int origen = ruta.getOrigen().getId()-1;
             int destino = ruta.getDestino().getId()-1;
+            System.out.println(origen+" "+ruta);
             if(uf.union(origen, destino)){
                 mst.put(ruta.getId(), ruta);
                 uf.union(origen, destino);
@@ -740,6 +741,12 @@ public class GestorRutas implements Serializable{
         }
 
         return ruta;
+    }
+
+    public Map<Integer, Ruta> getMst(Preferencias[] prefs)
+    {
+        if (mstActual ==  null) mstActual = kruskal(prefs);
+        return mstActual;
     }
     
 }
