@@ -65,28 +65,28 @@
                   <CheckBox fx:id="cbxExpMin" alignment="CENTER" onAction="#alternarExpMin" style="-fx-text-fill: white;" text="Expansión Mínima" />
                </children>
             </VBox>
-            <VBox fx:id="panelLateralEliminarRuta" prefHeight="200.0" prefWidth="100.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox fx:id="panelLateralEliminarRuta" prefHeight="200.0" prefWidth="236.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <TableView fx:id="tablaEliminarRuta" prefHeight="700.0" prefWidth="200.0">
+                  <TableView fx:id="tablaEliminarRuta" prefHeight="700.0" prefWidth="241.0">
                     <columns>
-                      <TableColumn fx:id="columnaIdEliminar" prefWidth="75.0" text="ID" />
-                      <TableColumn fx:id="columnaOrigenEliminar" prefWidth="80.7999267578125" text="Origen" />
-                        <TableColumn fx:id="columnaDestinoEliminar" prefWidth="82.4000244140625" text="Destino" />
+                      <TableColumn fx:id="columnaIdEliminar" prefWidth="75.0" sortable="false" text="ID" />
+                      <TableColumn fx:id="columnaOrigenEliminar" prefWidth="80.7999267578125" sortable="false" text="Origen" />
+                        <TableColumn fx:id="columnaDestinoEliminar" prefWidth="94.0" sortable="false" text="Destino" />
                     </columns>
                   </TableView>
-                  <Button fx:id="btnLateralEliminar" disable="true" mnemonicParsing="false" onAction="#eliminarR" prefHeight="40.0" prefWidth="241.0" text="Eliminar" />
+                  <Button fx:id="btnLateralEliminar" disable="true" mnemonicParsing="false" onAction="#eliminarR" prefHeight="26.0" prefWidth="250.0" text="Eliminar" />
                </children>
             </VBox>
-            <VBox fx:id="panelLateralModificarRuta" prefHeight="200.0" prefWidth="100.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox fx:id="panelLateralModificarRuta" prefHeight="200.0" prefWidth="250.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <TableView fx:id="tablaModificarRuta" prefHeight="700.0" prefWidth="242.0">
+                  <TableView fx:id="tablaModificarRuta" minWidth="-Infinity" prefHeight="700.0" prefWidth="250.0">
                     <columns>
-                      <TableColumn fx:id="columnaIdModificar" prefWidth="75.99993896484375" text="ID" />
-                      <TableColumn fx:id="columnaOrigenModificar" prefWidth="79.9998779296875" text="Origen" />
-                        <TableColumn fx:id="columnaDestinoModificar" prefWidth="84.800048828125" text="Destino" />
+                      <TableColumn fx:id="columnaIdModificar" editable="false" prefWidth="75.99993896484375" sortable="false" text="ID" />
+                      <TableColumn fx:id="columnaOrigenModificar" prefWidth="79.9998779296875" sortable="false" text="Origen" />
+                        <TableColumn fx:id="columnaDestinoModificar" prefWidth="94.0" sortable="false" text="Destino" />
                     </columns>
                   </TableView>
-                  <Button fx:id="btnLateralModificar" disable="true" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#modificarR" prefHeight="45.0" prefWidth="241.0" text="Modificar" />
+                  <Button fx:id="btnLateralModificar" disable="true" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#modificarR" prefHeight="46.0" prefWidth="250.0" text="Modificar" />
                </children>
             </VBox> 
          </children>
@@ -203,10 +203,15 @@
       </AnchorPane>
    </center>
    <bottom>
-      <Pane fx:id="panelInferior" prefHeight="30.0" prefWidth="500.0">
+      <AnchorPane>
          <children>
-            <Label fx:id="labelCoordenadas" layoutX="10.0" layoutY="5.0" style="-fx-text-fill: white;" text="Latitud: 0°, Longitud: 0°" />
+            <Pane fx:id="panelInferior" prefHeight="30.0" prefWidth="955.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label fx:id="labelCoordenadas" layoutX="10.0" layoutY="5.0" style="-fx-text-fill: white;" text="Latitud: 0°, Longitud: 0°" />
+               </children>
+            </Pane>
+            <Pane fx:id="panelInferior2" layoutX="950.4" prefHeight="30.0" prefWidth="249.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
          </children>
-      </Pane>
+      </AnchorPane>
    </bottom>
 </BorderPane>

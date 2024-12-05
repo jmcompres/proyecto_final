@@ -21,6 +21,16 @@
     -fx-border-color: #413b6b;
 }
 
+#panelInferior{
+    -fx-background-color: #301c41;
+    -fx-border-color: #301c41;
+}
+
+#panelInferior2{
+    -fx-background-color: #413b6b;
+    -fx-border-color: #413b6b;
+}
+
 #panelAgregarRuta{
     -fx-background-color: #413b6b;
     -fx-border-color: #413b6b;
@@ -72,6 +82,14 @@
     -fx-font-size: 12px;
 }
 
+#btnLateralModificar{
+    -fx-alignment: center;
+}
+
+#btnLateralEliminar{
+    -fx-alignment: center;
+}
+
 .button {
     -fx-background-color:  #413b6b;
     -fx-text-fill: #fcfdff;
@@ -93,29 +111,44 @@
 }
 
 .table-view {
-    -fx-background-color: #f9f9f9; /* Fondo de la tabla */
-    -fx-border-color: #cccccc;    /* Borde exterior */
-    -fx-border-width: 2px;
-    -fx-padding: 5px;
+    -fx-border-color: #413b6b;    /* Borde exterior */
+}
+
+.table-cell{
+    -fx-text-fill: #fcfdff; /* Color del texto */
+    -fx-font-size: 14px; /* Tamaño de la fuente */
+    -fx-alignment: center; /* Centrado */
+    fx-font-family: "Roboto", sans-serif;
+    -fx-font-weight: bold;
+
 }
 
 .table-view .column-header {
-    -fx-background-color: #333333; /* Fondo de los encabezados */
-    -fx-text-fill: white;          /* Color del texto en los encabezados */
+    -fx-background-color: #301c41; /* Fondo de los encabezados */
+    -fx-pref-height: 40px; /* Cambia la altura del encabezado */
+    -fx-text-fill: #fcfdff;          /* Color del texto en los encabezados */
     -fx-font-size: 14px;           /* Tamaño de la fuente */
     -fx-font-weight: bold;         /* Negrita */
     -fx-alignment: center;         /* Centrado */
 }
 
-.table-view .cell {
-    -fx-background-color: #ffffff; /* Fondo de las celdas */
-    -fx-text-fill: #000000;        /* Color del texto en las celdas */
-    -fx-font-size: 12px;           /* Tamaño de la fuente */
-    -fx-alignment: center-left;    /* Alineación */
+
+.table-row-cell:odd {
+    -fx-background-color: #5c65c0; /* Azul claro */
 }
 
-.table-view .row:selected {
-    -fx-background-color: #4CAF50; /* Fondo al seleccionar una fila */
-    -fx-text-fill: white;          /* Color del texto al seleccionar */
+.table-row-cell:even {
+    -fx-background-color: #413b6b; /* Azul oscuro */
+}
+
+
+.table-row-cell:selected {
+    -fx-background-color: #301c41; /* Color de fondo para la fila seleccionada */
+    -fx-text-fill: #fcfdff;         /* Color del texto en la fila seleccionada */
+}
+
+
+.table-row-cell:hover {
+    -fx-background-color: #6f95ff ; /* Color al pasar el mouse */
 }
 
