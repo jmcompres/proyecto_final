@@ -65,6 +65,8 @@ public class GestorRutas implements Serializable{
 
     public int getIdParadaActual() {return idParadaActual;}
 
+    public int getIdRutaActual() {return idRutaActual;}
+
     public Map<Integer, Map<Integer, List<ParParadaRuta>>> getRutasFloydWarshall() {
         return rutasFloydWarshall;
     }
@@ -150,6 +152,15 @@ public class GestorRutas implements Serializable{
         if (!pOrigen.getParadasApuntadas().contains(pDestino))  //Si la ruta a la parada era la única, entonces se elimina de paradas apuntadoras en la ruta destino
             pDestino.getParadasApuntadoras().remove(pOrigen);
         rutas.remove(idRuta);
+    }
+
+    public Ruta buscarRuta(Parada origen, Parada destino){
+        for(Ruta r : origen.getRutas()){
+            if(r.getDestino().equals(destino)){
+                return r;
+            }
+        }
+        return null;
     }
 
     public boolean modificarDescuentoRuta(float neoDescuento, int idRuta)
