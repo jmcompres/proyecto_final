@@ -92,3 +92,13 @@
     -fx-background-color: #301c41; /* Color aún más oscuro */
 }
 
+.table-view {
+    -fx-background-color: #f4f4f4;
+}
+
+.table-view .column-header {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-color: #d3d3d3;
+}
+
