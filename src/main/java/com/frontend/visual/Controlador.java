@@ -474,7 +474,7 @@ public class Controlador {
     }
 
     public void ocultarM(ActionEvent e){
-        modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue());
+        modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue(),spnModificarDescuento.getValue().floatValue());
         tablaModificarRuta.getSelectionModel().clearSelection();
         modificarArista(rutaSeleccionada.getId(), spnModificarTiempo.getValue().floatValue(), spnModificarDistancia.getValue().floatValue(), spnModificarCosto.getValue().floatValue(), spnModificarDescuento.getValue().floatValue());
         btnLateralModificar.setDisable(true);
