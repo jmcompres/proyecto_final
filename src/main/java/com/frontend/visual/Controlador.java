@@ -95,8 +95,18 @@ public class Controlador {
     private static boolean mouseTracking = false;
     /**/
 
+    /**/
+    private Map<Integer, Edge> aristasDelGrafo;
+    private Map<Integer, Node> nodosDelGrafo;
+    private List<ParParadaRuta> ultimaRutaCalculada;
+    /**/
+
 
     public void initialize() {
+
+        aristasDelGrafo = new HashMap<Integer,Edge>();
+        nodosDelGrafo = new HashMap<Integer, Node>();
+        ultimaRutaCalculada = null;
 
         graph.setAttribute("ui.antialias", true);
         graph.setAttribute("ui.quality", true);
@@ -234,6 +244,8 @@ public class Controlador {
             if (newValue != null && !newValue.equals(opcionDefault)) {
                 prefsSeleccionadas.add(newValue);
             }
+            if (cmbPref1.getSelectionModel().getSelectedIndex() == 4) btnBuscar.setDisable(true);
+            else btnBuscar.setDisable(false);
     
             // Actualizar solo las celdas sin modificar los ítems
             for (ComboBox<String> comboBox : todos) {
@@ -273,6 +285,11 @@ public class Controlador {
 
 
     public void setAccionActual(Accion accion) {
+        /**/
+        if (nodoSeleccionado1 != null) deselectNodo(nodoSeleccionado1);
+        if (nodoSeleccionado2 != null) deselectNodo(nodoSeleccionado2);
+        if (ultimaRutaCalculada != null) desResaltarRuta();
+        /**/
         this.accionActual = accion;
     }
 
@@ -287,11 +304,11 @@ public class Controlador {
 
     public void agregarP(ActionEvent e) {
         Localizacion neoLoca = new Localizacion(longitud, latitud, 0, txtLocalizacion.getText());
-        GestorRutas.getInstance().agregarParada(txtNombre.getText(), neoLoca);
-        int id = GestorRutas.getInstance().getIdParadaActual()-1;
+        int id = GestorRutas.getInstance().agregarParada(txtNombre.getText(), neoLoca);
         System.out.println(GestorRutas.getInstance().getParadas().get(id).getNombre());
         String nodeId = ""+id;
         Node newNode = graph.addNode(nodeId);
+        nodosDelGrafo.put(id, newNode);
         newNode.setAttribute("x", gPosX);
         newNode.setAttribute("y", gPosY);
         panelAgregar.setVisible(false);
@@ -332,8 +349,8 @@ public class Controlador {
     }
 
     public void agregarR(ActionEvent e) {
-        GestorRutas.getInstance().agregarRuta(paradaSeleccionada1.getId(), paradaSeleccionada2.getId(), spnTiempo.getValue().floatValue(), spnDistancia.getValue().floatValue(), spnCosto.getValue().floatValue());
-        agregarArista(nodoSeleccionado1, nodoSeleccionado2,spnTiempo.getValue().floatValue(), spnDistancia.getValue().floatValue(), spnCosto.getValue().floatValue());
+        int id = GestorRutas.getInstance().agregarRuta(paradaSeleccionada1.getId(), paradaSeleccionada2.getId(), spnTiempo.getValue().floatValue(), spnDistancia.getValue().floatValue(), spnCosto.getValue().floatValue());
+        agregarArista(id, nodoSeleccionado1, nodoSeleccionado2,spnTiempo.getValue().floatValue(), spnDistancia.getValue().floatValue(), spnCosto.getValue().floatValue());
         deselectNodo(nodoSeleccionado1);
         deselectNodo(nodoSeleccionado2);
         nodoSeleccionado1 = null;
@@ -493,6 +510,23 @@ public class Controlador {
                         }
                     }
                     break;
+
+                case BUSCAR_RUTA:
+                    if (nodoSeleccionado1 == null) {
+                        nodoSeleccionado1 = nodoCercano;
+                        seleccionarNodo(nodoSeleccionado1);
+                        paradaSeleccionada1 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado1.getId()));
+                    } else if (nodoSeleccionado2 == null) {
+                        if (nodoSeleccionado1 == nodoCercano) {
+                            System.out.println("No se puede buscar una ruta hacia la misma parada");
+                        } else {
+                            nodoSeleccionado2 = nodoCercano;
+                            seleccionarNodo(nodoSeleccionado2);
+                            paradaSeleccionada2 = GestorRutas.getInstance().getParadas().get(Integer.parseInt(nodoSeleccionado2.getId()));
+                            resaltarRuta(rutaOptima());
+                        }
+                    }
+                    break;
             }
         } else {
             System.out.println("No se seleccionó ningún nodo. Haz clic cerca de un nodo.");
@@ -511,12 +545,12 @@ public class Controlador {
         nodo.removeAttribute("ui.class");
     }
 
-    private void agregarArista(Node nodo1, Node nodo2, float tiempo, float distancia, float costo) {
+    private void agregarArista(int id, Node nodo1, Node nodo2, float tiempo, float distancia, float costo) {
         if (nodo1 != null && nodo2 != null) {
-            int id = GestorRutas.getInstance().getIdRutaActual()-1;
             String aristaId = nodo1.getId() + "-" + nodo2.getId();
             graph.addEdge(aristaId, nodo1.getId(), nodo2.getId(), true); // true para crear una arista dirigida
             Edge arista = graph.getEdge(aristaId);
+            aristasDelGrafo.put(id, arista);
             arista.setAttribute("Tiempo", tiempo);
             arista.setAttribute("Distancia", distancia);
             arista.setAttribute("Costo", costo);
@@ -591,6 +625,12 @@ public class Controlador {
         GestorRutas.getInstance().setExpMin(!GestorRutas.getInstance().getExpMinActivado());
     }
 
+    public void encontrarRuta()
+    {
+        setAccionActual(Accion.BUSCAR_RUTA);
+        panel.setOnMouseClicked(this::handlePanelClick);
+    }
+
     public List<ParParadaRuta> rutaOptima()
     {
         Preferencias prefs[] = new Preferencias[5];
@@ -601,7 +641,33 @@ public class Controlador {
         prefs[0] = Preferencias.NINGUNA;
 
         //Los ids de las paradas hay que cambiarlos según los nodos a los que se les haga click
-        return GestorRutas.getInstance().encontrarRuta(0, 0, prefs);
+        ultimaRutaCalculada = GestorRutas.getInstance().encontrarRuta(paradaSeleccionada1.getId(), paradaSeleccionada2.getId(), prefs);
+        return ultimaRutaCalculada;
+    }
+
+    private void resaltarRuta(List<ParParadaRuta> ruta)
+    {
+        for (ParParadaRuta pr : ruta)
+        {
+            Node nodo = nodosDelGrafo.get(pr.parada().getId());
+            Edge arista = null;
+            if (pr.ruta() != null) arista = aristasDelGrafo.get(pr.ruta().getId());
+            nodo.removeAttribute("ui.class");
+            nodo.setAttribute("ui.class", "highlight");
+            if (arista != null) arista.setAttribute("ui.class", "highlight");
+        }
+    }
+
+    private void desResaltarRuta()
+    {
+        for (ParParadaRuta pr : ultimaRutaCalculada)
+        {
+            Node nodo = nodosDelGrafo.get(pr.parada().getId());
+            Edge arista = null;
+            if (pr.ruta() != null) arista = aristasDelGrafo.get(pr.ruta().getId());
+            nodo.removeAttribute("ui.class");
+            if (arista != null) arista.removeAttribute("ui.class");
+        }
     }
 
 }
