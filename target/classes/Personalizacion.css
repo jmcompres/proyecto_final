@@ -21,6 +21,16 @@
     -fx-border-color: #413b6b;
 }
 
+#panelAgregarRuta{
+    -fx-background-color: #413b6b;
+    -fx-border-color: #413b6b;
+}
+
+#panelModificarRuta{
+    -fx-background-color: #413b6b;
+    -fx-border-color: #413b6b;
+}
+
 #menuLateral {
     -fx-background-color: #413b6b;
     -fx-border-color: #413b6b;

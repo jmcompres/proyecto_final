@@ -17,3 +17,13 @@ node.selected {
     fill-color: #413b6b; /* Color del nodo seleccionado */
 
 }
+
+node.highlight
+{
+    fill-color: #cfab0b;
+}
+
+edge.highlight
+{
+    fill-color: #a5890c;
+}
