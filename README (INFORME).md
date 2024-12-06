@@ -168,3 +168,50 @@ Este enum representa las diferentes preferencias (discriminantes) que se pueden 
 **Atributo importante:**
 
 valor: este es el valor asociado a cada preferencia. Se utiliza en el sistema de multipreferencias de este programa, del que forma parte RegistroDiscriminante, y se usa para acceder a un índice específico de dicho registro de discriminantes. En concreto, este programa trabaja con arreglos de este enum organizados según las prioridades de las preferencias, por lo que se puede acceder con los valores de cada preferencia a los respectivos discriminantes en el orden que se debe, según esté organizado el arreglo de preferencias.
+
+## Algunas pruebas pequeñas
+
+### Pequeña prueba normal
+
+![image](https://github.com/user-attachments/assets/cebd4ec8-36d2-47fb-a4a9-ae5523bec648)
+
+**Prueba basada en esta imágen:** https://www.wextensible.com/temas/voraces/ejemplos/dijkstra.png
+
+
+### Multi-preferencias
+
+(Las pruebas vistas aquí son bastantes pequeñas, pero le invito a probar en grande las multi-preferencias)
+
+**Preferencia Tiempo-Distancia**
+![image](https://github.com/user-attachments/assets/ae8721d0-9b0b-4f11-a853-01d94db3902b)
+
+**Preferencia Tiempo-Costo**
+![image](https://github.com/user-attachments/assets/6bdc9f25-ca24-4ec5-98af-98fbf38441a6)
+
+
+### Aristas con pesos negativos
+
+![image](https://github.com/user-attachments/assets/6626f25f-f1a8-413b-a961-6a617022aa56)
+
+**Prueba basada en esta:** https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm#/media/File:Bellman%E2%80%93Ford_algorithm_example.gif
+
+(Las aristas de arriba están graficadas al revez, pero son las mismas. Los pesos negativos están configurados por tener descuentos en 200%, los cuáles se pueden ajustar en el panel de modificar ruta)
+
+### Expansión mínima
+
+Antes de expansión mínima
+![image](https://github.com/user-attachments/assets/5132975b-cec1-4684-adfb-0bcb72e3a515)
+
+Expansión mínima (preferencia tiempo)
+![image](https://github.com/user-attachments/assets/ac65877e-92fd-4381-91ad-b4a3894441e1)
+
+Trata al grafo como bidireccional al buscar ruta óptima en expansión mínima (si se ve la imagen del grafo dirigido original, hubiese sido imposible formar esta ruta si no es bidireccional)
+![image](https://github.com/user-attachments/assets/10bda86a-3bad-4274-ab64-519d4a5a3196)
+
+
+
+### No ciclos negativos
+
+No permite formar ciclos negativos (se deshabilita el botón de modificar)
+![image](https://github.com/user-attachments/assets/857fb8a1-a11c-404a-98e2-8d79a55c657a)
+![image](https://github.com/user-attachments/assets/719d2ee9-8a3f-40ce-aebe-f16e24e0a6ba)
