@@ -112,6 +112,15 @@ Esta es la clase que gestiona el backend.
 
 - *RegistroDiscriminates*: (debió ser RegistroDiscrimina**n**tes, pero bueno, así se quedó) **Ver en la sección de Records Importantes**
 
+**Explicación de las estructuras de datos utilizadas y clases externas utilizadas:**
+
+Utilizamos HashMaps para guardar las rutas (para el caso de todas las rutas del grafo y el caso de las rutas que forman parte del mstActual), paradas, o listas (para el caso del mapa de rutas que genera Floyd-Warshall) gracias a la recuperación en tiempo constante que ofrecen con su uso del hash de la clave para calcular el índice donde se encuentra o encontrará un objeto.
+
+Utilizamos un LinkedHashSet para guardar los nombres de las paradas ya registrados porque no queremos nombres repetidos, siendo que solo necesitamos saber si ya se encuentran registrados o no; y también permite esta comprobación en tiempo constante gracias a su uso de hash para calcular los índices y acceder a ellos.
+
+Utilizamos AtomicBoolean para fwlisto y fwEnProgreso, ya que estos valores podrían ser accedidos varios hilos al mismo tiempo (en caso de que salga algo mal en la gestión que hacemos) y queremos evitar posibles conflictos causados por ello.
+
+
 
 ### GestorArchivos
 
