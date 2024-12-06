@@ -3,9 +3,21 @@
 ## Antes de leer
 Este es el informe de este proyecto. Solo incluye la documentación para lo más importante, fuera de lo fácilmente entendible y los algoritmos ya hechos que se implementaron.
 
-**Algunas aclaraciones**:
+**Algunas aclaraciones de esta documentación**:
 
 - Con "ruta óptima" nos referimos al conjunto de instancias de Parada y Ruta que conforman un "camino" entre dos paradas; mientras con simplemente "ruta" nos referimos a una instancia de Ruta.
+
+**Algunos aspectos importantes sobre el programa**:
+
+- Para poder buscar una ruta óptima o activar expansión mínima, se necesita tener al menos la primera preferencia diferente de Preferencias.NINGUNA.
+
+- Cualquier mínimo cambio en el grafo (por añadir/modificar/borrar paradas/rutas) o en las preferencias supondrá la desactivación de expansión mínima; pues el grafo real sobre el cual se hacen estos cambios sigue siendo el dirigido, por lo que se debe mostrar el mismo tras cualquiera de dichos cambios.
+
+- Para realizar cualquier acción relacionada con dos nodos, como agregar ruta o buscar una ruta óptima, entonces se debe presionar el botón para la acción en cuestión y luego seleccionar los nodos en el orden correspondiente consecutivamente.
+
+- Para evitar confusiones, se puede ver la acción actual abajo a la izquierda.
+
+
 
 ## Clases fundamentales importantes
 
