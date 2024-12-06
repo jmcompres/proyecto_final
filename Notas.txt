@@ -1,10 +1,5 @@
 Algunas notas para la documentación
 
-General:
-- Es posible que haya que añadir condiciones en los getters y setters
-- Investigar para qué podríamos usar los árboles de expansión mínima
-- Controlar las preferencias que se le pasan a los algoritmos de expansión mínima, solo distancia, costo y tiempo (no tiene sentido con transbordos)
-
 Clase Nodo:
 - Se tienen las adyacencias en listas (en este caso LinkedHashSets, para evitar las repeticiones) porque para los algoritmos de todas formas se tendrán que explorar todos los
 nodos a los que adyacente ( por ejemplo no convendría hacer búsqueda binaria porque si un nodo objetivo no es

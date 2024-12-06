@@ -225,7 +225,7 @@ public class GestorRutas implements Serializable{
         }
     }
 
-    //Esto se puede colocar en un for
+    
     private int compararMultiPrefs(RegistroDiscriminates discr1, RegistroDiscriminates discr2, Preferencias[] prefs)
     {
         int res = Float.compare(discr1.discrs[prefs[0].getValor()], discr2.discrs[prefs[0].getValor()]);
