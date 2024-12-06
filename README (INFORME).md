@@ -1,7 +1,7 @@
 # Informe - Gestor de Paradas y Rutas
 
 ## Antes de leer
-Este es el informe de este proyecto. Solo incluye la documentación para lo más importante, fuera de lo fácilmente entendible.
+Este es el informe de este proyecto. Solo incluye la documentación para lo más importante, fuera de lo fácilmente entendible y los algoritmos ya hechos que se implementaron.
 
 ## Clases fundamentales importantes
 
@@ -75,6 +75,8 @@ Esta es la clase que gestiona el backend.
 
 **Métodos importantes:**
 
+- `private boolean prefsIguales(Preferencias prefs[])`: compara las preferencias actuales para buscar rutas óptimas con las del último mapa de rutas óptimas de Floyd-Warshall, si hay uno calculado.
+
 - `public void  eliminarParada(int idParada)`: elimina del sistema la parada con el id pasado como parámetro. Para esto, se eliminan todas las instancias de dicha parada en las listas de adyacencias de otras paradas que la contenían, y también se eliminan todas las rutas que iban hacia dicha parada desde otras paradas. Luego, se elimina la parada del sistema.
 
 - `public void  eliminarRuta (int idRuta)`: elimina del sistema la ruta con el id pasado como parámetro. Para esto, se eliminan todas las instancias de dicha ruta en todas las paradas que la contenían como medio para llegar a otras paradas en sus listas de adyacencias, y también esas paradas a las que apuntaban, en el índice que estaba la ruta eliminada. 
@@ -91,13 +93,16 @@ Esta es la clase que gestiona el backend.
 
 - `public void desactivarExpMin()`: método que desactiva el “modo expansión mínima”.
 
+- `private List<ParParadaRuta> rutaExpMin(int idOrigen, int idDestino, Map<Integer, Ruta> arbolExpMin)` y  `private List<ParParadaRuta> recursionRutaExpMin(int idActual, int idDestino, Map<Integer, Ruta> arbolExpMin, Map<Integer, Boolean> paradasVisitadas)`: métodos para buscar una ruta óptima en “modo expansión mínima”, tratando al grafo dirigido como dirigido, para darle coherencia al resultado del resultado de Kruskal. Es un DFS que no solo toma en cuenta la lista de adyacencia y rutas del nodo actual que se evalúa para llegar a otros nodos (dicha lista se evalúa en el primer for), sino también las de todos los nodos que apuntan a él (en el segundo for) porque el grafo se está tratando como dirigido y no importan de dónde vengan las rutas, siendo que conecten a dos nodos. Para ser coherente con las aristas correspondientes al árbol de expansión mínima generado por Kruskal en forma de mapa de rutas, antes de evaluar cada arista, confirma si está contenida en dicho mapa; si no está, la ignora totalmente.
+- `public List<ParParadaRuta> encontrarRuta(int idOrigen, int idDestino, Preferencias preferencias[])`: método definitivo para gestionar la búsqueda rutas óptimas. Dependiendo de la preferencia principal, ejecuta el método apropiado. También determina si puede retornar la ruta deseada desde el mapa de Floyd-Warshall pre-calculado y manda a preparar dicho mapa (en un Thread, ya que es el método que más complejidad temporal tiene de todos, y así se puede ejecutar otro método menos complejo mientras se calcula este mapa) para usarlo en caso de que se vuelvan a usar las mismas preferencias para buscar otra ruta óptima.
+
+
 **Clases definidas aquí**
 
 - *ParNodoDiscriminante*: clase que combina un nodo (parada) y el discriminante asociado para llegar a él en la búsqueda de una ruta óptima. Es una clase porque se usa en PriorirtyQueue, como en Dijkstra, y necesita implementar Comparable. También contiene un arreglo de preferencias que define el orden de preferencias para su implementación del método compareTo, el cual es `compararMultiPrefs()`.
 
 - *ParRutaDiscriminante*: clase que combina una (ruta) con sus atributos como discriminantes. Es una clase porque se usa en PriorirtyQueue para Kruskal, y no queríamos hacer que Ruta implementara Comparable, pues el método que se usaría en su implementación de compareTo también sería `compararMultiPrefs()`, y queríamos gestionar todo eso en la clase controladora del backend (esta).
 
-- `private boolean prefsIguales(Preferencias prefs[])`: compara las preferencias actuales para buscar rutas óptimas con las del último mapa de rutas óptimas de Floyd-Warshall, si hay uno calculado.
 
 **Records definidos aquí**
 
@@ -112,6 +117,11 @@ Esta es la clase que gestiona el backend.
 
 Este es un record que guarda una parada y una ruta. Se utiliza para retonar las listas de las rutas óptimas. La ruta es la que se usa para llegar a la siguiente parada en la lista de la ruta óptima; por lo tanto, el último ParParadaRuta de las listas de rutas óptimas siempre tiene una ruta con valor `null`.
 
+### RegistroDiscriminates
+
+Record utilizado para guardar valores de discriminantes para la búsqueda de rutas óptimas. Puede ser creado basado en una ruta y un RegistroDiscriminates previo, o en dos RegistroDiscriminates. La primera opción es la más usada en el programa, útil para guardar el determinante total tras recorrer una ruta, y así ver si conviene tomar esa ruta; mientras que la otra solo se utiliza en Floyd-Warshall, ya que los discriminantes allí son más complejos, siendo que las comparaciones que hace es con rutas óptimas temporales totales, no simples rutas, lo cuál requiere un discriminante que combine los dos discrimianntes complejos de aquellas dos rutas óptimas temporales a comparar. El primer constructor también recibe unos valores booleanos para ajustar mejor la creación del registro de discriminantes, dependiendo si es para un origen (con todos los discriminantes en cero), o para un relleno (que necesita discriminantes "infinitos").
+
+Este record guarda dichos discriminantes en un arreglo con tantos índices como opciones de preferencias hay, teniendo cada uno reservado para reservar un discriminante correspondiente a cada una de dichas preferencias, según el valor que tengan (para más información ver el apartado de Preferencias en la sección de **Enums importantes**).
 
 
 ## Enums importantes
