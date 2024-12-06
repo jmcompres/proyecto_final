@@ -3,6 +3,10 @@
 ## Antes de leer
 Este es el informe de este proyecto. Solo incluye la documentación para lo más importante, fuera de lo fácilmente entendible y los algoritmos ya hechos que se implementaron.
 
+**Algunas aclaraciones**:
+
+- Con "ruta óptima" nos referimos al conjunto de instancias de Parada y Ruta que conforman un "camino" entre dos paradas; mientras con simplemente "ruta" nos referimos a una instancia de Ruta.
+
 ## Clases fundamentales importantes
 
 
@@ -108,6 +112,16 @@ Esta es la clase que gestiona el backend.
 
 - *RegistroDiscriminates*: (debió ser RegistroDiscrimina**n**tes, pero bueno, así se quedó) **Ver en la sección de Records Importantes**
 
+
+### GestorArchivos
+
+Esta es la clase que gestiona la escritura y lectura del fichero para el almacenamiento permanente de este programa.
+
+**Métodos:**
+
+- `public static void guardarData()`: método para guardar la data. Guarda toda la instancia de la clase controladora del backend (que implementa el patrón Singleton) en un solo archivo.
+
+- `public static GestorRutas cargarData()`: método para cargar la data del único archivo: el que guarda la data de la última instancia guardada de la clase GestorRutas.
 
 
 
